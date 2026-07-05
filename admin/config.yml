@@ -1,8 +1,8 @@
 backend:
   name: github
-  repo: YOUR_GITHUB_USERNAME/YOUR_REPO_NAME
+  repo: nadyyossif-max/Felbarzakh-website
   branch: main
-  base_url: https://YOUR-OAUTH-WORKER-URL
+  base_url: base_url: https://felbarzakh-website.pages.dev
   auth_endpoint: api/auth
 
 media_folder: "images/uploads"
