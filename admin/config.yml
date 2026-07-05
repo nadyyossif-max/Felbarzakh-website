@@ -2,7 +2,7 @@ backend:
   name: github
   repo: nadyyossif-max/Felbarzakh-website
   branch: main
-  base_url: base_url: https://felbarzakh-website.pages.dev
+  base_url: https://felbarzakh-website.pages.dev
   auth_endpoint: api/auth
 
 media_folder: "images/uploads"
