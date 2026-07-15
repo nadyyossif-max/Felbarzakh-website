@@ -28,6 +28,7 @@ collections:
           - { label: "عنوان قسم الكاتب", name: "writer_title", widget: "string" }
           - { label: "نبذة عن الكاتب - فقرة ١", name: "writer_bio_1", widget: "text" }
           - { label: "نبذة عن الكاتب - فقرة ٢", name: "writer_bio_2", widget: "text" }
+          - { label: "صورة الكاتب", name: "writer_photo", widget: "image", required: false }
           - { label: "رقم: روايات", name: "stat_novels_num", widget: "string" }
           - { label: "وصف: روايات", name: "stat_novels_label", widget: "string" }
           - { label: "رقم: سنوات", name: "stat_years_num", widget: "string" }
