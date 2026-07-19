@@ -42,7 +42,15 @@ collections:
           - { label: "لينك فيسبوك", name: "facebook_url", widget: "string", required: false }
           - { label: "لينك انستجرام", name: "instagram_url", widget: "string", required: false }
           - { label: "لينك تويتر/X", name: "twitter_url", widget: "string", required: false }
-
+          
+- { label: "عنوان صغير - خدمات الكتابة", name: "services_eyebrow", widget: "string", required: false }
+          - { label: "عنوان قسم خدمات الكتابة", name: "services_title", widget: "string", required: false }
+          - { label: "وصف خدمات الكتابة", name: "services_lede", widget: "text", required: false }
+          - label: "قائمة الخدمات"
+            name: "services_items"
+            widget: "list"
+            required: false
+            field: { label: "خدمة", name: "item", widget: "string" }
   - name: "episodes"
     label: "حلقات القناة"
     files:
@@ -110,3 +118,32 @@ collections:
               - { label: "نبذة قصيرة", name: "bio", widget: "text" }
               - { label: "الصورة الشخصية", name: "photo", widget: "image" }
               - { label: "لينك (سوشيال/بورتفوليو، اختياري)", name: "link", widget: "string", required: false }
+              - name: "glossary"
+    label: "قاموس البرزخ"
+    files:
+      - name: "glossary"
+        label: "المصطلحات"
+        file: "content/glossary.json"
+        fields:
+          - label: "المصطلحات"
+            name: "glossary"
+            widget: "list"
+            fields:
+              - { label: "المصطلح", name: "term", widget: "string" }
+              - { label: "الشرح", name: "definition", widget: "text" }
+
+  - name: "sources"
+    label: "المصادر والقراءات"
+    files:
+      - name: "sources"
+        label: "قائمة المصادر"
+        file: "content/sources.json"
+        fields:
+          - label: "المصادر"
+            name: "sources"
+            widget: "list"
+            fields:
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "المؤلف", name: "author", widget: "string", required: false }
+              - { label: "ملاحظة", name: "note", widget: "text" }
+              - { label: "لينك (اختياري)", name: "link", widget: "string", required: false }
