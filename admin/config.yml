@@ -118,7 +118,8 @@ collections:
               - { label: "نبذة قصيرة", name: "bio", widget: "text" }
               - { label: "الصورة الشخصية", name: "photo", widget: "image" }
               - { label: "لينك (سوشيال/بورتفوليو، اختياري)", name: "link", widget: "string", required: false }
-              - name: "glossary"
+
+  - name: "glossary"
     label: "قاموس البرزخ"
     files:
       - name: "glossary"
