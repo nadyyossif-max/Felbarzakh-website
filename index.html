@@ -263,10 +263,10 @@ fetch('/content/site.json').then(r => r.json()).then(site => {
   links.innerHTML = linksHTML;
 }).catch(err => console.error('failed to load site.json', err));
 
-fetch('/content/episodes.json').then(r => r.json()).then(data => renderCards('episodes-container', data)).catch(e => console.error(e));
-fetch('/content/articles.json').then(r => r.json()).then(data => renderCards('articles-container', data)).catch(e => console.error(e));
-fetch('/content/works.json').then(r => r.json()).then(data => renderCards('works-container', data)).catch(e => console.error(e));
-fetch('/content/team.json').then(r => r.json()).then(data => renderTeam(data)).catch(e => console.error(e));
+fetch('/content/episodes.json').then(r => r.json()).then(data => renderCards('episodes-container', data.episodes)).catch(e => console.error(e));fetch('/content/articles.json').then(r => r.json()).then(data => renderCards('articles-container', data.articles)).catch(e => console.error(e));
+  fetch('/content/articles.json').then(r => r.json()).then(data => renderCards('articles-container', data.articles)).catch(e => console.error(e));
+fetch('/content/works.json').then(r => r.json()).then(data => renderCards('works-container', data.works)).catch(e => console.error(e));
+fetch('/content/team.json').then(r => r.json()).then(data =>  renderTeam(data.team)).catch(e => console.error(e));
 </script>
 
 </body>
