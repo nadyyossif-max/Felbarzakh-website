@@ -129,9 +129,17 @@ collections:
           - label: "المصطلحات"
             name: "glossary"
             widget: "list"
+            summary: "{{fields.term}} — {{fields.category}}"
             fields:
               - { label: "المصطلح", name: "term", widget: "string" }
-              - { label: "الشرح", name: "definition", widget: "text" }
+              - label: "التصنيف"
+                name: "category"
+                widget: "select"
+                options: ["علم النفس", "فلسفة", "تاريخ", "دين وميثولوجيا", "سرد وحكاية", "سينما", "علم اجتماع", "سياسة", "مفاهيم أصلية للبرزخ"]
+              - { label: "ملخص سطر واحد", name: "summary", widget: "string" }
+              - { label: "الشرح الكامل", name: "definition", widget: "text" }
+              - { label: "مصطلحات مرتبطة (افصل بينهم بفاصلة)", name: "related_terms", widget: "string", required: false }
+              - { label: "ملاحظات / مصادر / حلقات ذات صلة", name: "notes", widget: "text", required: false }
 
   - name: "sources"
     label: "المصادر والقراءات"
