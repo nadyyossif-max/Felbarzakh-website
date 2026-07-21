@@ -362,7 +362,7 @@ document.getElementById('glossary-search').addEventListener('input', applyGlossa
 document.getElementById('glossary-modal-close').addEventListener('click', closeGlossaryModal);
 document.querySelector('.glossary-modal-overlay').addEventListener('click', closeGlossaryModal);
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeGlossaryModal(); });
-}
+
 
 function renderSources(items){
   const container = document.getElementById('sources-container');
