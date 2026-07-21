@@ -141,18 +141,25 @@ collections:
               - { label: "مصطلحات مرتبطة (افصل بينهم بفاصلة)", name: "related_terms", widget: "string", required: false }
               - { label: "ملاحظات / مصادر / حلقات ذات صلة", name: "notes", widget: "text", required: false }
 
-  - name: "sources"
-    label: "المصادر والقراءات"
+  - name: "links"
+    label: "الروابط المستحيلة"
     files:
-      - name: "sources"
-        label: "قائمة المصادر"
-        file: "content/sources.json"
+      - name: "links"
+        label: "قائمة الروابط"
+        file: "content/links.json"
         fields:
-          - label: "المصادر"
-            name: "sources"
+          - label: "الروابط"
+            name: "links"
             widget: "list"
+            summary: "{{fields.title}}"
             fields:
-              - { label: "العنوان", name: "title", widget: "string" }
-              - { label: "المؤلف", name: "author", widget: "string", required: false }
-              - { label: "ملاحظة", name: "note", widget: "text" }
-              - { label: "لينك (اختياري)", name: "link", widget: "string", required: false }
+              - { label: "العنوان (مثال: فكرة × فكرة)", name: "title", widget: "string" }
+              - label: "التصنيف"
+                name: "category"
+                widget: "select"
+                options: ["فلسفة", "تاريخ", "علم نفس", "سياسة", "أفلام", "موسيقى", "دين", "علوم"]
+              - { label: "مقدمة: ليه الرابط ده يبدو مستحيل", name: "intro", widget: "text" }
+              - { label: "الفكرة المخفية اللي بتربطهم", name: "hidden_idea", widget: "text" }
+              - { label: "صورة (اختياري)", name: "image", widget: "image", required: false }
+              - { label: "حلقة وثائقية ذات صلة (اختياري)", name: "related_episode", widget: "string", required: false }
+              - { label: "روابط مستحيلة مرتبطة (افصل بينهم بفاصلة، اختياري)", name: "related_links", widget: "string", required: false }
