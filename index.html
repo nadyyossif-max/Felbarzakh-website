@@ -274,15 +274,94 @@ function renderCards(containerId, items){
   if(!container || !Array.isArray(items)) return;
   container.innerHTML = items.map(cardHTML).join('');
 }
-function renderGlossary(items){
+let glossaryData = [];
+let activeCategory = 'الكل';
+
+function sortArabic(items){
+  return items.slice().sort((a,b) => (a.term||'').localeCompare(b.term||'', 'ar'));
+}
+
+function renderGlossaryFilters(items){
+  const container = document.getElementById('glossary-filters');
+  if(!container) return;
+  const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
+  container.innerHTML = categories.map(cat =>
+    `<button class="glossary-pill${cat===activeCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
+  ).join('');
+  container.querySelectorAll('.glossary-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.cat;
+      renderGlossaryFilters(items);
+      applyGlossaryFilter();
+    });
+  });
+}
+
+function glossaryCardHTML(item, index){
+  return `<div class="glossary-card" data-index="${index}">
+    <span class="g-term">${item.term || ''}</span>
+    <p class="g-summary">${item.summary || ''}</p>
+    <span class="g-cat">${item.category || ''}</span>
+  </div>`;
+}
+
+function applyGlossaryFilter(){
+  const searchVal = (document.getElementById('glossary-search').value || '').trim();
+  let filtered = glossaryData;
+  if(activeCategory !== 'الكل'){
+    filtered = filtered.filter(i => i.category === activeCategory);
+  }
+  if(searchVal){
+    filtered = filtered.filter(i => (i.term||'').includes(searchVal) || (i.summary||'').includes(searchVal));
+  }
+  filtered = sortArabic(filtered);
   const container = document.getElementById('glossary-container');
-  if(!container || !Array.isArray(items)) return;
-  container.innerHTML = items.map(g => `
-    <div class="glossary-item">
-      <span class="term">${g.term || ''}</span>
-      <p class="def">${g.definition || ''}</p>
-    </div>
-  `).join('');
+  const empty = document.getElementById('glossary-empty');
+  if(filtered.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    container.innerHTML = filtered.map((item) => glossaryCardHTML(item, glossaryData.indexOf(item))).join('');
+    container.querySelectorAll('.glossary-card').forEach(card => {
+      card.addEventListener('click', () => openGlossaryModal(glossaryData[parseInt(card.dataset.index)]));
+    });
+  }
+}
+
+function openGlossaryModal(item){
+  if(!item) return;
+  document.getElementById('modal-category').textContent = item.category || '';
+  document.getElementById('modal-term').textContent = item.term || '';
+  document.getElementById('modal-definition').textContent = item.definition || item.summary || '';
+  const relatedContainer = document.getElementById('modal-related');
+  const relatedNames = (item.related_terms || '').split(',').map(s => s.trim()).filter(Boolean);
+  relatedContainer.innerHTML = relatedNames.map(name => `<span data-term="${name}">${name}</span>`).join('');
+  relatedContainer.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      const target = glossaryData.find(g => g.term === span.dataset.term);
+      if(target) openGlossaryModal(target);
+    });
+  });
+  document.getElementById('modal-notes').textContent = item.notes || '';
+  document.getElementById('modal-notes').style.display = item.notes ? 'block' : 'none';
+  document.getElementById('glossary-modal').classList.add('open');
+}
+
+function closeGlossaryModal(){
+  document.getElementById('glossary-modal').classList.remove('open');
+}
+
+function renderGlossary(items){
+  glossaryData = Array.isArray(items) ? items : [];
+  renderGlossaryFilters(glossaryData);
+  applyGlossaryFilter();
+}
+
+document.getElementById('glossary-search').addEventListener('input', applyGlossaryFilter);
+document.getElementById('glossary-modal-close').addEventListener('click', closeGlossaryModal);
+document.querySelector('.glossary-modal-overlay').addEventListener('click', closeGlossaryModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeGlossaryModal(); });
 }
 
 function renderSources(items){
