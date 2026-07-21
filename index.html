@@ -208,13 +208,31 @@
   </div>
   <div class="team-grid" id="team-container"></div>
 </section>
-<section id="glossary" class="panel">
+<<section id="glossary" class="panel">
   <div class="section-head">
     <div class="threshold"><span>قاموس</span></div>
     <h2>قاموس البرزخ</h2>
+    <p style="color:var(--mist2); max-width:600px; margin-top:14px;">معجم حيّ للمفاهيم التي تتكرر عبر حلقات ومقالات البرزخ.</p>
   </div>
-  <div id="glossary-container" class="glossary-list"></div>
+  <div class="glossary-search-wrap">
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="ابحث عن مصطلح...">
+  </div>
+  <div id="glossary-filters" class="glossary-filters"></div>
+  <div id="glossary-container" class="glossary-grid"></div>
+  <p id="glossary-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش مصطلحات مطابقة للبحث.</p>
 </section>
+
+<div id="glossary-modal" class="glossary-modal">
+  <div class="glossary-modal-overlay"></div>
+  <div class="glossary-modal-box">
+    <button class="glossary-modal-close" id="glossary-modal-close">✕</button>
+    <span class="tag" id="modal-category"></span>
+    <h2 id="modal-term"></h2>
+    <p class="def" id="modal-definition"></p>
+    <div id="modal-related" class="modal-related"></div>
+    <div id="modal-notes" class="modal-notes"></div>
+  </div>
+</div>
 
 <section id="sources" class="panel">
   <div class="section-head">
