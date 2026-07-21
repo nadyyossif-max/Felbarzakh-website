@@ -58,6 +58,11 @@
   .card .thumb{width:100%; aspect-ratio:16/9; object-fit:cover; display:block;}
   .card .card-body{padding:28px 30px 32px;}
   .card .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px; margin-bottom:12px; display:block;}
+  .link-card{border:1px solid rgba(201,168,118,.25); border-radius:4px; padding:34px 24px; text-align:center; cursor:pointer; background:linear-gradient(160deg, rgba(201,168,118,.05), transparent); transition:transform .35s, box-shadow .35s, border-color .35s;}
+  .link-card:hover{transform:scale(1.035); border-color:var(--gold); box-shadow:0 0 30px rgba(201,168,118,.25);}
+  .link-card .lc-top{font-size:.75rem; color:var(--mist2); letter-spacing:1px; margin-bottom:14px;}
+  .link-card .lc-title{font-family:'Amiri',serif; font-size:1.35rem; color:var(--gold-bright); line-height:1.6; margin-bottom:22px; display:block;}
+  .link-card .lc-btn{font-size:.8rem; color:var(--gold); letter-spacing:.5px;}
   .writer-photo{width:120px; height:120px; border-radius:50%; object-fit:cover; margin-bottom:26px; border:1px solid rgba(201,168,118,.4);}
   .glossary-list{display:grid; gap:22px; max-width:720px;}
   .glossary-search-wrap{margin-bottom:24px;}
@@ -138,7 +143,7 @@
     <li><a href="#writer">الكاتب</a></li>
     <li><a href="#team">الفريق</a></li>
     <li><a href="#glossary">قاموس البرزخ</a></li>
-    <li><a href="#sources">المصادر</a></li>
+    <li><a href="#impossible-links">الروابط المستحيلة</a></li>
     <li><a href="#services">خدمات الكتابة</a></li>
     <li><a href="#contact">تواصل</a></li>
   </ul>
@@ -234,13 +239,32 @@
   </div>
 </div>
 
-<section id="sources" class="panel">
+<section id="impossible-links" class="panel">
   <div class="section-head">
-    <div class="threshold"><span>مصادر</span></div>
-    <h2>المصادر والقراءات</h2>
+    <div class="threshold"><span>روابط</span></div>
+    <h2>الروابط المستحيلة</h2>
+    <p style="color:var(--mist2); max-width:640px; margin-top:14px;">أحيانًا... أكثر فكرتين تبدوان بلا أي علاقة، يخفي بينهما خيط واحد فقط. هنا نحاول العثور عليه.</p>
   </div>
-  <div class="cards" id="sources-container"></div>
+  <div class="glossary-search-wrap">
+    <input type="text" id="links-search" class="glossary-search" placeholder="ابحث عن رابط مستحيل...">
+  </div>
+  <div id="links-filters" class="glossary-filters"></div>
+  <div id="links-container" class="glossary-grid"></div>
+  <p id="links-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش روابط مطابقة للبحث.</p>
 </section>
+
+<div id="links-modal" class="glossary-modal">
+  <div class="glossary-modal-overlay"></div>
+  <div class="glossary-modal-box">
+    <button class="glossary-modal-close" id="links-modal-close">✕</button>
+    <span class="tag" id="link-modal-category"></span>
+    <h2 id="link-modal-title"></h2>
+    <p class="def" id="link-modal-intro"></p>
+    <p class="def" id="link-modal-hidden"></p>
+    <div id="link-modal-episode" class="modal-notes"></div>
+    <div id="link-modal-related" class="modal-related"></div>
+  </div>
+</div>
 
 <section id="services" class="panel">
   <div class="section-head">
