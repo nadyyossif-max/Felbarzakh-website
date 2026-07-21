@@ -406,20 +406,91 @@ document.querySelector('.glossary-modal-overlay').addEventListener('click', clos
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeGlossaryModal(); });
 
 
-function renderSources(items){
-  const container = document.getElementById('sources-container');
-  if(!container || !Array.isArray(items)) return;
-  container.innerHTML = items.map(s => `
-    <div class="card">
-      <div class="card-body">
-        <span class="tag">${s.author || 'مصدر'}</span>
-        <h3>${s.title || ''}</h3>
-        <p>${s.note || ''}</p>
-        ${s.link ? `<a href="${s.link}" target="_blank" rel="noopener" style="color:var(--gold-bright); font-size:.85rem;">رابط ↗</a>` : ''}
-      </div>
-    </div>
-  `).join('');
+let linksData = [];
+let activeLinkCategory = 'الكل';
+
+function linkCardHTML(item, index){
+  return `<div class="link-card" data-index="${index}">
+    <div class="lc-top">ماذا يجمع بين...</div>
+    <span class="lc-title">${item.title || ''}</span>
+    <div class="lc-btn">اكتشف الرابط ↚</div>
+  </div>`;
 }
+
+function renderLinkFilters(items){
+  const container = document.getElementById('links-filters');
+  if(!container) return;
+  const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
+  container.innerHTML = categories.map(cat =>
+    `<button class="glossary-pill${cat===activeLinkCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
+  ).join('');
+  container.querySelectorAll('.glossary-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeLinkCategory = btn.dataset.cat;
+      renderLinkFilters(items);
+      applyLinksFilter();
+    });
+  });
+}
+
+function applyLinksFilter(){
+  const searchVal = (document.getElementById('links-search').value || '').trim();
+  let filtered = linksData;
+  if(activeLinkCategory !== 'الكل'){
+    filtered = filtered.filter(i => i.category === activeLinkCategory);
+  }
+  if(searchVal){
+    filtered = filtered.filter(i => (i.title||'').includes(searchVal));
+  }
+  const container = document.getElementById('links-container');
+  const empty = document.getElementById('links-empty');
+  if(filtered.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    container.innerHTML = filtered.map((item) => linkCardHTML(item, linksData.indexOf(item))).join('');
+    container.querySelectorAll('.link-card').forEach(card => {
+      card.addEventListener('click', () => openLinkModal(linksData[parseInt(card.dataset.index)]));
+    });
+  }
+}
+
+function openLinkModal(item){
+  if(!item) return;
+  document.getElementById('link-modal-category').textContent = item.category || '';
+  document.getElementById('link-modal-title').textContent = item.title || '';
+  document.getElementById('link-modal-intro').textContent = item.intro || '';
+  document.getElementById('link-modal-hidden').textContent = item.hidden_idea || '';
+  const epEl = document.getElementById('link-modal-episode');
+  epEl.textContent = item.related_episode ? ('حلقة ذات صلة: ' + item.related_episode) : '';
+  epEl.style.display = item.related_episode ? 'block' : 'none';
+  const relatedContainer = document.getElementById('link-modal-related');
+  const relatedNames = (item.related_links || '').split(',').map(s => s.trim()).filter(Boolean);
+  relatedContainer.innerHTML = relatedNames.map(name => `<span data-title="${name}">${name}</span>`).join('');
+  relatedContainer.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      const target = linksData.find(l => l.title === span.dataset.title);
+      if(target) openLinkModal(target);
+    });
+  });
+  document.getElementById('links-modal').classList.add('open');
+}
+
+function closeLinkModal(){
+  document.getElementById('links-modal').classList.remove('open');
+}
+
+function renderLinks(items){
+  linksData = Array.isArray(items) ? items : [];
+  renderLinkFilters(linksData);
+  applyLinksFilter();
+}
+
+document.getElementById('links-search').addEventListener('input', applyLinksFilter);
+document.getElementById('links-modal-close').addEventListener('click', closeLinkModal);
+document.querySelector('#links-modal .glossary-modal-overlay').addEventListener('click', closeLinkModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLinkModal(); });
 function renderTeam(items){
   const container = document.getElementById('team-container');
   if(!container || !Array.isArray(items)) return;
@@ -479,7 +550,7 @@ fetch('/content/works.json').then(r => r.json()).then(data => renderCards('works
 fetch('/content/team.json').then(r => r.json()).then(data =>  renderTeam(data.team)).catch(e => console.error(e));
 fetch('/content/glossary.json').then(r => r.json()).then(data => renderGlossary(data.glossary)).catch(e => console.error(e));
 
-  fetch('/content/sources.json').then(r => r.json()).then(data => renderSources(data.sources)).catch(e => console.error(e));
+ fetch('/content/links.json').then(r => r.json()).then(data => renderLinks(data.links)).catch(e => console.error(e));
   </script>
 
 </body>
