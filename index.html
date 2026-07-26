@@ -295,7 +295,7 @@ function setText(id, value){
   if(el && value !== undefined) el.textContent = value;
 }
 
-function cardHTML(item){
+function cardHTML(item, index){
   const inner = `
     <div class="thumb-wrap">
       <img class="thumb" src="${item.image || '/images/hero.jpg'}" alt="${item.title || ''}" loading="lazy">
@@ -308,13 +308,29 @@ function cardHTML(item){
   if(item.link){
     return `<div class="card"><a class="card-link" href="${item.link}" target="_blank" rel="noopener">${inner}</a></div>`;
   }
-  return `<div class="card">${inner}</div>`;
+  return `<div class="card" data-index="${index}">${inner}</div>`;
 }
 
 function renderCards(containerId, items){
   const container = document.getElementById(containerId);
   if(!container || !Array.isArray(items)) return;
-  container.innerHTML = items.map(cardHTML).join('');
+  container.innerHTML = items.map((item, i) => cardHTML(item, i)).join('');
+  container.querySelectorAll('.card[data-index]').forEach(card => {
+    card.addEventListener('click', () => openContentModal(items[parseInt(card.dataset.index)]));
+  });
+}
+
+function openContentModal(item){
+  if(!item) return;
+  document.getElementById('content-modal-tag').textContent = item.tag || '';
+  document.getElementById('content-modal-title').textContent = item.title || '';
+  document.getElementById('content-modal-text').textContent = item.description || '';
+  document.getElementById('content-modal').classList.add('open');
+}
+
+function closeContentModal(){
+  document.getElementById('content-modal').classList.remove('open');
+}
 }
 let glossaryData = [];
 let activeCategory = 'الكل';
@@ -551,6 +567,9 @@ fetch('/content/team.json').then(r => r.json()).then(data =>  renderTeam(data.te
 fetch('/content/glossary.json').then(r => r.json()).then(data => renderGlossary(data.glossary)).catch(e => console.error(e));
 
  fetch('/content/links.json').then(r => r.json()).then(data => renderLinks(data.links)).catch(e => console.error(e));
+  document.getElementById('content-modal-close').addEventListener('click', closeContentModal);
+document.querySelector('#content-modal .glossary-modal-overlay').addEventListener('click', closeContentModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeContentModal(); });
   </script>
 
 </body>
