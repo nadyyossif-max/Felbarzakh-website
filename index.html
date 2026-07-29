@@ -291,6 +291,7 @@
     <span class="tag" id="content-modal-tag"></span>
     <h2 id="content-modal-title"></h2>
     <p class="def" id="content-modal-text"></p>
+    <a href="#" target="_blank" rel="noopener" id="content-modal-link" class="btn btn-primary" style="display:none; margin-top:10px;">شاهد الحلقة ↗</a>
   </div>
 </div>
   <footer>
@@ -308,7 +309,7 @@ function setText(id, value){
 }
 
 function cardHTML(item, index){
-  const inner = `
+  return `<div class="card" data-index="${index}">
     <div class="thumb-wrap">
       <img class="thumb" src="${item.image || '/images/hero.jpg'}" alt="${item.title || ''}" loading="lazy">
     </div>
@@ -316,8 +317,9 @@ function cardHTML(item, index){
       <span class="tag">${item.tag || ''}</span>
       <h3>${item.title || ''}</h3>
       <p>${item.description || ''}</p>
-    </div>`;
-  if(item.link){
+    </div>
+  </div>`;
+}
     return `<div class="card"><a class="card-link" href="${item.link}" target="_blank" rel="noopener">${inner}</a></div>`;
   }
   return `<div class="card" data-index="${index}">${inner}</div>`;
@@ -337,7 +339,15 @@ function openContentModal(item){
   document.getElementById('content-modal-tag').textContent = item.tag || '';
   document.getElementById('content-modal-title').textContent = item.title || '';
   document.getElementById('content-modal-text').textContent = item.description || '';
+  const linkBtn = document.getElementById('content-modal-link');
+  if(item.link){
+    linkBtn.href = item.link;
+    linkBtn.style.display = 'inline-flex';
+  } else {
+    linkBtn.style.display = 'none';
+  }
   document.getElementById('content-modal').classList.add('open');
+}
 }
 
 function closeContentModal(){
