@@ -320,11 +320,7 @@ function cardHTML(item, index){
     </div>
   </div>`;
 }
-    return `<div class="card"><a class="card-link" href="${item.link}" target="_blank" rel="noopener">${inner}</a></div>`;
-  }
-  return `<div class="card" data-index="${index}">${inner}</div>`;
-}
-
+   
 function renderCards(containerId, items){
   const container = document.getElementById(containerId);
   if(!container || !Array.isArray(items)) return;
