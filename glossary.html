@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قاموس البرزخ | معجم المفاهيم الفلسفية والنفسية — في البرزخ</title>
+<meta name="description" content="معجم حي للمفاهيم التي تتكرر عبر حلقات ومقالات قناة في البرزخ: علم النفس، الفلسفة، التاريخ، والسرد. ابحث وتصفح المصطلحات بحسب التصنيف.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/glossary.html">
+<meta property="og:title" content="قاموس البرزخ | معجم المفاهيم">
+<meta property="og:description" content="معجم حي للمفاهيم التي تتكرر عبر حلقات ومقالات قناة في البرزخ.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:var(--black); color:var(--text);}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  .page-head{padding:150px 8vw 60px; max-width:900px;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim);}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
+
+  main{padding:0 8vw 100px;}
+
+  .glossary-search-wrap{margin-bottom:24px;}
+  .glossary-search{width:100%; max-width:520px; padding:16px 20px; font-family:'Cairo'; font-size:1rem; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); transition:border-color .3s;}
+  .glossary-search:focus{outline:none; border-color:var(--gold);}
+  .glossary-search::placeholder{color:var(--mist2);}
+  .glossary-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
+  .glossary-pill{padding:8px 18px; border:1px solid rgba(201,168,118,.3); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
+  .glossary-pill:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .glossary-pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:18px;}
+  .glossary-card{border:1px solid rgba(201,168,118,.22); border-radius:2px; padding:22px; cursor:pointer; background:var(--panel); transition:border-color .3s, transform .3s;}
+  .glossary-card:hover{border-color:var(--gold); transform:translateY(-3px);}
+  .glossary-card .g-term{font-family:'Amiri',serif; font-size:1.25rem; color:var(--gold-bright); display:block; margin-bottom:8px;}
+  .glossary-card .g-summary{color:var(--mist2); font-size:.9rem; line-height:1.7; margin-bottom:14px;}
+  .glossary-card .g-cat{font-size:.7rem; color:var(--gold); letter-spacing:1px;}
+
+  .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .glossary-modal.open{display:flex;}
+  .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .glossary-modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:560px; width:100%; max-height:80vh; overflow-y:auto; z-index:1;}
+  .glossary-modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .glossary-modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .glossary-modal-box h2{font-size:1.6rem; color:var(--gold-bright); margin:10px 0 18px;}
+  .glossary-modal-box .def{color:var(--mist2); line-height:1.9; margin-bottom:22px;}
+  .glossary-modal-box .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px;}
+  .modal-related{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .modal-related span{padding:6px 14px; border:1px solid rgba(201,168,118,.3); border-radius:16px; font-size:.8rem; color:var(--gold-bright); cursor:pointer;}
+  .modal-related span:hover{border-color:var(--gold);}
+  .modal-notes{color:var(--mist2); font-size:.85rem; border-top:1px solid rgba(201,168,118,.15); padding-top:16px;}
+
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15);}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/index.html" class="back">→ الرئيسية</a>
+</nav>
+
+<div class="page-head">
+  <div class="threshold"><span>قاموس</span></div>
+  <h1>قاموس البرزخ</h1>
+  <p>معجم حيّ للمفاهيم التي تتكرر عبر حلقات ومقالات البرزخ.</p>
+</div>
+
+<main>
+  <div class="glossary-search-wrap">
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="ابحث عن مصطلح...">
+  </div>
+  <div id="glossary-filters" class="glossary-filters"></div>
+  <div id="glossary-container" class="glossary-grid"></div>
+  <p id="glossary-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش مصطلحات مطابقة للبحث.</p>
+</main>
+
+<div id="glossary-modal" class="glossary-modal">
+  <div class="glossary-modal-overlay"></div>
+  <div class="glossary-modal-box">
+    <button class="glossary-modal-close" id="glossary-modal-close">✕</button>
+    <span class="tag" id="modal-category"></span>
+    <h2 id="modal-term"></h2>
+    <p class="def" id="modal-definition"></p>
+    <div id="modal-related" class="modal-related"></div>
+    <div id="modal-notes" class="modal-notes"></div>
+  </div>
+</div>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+let glossaryData = [];
+let activeCategory = 'الكل';
+
+function sortArabic(items){
+  return items.slice().sort((a,b) => (a.term||'').localeCompare(b.term||'', 'ar'));
+}
+
+function renderGlossaryFilters(items){
+  const container = document.getElementById('glossary-filters');
+  if(!container) return;
+  const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
+  container.innerHTML = categories.map(cat =>
+    `<button class="glossary-pill${cat===activeCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
+  ).join('');
+  container.querySelectorAll('.glossary-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCategory = btn.dataset.cat;
+      renderGlossaryFilters(items);
+      applyGlossaryFilter();
+    });
+  });
+}
+
+function glossaryCardHTML(item, index){
+  return `<div class="glossary-card" data-index="${index}">
+    <span class="g-term">${item.term || ''}</span>
+    <p class="g-summary">${item.summary || ''}</p>
+    <span class="g-cat">${item.category || ''}</span>
+  </div>`;
+}
+
+function applyGlossaryFilter(){
+  const searchVal = (document.getElementById('glossary-search').value || '').trim();
+  let filtered = glossaryData;
+  if(activeCategory !== 'الكل'){
+    filtered = filtered.filter(i => i.category === activeCategory);
+  }
+  if(searchVal){
+    filtered = filtered.filter(i => (i.term||'').includes(searchVal) || (i.summary||'').includes(searchVal));
+  }
+  filtered = sortArabic(filtered);
+  const container = document.getElementById('glossary-container');
+  const empty = document.getElementById('glossary-empty');
+  if(filtered.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    container.innerHTML = filtered.map((item) => glossaryCardHTML(item, glossaryData.indexOf(item))).join('');
+    container.querySelectorAll('.glossary-card').forEach(card => {
+      card.addEventListener('click', () => openGlossaryModal(glossaryData[parseInt(card.dataset.index)]));
+    });
+  }
+}
+
+function openGlossaryModal(item){
+  if(!item) return;
+  document.getElementById('modal-category').textContent = item.category || '';
+  document.getElementById('modal-term').textContent = item.term || '';
+  document.getElementById('modal-definition').textContent = item.definition || item.summary || '';
+  const relatedContainer = document.getElementById('modal-related');
+  const relatedNames = (item.related_terms || '').split(',').map(s => s.trim()).filter(Boolean);
+  relatedContainer.innerHTML = relatedNames.map(name => `<span data-term="${name}">${name}</span>`).join('');
+  relatedContainer.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      const target = glossaryData.find(g => g.term === span.dataset.term);
+      if(target) openGlossaryModal(target);
+    });
+  });
+  document.getElementById('modal-notes').textContent = item.notes || '';
+  document.getElementById('modal-notes').style.display = item.notes ? 'block' : 'none';
+  document.getElementById('glossary-modal').classList.add('open');
+}
+
+function closeGlossaryModal(){
+  document.getElementById('glossary-modal').classList.remove('open');
+}
+
+document.getElementById('glossary-search').addEventListener('input', applyGlossaryFilter);
+document.getElementById('glossary-modal-close').addEventListener('click', closeGlossaryModal);
+document.querySelector('.glossary-modal-overlay').addEventListener('click', closeGlossaryModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeGlossaryModal(); });
+
+fetch('/content/glossary.json').then(r => r.json()).then(data => {
+  glossaryData = Array.isArray(data.glossary) ? data.glossary : [];
+  renderGlossaryFilters(glossaryData);
+  applyGlossaryFilter();
+}).catch(e => console.error(e));
+</script>
+
+</body>
+</html>
