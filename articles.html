@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المقالات | في البرزخ</title>
+<meta name="description" content="مقالات مكتوبة من قناة في البرزخ: أفكار تحليلية في الفلسفة والتاريخ والأدب والسرد.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/articles.html">
+<meta property="og:title" content="المقالات | في البرزخ">
+<meta property="og:description" content="مقالات مكتوبة من قناة في البرزخ.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:var(--black); color:var(--text);}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  .page-head{padding:150px 8vw 60px; max-width:900px;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim);}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
+
+  main{padding:0 8vw 100px;}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:26px;}
+  .card{position:relative; border:1px solid rgba(201,168,118,.22); border-radius:2px; overflow:hidden; background:var(--panel); cursor:pointer; transition:border-color .3s, transform .3s;}
+  .card:hover{border-color:var(--gold); transform:translateY(-4px);}
+  .card .thumb{width:100%; aspect-ratio:16/9; object-fit:cover; display:block;}
+  .card .card-body{padding:28px 30px 32px;}
+  .card .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px; margin-bottom:12px; display:block;}
+  .card h3{font-size:1.4rem; margin-bottom:14px; line-height:1.4;}
+  .card p{color:var(--mist2); line-height:1.85; font-size:.95rem; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;}
+
+  .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .glossary-modal.open{display:flex;}
+  .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .glossary-modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:560px; width:100%; max-height:80vh; overflow-y:auto; z-index:1;}
+  .glossary-modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .glossary-modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .glossary-modal-box h2{font-size:1.6rem; color:var(--gold-bright); margin:10px 0 18px;}
+  .glossary-modal-box .def{color:var(--mist2); line-height:1.9; margin-bottom:22px;}
+  .glossary-modal-box .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px;}
+  .btn{display:inline-flex; align-items:center; gap:10px; padding:15px 30px; border-radius:2px; text-decoration:none; font-size:.94rem;}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
+
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15);}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/index.html" class="back">→ الرئيسية</a>
+</nav>
+
+<div class="page-head">
+  <div class="threshold"><span>مقالات</span></div>
+  <h1>المقالات</h1>
+  <p>أفكارٌ لا تحتمل الانتظار لحلقة كاملة.</p>
+</div>
+
+<main>
+  <div class="cards" id="articles-container"></div>
+</main>
+
+<div id="content-modal" class="glossary-modal">
+  <div class="glossary-modal-overlay"></div>
+  <div class="glossary-modal-box">
+    <button class="glossary-modal-close" id="content-modal-close">✕</button>
+    <span class="tag" id="content-modal-tag"></span>
+    <h2 id="content-modal-title"></h2>
+    <p class="def" id="content-modal-text"></p>
+    <a href="#" target="_blank" rel="noopener" id="content-modal-link" class="btn btn-primary" style="display:none;">شاهد ↗</a>
+  </div>
+</div>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+let articlesData = [];
+
+function cardHTML(item, index){
+  return `<div class="card" data-index="${index}">
+    <div class="thumb-wrap">
+      <img class="thumb" src="${item.image || '/images/hero.jpg'}" alt="${item.title || ''}" loading="lazy">
+    </div>
+    <div class="card-body">
+      <span class="tag">${item.tag || ''}</span>
+      <h3>${item.title || ''}</h3>
+      <p>${item.description || ''}</p>
+    </div>
+  </div>`;
+}
+
+function openContentModal(item){
+  if(!item) return;
+  document.getElementById('content-modal-tag').textContent = item.tag || '';
+  document.getElementById('content-modal-title').textContent = item.title || '';
+  document.getElementById('content-modal-text').textContent = item.description || '';
+  const linkBtn = document.getElementById('content-modal-link');
+  if(item.link){
+    linkBtn.href = item.link;
+    linkBtn.style.display = 'inline-flex';
+  } else {
+    linkBtn.style.display = 'none';
+  }
+  document.getElementById('content-modal').classList.add('open');
+}
+
+function closeContentModal(){
+  document.getElementById('content-modal').classList.remove('open');
+}
+
+document.getElementById('content-modal-close').addEventListener('click', closeContentModal);
+document.querySelector('.glossary-modal-overlay').addEventListener('click', closeContentModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeContentModal(); });
+
+fetch('/content/articles.json').then(r => r.json()).then(data => {
+  articlesData = Array.isArray(data.articles) ? data.articles : [];
+  const container = document.getElementById('articles-container');
+  container.innerHTML = articlesData.map((item, i) => cardHTML(item, i)).join('');
+  container.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => openContentModal(articlesData[parseInt(card.dataset.index)]));
+  });
+}).catch(e => console.error(e));
+</script>
+
+</body>
+</html>
