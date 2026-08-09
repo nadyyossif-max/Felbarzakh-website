@@ -138,7 +138,7 @@
   <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
   <ul>
     <li><a href="#channel">القناة</a></li>
-    <li><a href="#articles">المقالات</a></li>
+    <li><a href="/articles.html">المقالات</a></li>
     <li><a href="#works">الأعمال</a></li>
     <li><a href="#writer">الكاتب</a></li>
     <li><a href="#team">الفريق</a></li>
@@ -168,14 +168,7 @@
   <div class="cards" id="episodes-container"></div>
 </section>
 
-<section id="articles" class="panel">
-  <div class="section-head">
-    <div class="threshold"><span>مقالات</span></div>
-    <span class="eyebrow" id="articles_eyebrow"></span>
-    <h2 id="articles_title"></h2>
-  </div>
-  <div class="cards" id="articles-container"></div>
-</section>
+
 
 <section id="works" class="panel">
   <div class="section-head">
@@ -479,8 +472,6 @@ setText('services_eyebrow', site.services_eyebrow);
   links.innerHTML = linksHTML;
 }).catch(err => console.error('failed to load site.json', err));
 
-fetch('/content/episodes.json').then(r => r.json()).then(data => renderCards('episodes-container', data.episodes)).catch(e => console.error(e));fetch('/content/articles.json').then(r => r.json()).then(data => renderCards('articles-container', data.articles)).catch(e => console.error(e));
-  fetch('/content/articles.json').then(r => r.json()).then(data => renderCards('articles-container', data.articles)).catch(e => console.error(e));
 fetch('/content/works.json').then(r => r.json()).then(data => renderCards('works-container', data.works)).catch(e => console.error(e));
 fetch('/content/team.json').then(r => r.json()).then(data =>  renderTeam(data.team)).catch(e => console.error(e));
 
