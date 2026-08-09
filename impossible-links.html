@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الروابط المستحيلة | في البرزخ</title>
+<meta name="description" content="أفكار تبدو بلا أي علاقة، يخفي بينها خيط واحد فقط. متحف الأفكار المستحيلة من قناة في البرزخ.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/impossible-links.html">
+<meta property="og:title" content="الروابط المستحيلة | في البرزخ">
+<meta property="og:description" content="أفكار تبدو بلا أي علاقة، يخفي بينها خيط واحد فقط.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:var(--black); color:var(--text);}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+  .page-head{padding:150px 8vw 60px; max-width:900px;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim);}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
+  main{padding:0 8vw 100px;}
+  .glossary-search-wrap{margin-bottom:24px;}
+  .glossary-search{width:100%; max-width:520px; padding:16px 20px; font-family:'Cairo'; font-size:1rem; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text);}
+  .glossary-search:focus{outline:none; border-color:var(--gold);}
+  .glossary-search::placeholder{color:var(--mist2);}
+  .glossary-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
+  .glossary-pill{padding:8px 18px; border:1px solid rgba(201,168,118,.3); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
+  .glossary-pill:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .glossary-pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:18px;}
+  .link-card{border:1px solid rgba(201,168,118,.25); border-radius:4px; padding:34px 24px; text-align:center; cursor:pointer; background:linear-gradient(160deg, rgba(201,168,118,.05), transparent); transition:transform .35s, box-shadow .35s, border-color .35s;}
+  .link-card:hover{transform:scale(1.035); border-color:var(--gold); box-shadow:0 0 30px rgba(201,168,118,.25);}
+  .link-card .lc-top{font-size:.75rem; color:var(--mist2); letter-spacing:1px; margin-bottom:14px;}
+  .link-card .lc-title{font-family:'Amiri',serif; font-size:1.35rem; color:var(--gold-bright); line-height:1.6; margin-bottom:22px; display:block;}
+  .link-card .lc-btn{font-size:.8rem; color:var(--gold); letter-spacing:.5px;}
+  .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .glossary-modal.open{display:flex;}
+  .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .glossary-modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:560px; width:100%; max-height:80vh; overflow-y:auto; z-index:1;}
+  .glossary-modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .glossary-modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .glossary-modal-box h2{font-size:1.6rem; color:var(--gold-bright); margin:10px 0 18px;}
+  .glossary-modal-box .def{color:var(--mist2); line-height:1.9; margin-bottom:22px;}
+  .glossary-modal-box .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px;}
+  .modal-related{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .modal-related span{padding:6px 14px; border:1px solid rgba(201,168,118,.3); border-radius:16px; font-size:.8rem; color:var(--gold-bright); cursor:pointer;}
+  .modal-related span:hover{border-color:var(--gold);}
+  .modal-notes{color:var(--mist2); font-size:.85rem; border-top:1px solid rgba(201,168,118,.15); padding-top:16px;}
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15);}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/index.html" class="back">→ الرئيسية</a>
+</nav>
+
+<div class="page-head">
+  <div class="threshold"><span>روابط</span></div>
+  <h1>الروابط المستحيلة</h1>
+  <p>أحيانًا... أكثر فكرتين تبدوان بلا أي علاقة، يخفي بينهما خيط واحد فقط. هنا نحاول العثور عليه.</p>
+</div>
+
+<main>
+  <div class="glossary-search-wrap">
+    <input type="text" id="links-search" class="glossary-search" placeholder="ابحث عن رابط مستحيل...">
+  </div>
+  <div id="links-filters" class="glossary-filters"></div>
+  <div id="links-container" class="glossary-grid"></div>
+  <p id="links-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش روابط مطابقة للبحث.</p>
+</main>
+
+<div id="links-modal" class="glossary-modal">
+  <div class="glossary-modal-overlay"></div>
+  <div class="glossary-modal-box">
+    <button class="glossary-modal-close" id="links-modal-close">✕</button>
+    <span class="tag" id="link-modal-category"></span>
+    <h2 id="link-modal-title"></h2>
+    <p class="def" id="link-modal-intro"></p>
+    <p class="def" id="link-modal-hidden"></p>
+    <div id="link-modal-episode" class="modal-notes"></div>
+    <div id="link-modal-related" class="modal-related"></div>
+  </div>
+</div>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+let linksData = [];
+let activeLinkCategory = 'الكل';
+
+function linkCardHTML(item, index){
+  return `<div class="link-card" data-index="${index}">
+    <div class="lc-top">ماذا يجمع بين...</div>
+    <span class="lc-title">${item.title || ''}</span>
+    <div class="lc-btn">اكتشف الرابط ↚</div>
+  </div>`;
+}
+
+function renderLinkFilters(items){
+  const container = document.getElementById('links-filters');
+  if(!container) return;
+  const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
+  container.innerHTML = categories.map(cat =>
+    `<button class="glossary-pill${cat===activeLinkCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
+  ).join('');
+  container.querySelectorAll('.glossary-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeLinkCategory = btn.dataset.cat;
+      renderLinkFilters(items);
+      applyLinksFilter();
+    });
+  });
+}
+
+function applyLinksFilter(){
+  const searchVal = (document.getElementById('links-search').value || '').trim();
+  let filtered = linksData;
+  if(activeLinkCategory !== 'الكل'){
+    filtered = filtered.filter(i => i.category === activeLinkCategory);
+  }
+  if(searchVal){
+    filtered = filtered.filter(i => (i.title||'').includes(searchVal));
+  }
+  const container = document.getElementById('links-container');
+  const empty = document.getElementById('links-empty');
+  if(filtered.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    container.innerHTML = filtered.map((item) => linkCardHTML(item, linksData.indexOf(item))).join('');
+    container.querySelectorAll('.link-card').forEach(card => {
+      card.addEventListener('click', () => openLinkModal(linksData[parseInt(card.dataset.index)]));
+    });
+  }
+}
+
+function openLinkModal(item){
+  if(!item) return;
+  document.getElementById('link-modal-category').textContent = item.category || '';
+  document.getElementById('link-modal-title').textContent = item.title || '';
+  document.getElementById('link-modal-intro').textContent = item.intro || '';
+  document.getElementById('link-modal-hidden').textContent = item.hidden_idea || '';
+  const epEl = document.getElementById('link-modal-episode');
+  epEl.textContent = item.related_episode ? ('حلقة ذات صلة: ' + item.related_episode) : '';
+  epEl.style.display = item.related_episode ? 'block' : 'none';
+  const relatedContainer = document.getElementById('link-modal-related');
+  const relatedNames = (item.related_links || '').split(',').map(s => s.trim()).filter(Boolean);
+  relatedContainer.innerHTML = relatedNames.map(name => `<span data-title="${name}">${name}</span>`).join('');
+  relatedContainer.querySelectorAll('span').forEach(span => {
+    span.addEventListener('click', () => {
+      const target = linksData.find(l => l.title === span.dataset.title);
+      if(target) openLinkModal(target);
+    });
+  });
+  document.getElementById('links-modal').classList.add('open');
+}
+
+function closeLinkModal(){
+  document.getElementById('links-modal').classList.remove('open');
+}
+
+document.getElementById('links-search').addEventListener('input', applyLinksFilter);
+document.getElementById('links-modal-close').addEventListener('click', closeLinkModal);
+document.querySelector('#links-modal .glossary-modal-overlay').addEventListener('click', closeLinkModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLinkModal(); });
+
+fetch('/content/links.json').then(r => r.json()).then(data => {
+  linksData = Array.isArray(data.links) ? data.links : [];
+  renderLinkFilters(linksData);
+  applyLinksFilter();
+}).catch(e => console.error(e));
+</script>
+
+</body>
+</html>
