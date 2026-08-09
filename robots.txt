@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://felbarzakh-website.pages.dev/sitemap.xml
