@@ -396,9 +396,20 @@ function renderLinks(items){
   applyLinksFilter();
 }
 
-document.getElementById('links-search').addEventListener('input', applyLinksFilter);
-document.getElementById('links-modal-close').addEventListener('click', closeLinkModal);
-document.querySelector('#links-modal .glossary-modal-overlay').addEventListener('click', closeLinkModal);
+const linksSearch = document.getElementById('links-search');
+if (linksSearch) {
+  linksSearch.addEventListener('input', applyLinksFilter);
+}
+
+const linksModalClose = document.getElementById('links-modal-close');
+if (linksModalClose) {
+  linksModalClose.addEventListener('click', closeLinkModal);
+}
+
+const linksModalOverlay = document.querySelector('#links-modal .glossary-modal-overlay');
+if (linksModalOverlay) {
+  linksModalOverlay.addEventListener('click', closeLinkModal);
+}
 
 function renderTeam(items){
   const container = document.getElementById('team-container');
