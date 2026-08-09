@@ -394,7 +394,7 @@ function renderLinks(items){
   linksData = Array.isArray(items) ? items : [];
   renderLinkFilters(linksData);
   applyLinksFilter();
-
+}
 
 document.getElementById('links-search').addEventListener('input', applyLinksFilter);
 document.getElementById('links-modal-close').addEventListener('click', closeLinkModal);
