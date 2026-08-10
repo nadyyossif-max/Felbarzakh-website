@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجلس البرزخ | في البرزخ</title>
+<meta name="description" content="مجلس البرزخ — مساحة نقاش لجمهور قناة في البرزخ: أفكار، أسئلة، اقتراحات ومناقشات حول الحلقات والمقالات.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/majlis.html">
+<meta property="og:title" content="مجلس البرزخ | في البرزخ">
+<meta property="og:description" content="مساحة للنقاش، والاختلاف، والأفكار التي تستحق أن تُسمع.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:radial-gradient(ellipse 1100px 640px at 50% -10%, var(--panel) 0%, var(--black) 68%) var(--black); color:var(--text); overflow-x:hidden; position:relative;}
+  body::before{content:""; position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.045; mix-blend-mode:overlay; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  .page-hero{position:relative; min-height:48vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
+  .page-head{position:relative; z-index:2; padding:0 8vw 54px; max-width:900px; width:100%;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
+  .threshold span::before{content:""; display:inline-block; width:13px; height:13px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a734f' stroke-width='1.6'%3E%3Cpath d='M5 22V11a7 7 0 0 1 14 0v11'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; opacity:.85;}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
+
+  main{padding:0 8vw 100px; position:relative; z-index:2;}
+
+  /* auth / composer bar */
+  .majlis-bar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding:26px 0; border-bottom:1px solid rgba(201,168,118,.15); margin-bottom:30px;}
+  .user-chip{display:flex; align-items:center; gap:12px;}
+  .avatar{width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border-strong, rgba(201,168,118,.4)); display:block; background:var(--panel);}
+  .avatar-fallback{width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:1.1rem;}
+  .user-chip .uname{font-size:.92rem; color:var(--text);}
+  .btn{display:inline-flex; align-items:center; gap:10px; padding:13px 26px; border-radius:2px; text-decoration:none; font-size:.9rem; border:none; cursor:pointer; font-family:'Cairo'; transition:opacity .3s;}
+  .btn:hover{opacity:.88;}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
+  .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
+  .btn-ghost:hover{border-color:var(--gold);}
+  .btn-small{padding:9px 18px; font-size:.82rem;}
+
+  /* filters */
+  .majlis-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
+  .pill{padding:8px 18px; border:1px solid rgba(201,168,118,.3); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
+  .pill:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+
+  /* posts feed */
+  .post-list{display:flex; flex-direction:column; gap:1px; background:rgba(201,168,118,.18); border:1px solid rgba(201,168,118,.18);}
+  .post-card{background:var(--black); padding:26px 28px; cursor:pointer; transition:background .3s; text-decoration:none; color:inherit; display:block;}
+  .post-card:hover{background:var(--panel);}
+  .post-card.pinned{box-shadow:inset 3px 0 0 var(--gold);}
+  .post-top{display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.82rem; color:var(--mist2);}
+  .post-top .uname{color:var(--gold-bright);}
+  .post-top .dot{opacity:.5;}
+  .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
+  .post-card h3{font-size:1.2rem; margin-bottom:8px; line-height:1.5;}
+  .post-card .excerpt{color:var(--mist2); font-size:.92rem; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:16px;}
+  .post-meta{display:flex; align-items:center; gap:22px; font-size:.85rem; color:var(--mist2);}
+  .post-meta .stat{display:inline-flex; align-items:center; gap:6px;}
+  .post-meta svg{width:15px; height:15px; opacity:.75;}
+
+  .empty-state{text-align:center; padding:60px 20px; color:var(--mist2);}
+  .load-more-wrap{text-align:center; margin-top:34px;}
+
+  /* modals */
+  .modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal.open{display:flex;}
+  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:560px; width:100%; max-height:86vh; overflow-y:auto; z-index:1;}
+  .modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .modal-box h2{font-size:1.5rem; color:var(--gold-bright); margin:6px 0 26px;}
+
+  .auth-tabs{display:flex; gap:24px; margin-bottom:26px; border-bottom:1px solid rgba(201,168,118,.2);}
+  .auth-tab{background:none; border:none; color:var(--mist2); font-family:'Cairo'; font-size:.95rem; padding:0 0 12px; cursor:pointer; border-bottom:2px solid transparent;}
+  .auth-tab.active{color:var(--gold-bright); border-color:var(--gold);}
+  .auth-panel{display:none;}
+  .auth-panel.active{display:block;}
+
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:.82rem; color:var(--mist2); margin-bottom:8px;}
+  .field input, .field textarea, .field select{width:100%; padding:13px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--black); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); transition:border-color .3s;}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--gold);}
+  .field textarea{resize:vertical; min-height:110px; line-height:1.7;}
+  .form-error{color:#d98a8a; font-size:.85rem; margin-bottom:14px; display:none;}
+  .form-error.show{display:block;}
+  .form-note{color:var(--mist2); font-size:.85rem; margin-bottom:18px; line-height:1.8;}
+
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15); position:relative; z-index:2;}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+
+  @media (max-width:760px){
+    nav{padding:16px 5vw;}
+    .page-head{padding:0 7vw 40px;}
+    .page-hero{min-height:40vh;}
+    .majlis-bar{flex-direction:column; align-items:stretch;}
+    .post-top{flex-wrap:wrap;}
+    .post-cat{margin-inline-start:0;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/index.html" class="back">→ الرئيسية</a>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head">
+    <div class="threshold"><span>مجلس</span></div>
+    <h1>مجلس البرزخ</h1>
+    <p>مساحة للنقاش، والاختلاف، والأفكار التي تستحق أن تُسمع.</p>
+  </div>
+</div>
+
+<main>
+  <div class="majlis-bar">
+    <div id="auth-area"></div>
+    <button class="btn btn-primary" id="start-discussion-btn">ابدأ نقاشًا</button>
+  </div>
+
+  <div class="majlis-filters" id="filters"></div>
+
+  <div class="post-list" id="post-list"></div>
+  <p class="empty-state" id="empty-state" style="display:none;">لسه مفيش نقاشات هنا — يبقى إنت أول واحد يبدأ.</p>
+
+  <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
+    <button class="btn btn-ghost" id="load-more-btn">تحميل المزيد</button>
+  </div>
+</main>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<!-- auth modal (login / register) -->
+<div id="auth-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="auth-modal-close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">تسجيل الدخول</button>
+      <button class="auth-tab" data-tab="register">حساب جديد</button>
+    </div>
+
+    <div class="auth-panel active" id="panel-login">
+      <p class="form-error" id="login-error"></p>
+      <form id="login-form">
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="login-email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input type="password" id="login-password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">دخول</button>
+      </form>
+    </div>
+
+    <div class="auth-panel" id="panel-register">
+      <p class="form-error" id="register-error"></p>
+      <form id="register-form">
+        <div class="field">
+          <label>اسم المستخدم</label>
+          <input type="text" id="register-username" required minlength="3" maxlength="24">
+        </div>
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="register-email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input type="password" id="register-password" required minlength="8" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">إنشاء حساب</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- create-post modal -->
+<div id="composer-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="composer-modal-close">✕</button>
+    <h2>ابدأ نقاشًا</h2>
+    <p class="form-error" id="composer-error"></p>
+    <form id="composer-form">
+      <div class="field">
+        <label>التصنيف</label>
+        <select id="composer-category" required></select>
+      </div>
+      <div class="field">
+        <label>العنوان</label>
+        <input type="text" id="composer-title" required minlength="3" maxlength="200">
+      </div>
+      <div class="field">
+        <label>المحتوى</label>
+        <textarea id="composer-body" required minlength="5" maxlength="8000"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">نشر</button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const API = '/api/community';
+const CATEGORIES = ['نقاش', 'اقتراح حلقة', 'مناقشة حلقة', 'فكرة', 'سؤال', 'كتاب / فيلم / موسيقى', 'أخرى'];
+
+let currentUser = null;
+let activeCategory = null; // null = الكل
+let nextCursor = null;
+
+const HEART_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20.5s-7.5-4.6-9.7-9C.8 8 2 4.7 5.2 4c2.1-.5 3.9.4 4.9 1.9C11.1 4.4 12.9 3.5 15 4c3.2.7 4.4 4 3 7.5-2.2 4.4-6 9-6 9z"/></svg>';
+const COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5h16v11H8l-4 4V5z"/></svg>';
+
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function timeAgo(iso){
+  const diffMs = Date.now() - new Date(iso + (iso.endsWith('Z') ? '' : 'Z')).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if(mins < 1) return 'الآن';
+  if(mins < 60) return `منذ ${mins} د`;
+  const hours = Math.floor(mins / 60);
+  if(hours < 24) return `منذ ${hours} س`;
+  const days = Math.floor(hours / 24);
+  if(days < 30) return `منذ ${days} يوم`;
+  const months = Math.floor(days / 30);
+  if(months < 12) return `منذ ${months} شهر`;
+  return `منذ ${Math.floor(months / 12)} سنة`;
+}
+
+/* ---------- auth state ---------- */
+
+function renderAuthArea(){
+  const el = document.getElementById('auth-area');
+  if(currentUser){
+    el.innerHTML = `
+      <div class="user-chip">
+        ${currentUser.avatar_url
+          ? `<img class="avatar" src="${escapeHTML(currentUser.avatar_url)}" alt="">`
+          : `<span class="avatar-fallback">${escapeHTML(currentUser.username.charAt(0))}</span>`}
+        <span class="uname">${escapeHTML(currentUser.username)}</span>
+        <button class="btn btn-ghost btn-small" id="logout-btn">خروج</button>
+      </div>`;
+    document.getElementById('logout-btn').addEventListener('click', logout);
+  } else {
+    el.innerHTML = `<button class="btn btn-ghost" id="login-open-btn">تسجيل الدخول / حساب جديد</button>`;
+    document.getElementById('login-open-btn').addEventListener('click', () => openAuthModal('login'));
+  }
+}
+
+async function fetchSession(){
+  try{
+    const res = await fetch(`${API}/session`, { credentials: 'include' });
+    const data = await res.json();
+    currentUser = data.user || null;
+  } catch(e){
+    currentUser = null;
+  }
+  renderAuthArea();
+}
+
+async function logout(){
+  try{
+    await fetch(`${API}/logout`, { method: 'POST', credentials: 'include' });
+  } catch(e){}
+  currentUser = null;
+  renderAuthArea();
+}
+
+/* ---------- auth modal ---------- */
+
+function openAuthModal(tab){
+  switchAuthTab(tab || 'login');
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('register-error').classList.remove('show');
+  document.getElementById('auth-modal').classList.add('open');
+}
+function closeAuthModal(){
+  document.getElementById('auth-modal').classList.remove('open');
+}
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+}
+document.querySelectorAll('.auth-tab').forEach(b => b.addEventListener('click', () => switchAuthTab(b.dataset.tab)));
+document.getElementById('auth-modal-close').addEventListener('click', closeAuthModal);
+document.querySelector('#auth-modal .modal-overlay').addEventListener('click', closeAuthModal);
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('login-error');
+  errEl.classList.remove('show');
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  try{
+    const res = await fetch(`${API}/login`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    currentUser = data.user;
+    renderAuthArea();
+    closeAuthModal();
+    document.getElementById('login-form').reset();
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
+
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('register-error');
+  errEl.classList.remove('show');
+  const username = document.getElementById('register-username').value.trim();
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  try{
+    const res = await fetch(`${API}/register`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password })
+    });
+    const data = await res.json();
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    currentUser = data.user;
+    renderAuthArea();
+    closeAuthModal();
+    document.getElementById('register-form').reset();
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
+
+/* ---------- composer modal ---------- */
+
+function populateComposerCategories(){
+  const sel = document.getElementById('composer-category');
+  sel.innerHTML = CATEGORIES.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+}
+populateComposerCategories();
+
+function openComposer(){
+  if(!currentUser){ openAuthModal('login'); return; }
+  document.getElementById('composer-error').classList.remove('show');
+  document.getElementById('composer-modal').classList.add('open');
+}
+function closeComposer(){
+  document.getElementById('composer-modal').classList.remove('open');
+}
+document.getElementById('start-discussion-btn').addEventListener('click', openComposer);
+document.getElementById('composer-modal-close').addEventListener('click', closeComposer);
+document.querySelector('#composer-modal .modal-overlay').addEventListener('click', closeComposer);
+
+document.getElementById('composer-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('composer-error');
+  errEl.classList.remove('show');
+  const title = document.getElementById('composer-title').value.trim();
+  const body = document.getElementById('composer-body').value.trim();
+  const category = document.getElementById('composer-category').value;
+  try{
+    const res = await fetch(`${API}/posts`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, category })
+    });
+    const data = await res.json();
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    document.getElementById('composer-form').reset();
+    closeComposer();
+    nextCursor = null;
+    loadPosts(true);
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){ closeAuthModal(); closeComposer(); }
+});
+
+/* ---------- filters ---------- */
+
+function renderFilters(){
+  const el = document.getElementById('filters');
+  const items = [{ label: 'أحدث النقاشات', value: null }, ...CATEGORIES.map(c => ({ label: c, value: c }))];
+  el.innerHTML = items.map(i =>
+    `<button class="pill${activeCategory === i.value ? ' active' : ''}" data-val="${i.value ? escapeHTML(i.value) : ''}">${escapeHTML(i.label)}</button>`
+  ).join('');
+  el.querySelectorAll('.pill').forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      activeCategory = items[idx].value;
+      renderFilters();
+      nextCursor = null;
+      loadPosts(true);
+    });
+  });
+}
+
+/* ---------- posts feed ---------- */
+
+function postCardHTML(p){
+  const pinned = p.is_pinned ? ' pinned' : '';
+  return `<a class="post-card${pinned}" href="/majlis-post.html?id=${p.id}">
+    <div class="post-top">
+      ${p.avatar_url
+        ? `<img class="avatar" style="width:24px;height:24px;" src="${escapeHTML(p.avatar_url)}" alt="">`
+        : `<span class="avatar-fallback" style="width:24px;height:24px;font-size:.8rem;">${escapeHTML((p.username||'?').charAt(0))}</span>`}
+      <span class="uname">${escapeHTML(p.username)}</span>
+      <span class="dot">·</span>
+      <span>${timeAgo(p.created_at)}</span>
+      <span class="post-cat">${escapeHTML(p.category)}</span>
+    </div>
+    <h3>${escapeHTML(p.title)}</h3>
+    <p class="excerpt">${escapeHTML(p.body)}</p>
+    <div class="post-meta">
+      <span class="stat">${HEART_ICON} ${p.like_count}</span>
+      <span class="stat">${COMMENT_ICON} ${p.comment_count}</span>
+    </div>
+  </a>`;
+}
+
+async function loadPosts(reset){
+  const listEl = document.getElementById('post-list');
+  const emptyEl = document.getElementById('empty-state');
+  const loadMoreWrap = document.getElementById('load-more-wrap');
+  if(reset){ listEl.innerHTML = ''; }
+
+  const params = new URLSearchParams();
+  if(activeCategory) params.set('category', activeCategory);
+  if(nextCursor) params.set('cursor', nextCursor);
+
+  try{
+    const res = await fetch(`${API}/posts?${params.toString()}`);
+    const data = await res.json();
+    const posts = data.posts || [];
+    nextCursor = data.next_cursor || null;
+
+    if(reset && posts.length === 0){
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      listEl.insertAdjacentHTML('beforeend', posts.map(postCardHTML).join(''));
+    }
+    loadMoreWrap.style.display = nextCursor ? 'block' : 'none';
+  } catch(e){
+    if(reset){
+      emptyEl.textContent = 'مقدرناش نجيب النقاشات دلوقتي — حاول تحدّث الصفحة.';
+      emptyEl.style.display = 'block';
+    }
+  }
+}
+
+document.getElementById('load-more-btn').addEventListener('click', () => loadPosts(false));
+
+/* ---------- init ---------- */
+
+renderFilters();
+fetchSession();
+loadPosts(true);
+</script>
+
+</body>
+</html>
