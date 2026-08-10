@@ -80,7 +80,27 @@
   .hero-divider{width:1px; height:56px; background:linear-gradient(180deg, transparent, var(--gold-dim)); margin:0 auto 26px; position:relative; z-index:2;}
   .scroll-hint{position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-size:.7rem; color:var(--gold-dim); letter-spacing:2px; z-index:2;}
 
-  section.panel{padding:120px 8vw; position:relative;}
+  /* atmosphere — faint stars + nebula glow, pure CSS, no external images. NOT applied to .identity-shot (left untouched per instruction) */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 8% 12%, rgba(236,231,220,.5) 0, transparent 60%),
+      radial-gradient(1px 1px at 22% 68%, rgba(236,231,220,.4) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 38% 24%, rgba(236,231,220,.35) 0, transparent 60%),
+      radial-gradient(1px 1px at 54% 82%, rgba(236,231,220,.45) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 68% 14%, rgba(236,231,220,.35) 0, transparent 60%),
+      radial-gradient(1px 1px at 79% 55%, rgba(236,231,220,.4) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 91% 33%, rgba(236,231,220,.4) 0, transparent 60%),
+      radial-gradient(1px 1px at 15% 90%, rgba(236,231,220,.3) 0, transparent 60%),
+      radial-gradient(1.5px 1.5px at 46% 45%, rgba(236,231,220,.3) 0, transparent 60%),
+      radial-gradient(1px 1px at 85% 78%, rgba(236,231,220,.3) 0, transparent 60%),
+      radial-gradient(900px 600px at 88% 8%, rgba(201,168,118,.05), transparent 60%),
+      radial-gradient(700px 500px at 6% 92%, rgba(110,38,53,.06), transparent 60%);
+    opacity:.55;
+  }
+  .saturn-mark{position:absolute; pointer-events:none; opacity:.05; z-index:1;}
+  .saturn-mark svg{display:block;}
+  section.panel{padding:120px 8vw; position:relative; overflow:hidden;}
   section.tone-soft{background:var(--bg-soft);}
   section.tone-surface{background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
   .section-head{max-width:680px; margin-bottom:64px;}
@@ -88,11 +108,13 @@
   .section-head h2{font-size:clamp(1.9rem, 4vw, 2.8rem); line-height:1.4;}
 
   /* manual identity image section */
-  .identity-shot{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; background:radial-gradient(ellipse at 50% 30%, var(--surface-2) 0%, var(--bg) 70%);}
+  .identity-shot{position:relative; min-height:60vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; background:radial-gradient(ellipse at 50% 30%, var(--surface-2) 0%, var(--bg) 70%);}
   .identity-shot-bg{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 1.4s ease;}
   .identity-shot-bg.loaded{opacity:1;}
-  .identity-shot-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.06) 0%, rgba(5,5,5,.12) 55%, rgba(5,5,5,.5) 100%); box-shadow:inset 0 0 130px rgba(0,0,0,.45);}
-  .identity-shot-mark{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); z-index:2; opacity:.8;}
+  .identity-shot-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.3) 55%, rgba(5,5,5,.75) 100%); box-shadow:inset 0 0 150px rgba(0,0,0,.55);}
+  .identity-shot-inner{position:relative; z-index:2; padding:0 6vw;}
+  .identity-shot-inner h2{font-size:clamp(1.5rem, 3.2vw, 2.2rem); line-height:1.6; max-width:600px; margin:0 auto;}
+  .identity-shot-mark{margin-bottom:22px; display:flex; justify-content:center;}
 
   .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
   .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
@@ -123,7 +145,7 @@
   }
   @media (max-width:520px){
     .portals-grid{grid-template-columns:1fr;}
-    .identity-shot{min-height:64vh;}
+    .identity-shot{min-height:50vh;}
   }
   .writer-photo{width:120px; height:120px; border-radius:50%; object-fit:cover; margin-bottom:26px; border:1px solid rgba(201,168,118,.4);}
   .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
@@ -235,6 +257,7 @@
 </section>
 
 <section id="works" class="panel">
+  <div class="saturn-mark" style="top:-30px; left:-30px;"><svg width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="18" stroke="#c9a876" stroke-width="1.4"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#c9a876" stroke-width="1"/></svg></div>
   <div class="section-head reveal">
     <div class="threshold"><span>الأعمال الأدبية</span></div>
     <span class="eyebrow" id="works_eyebrow"></span>
@@ -254,8 +277,12 @@
 <section class="identity-shot" id="identity-shot">
   <div class="identity-shot-bg" id="identity-shot-bg"></div>
   <div class="identity-shot-overlay"></div>
-  <div class="identity-shot-mark" aria-hidden="true">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c9a876" stroke-width="1.3"><path d="M5 22V11a7 7 0 0 1 14 0v11"/></svg>
+  <div class="identity-shot-inner reveal">
+    <div class="identity-shot-mark" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c9a876" stroke-width="1.3"><path d="M5 22V11a7 7 0 0 1 14 0v11"/></svg>
+    </div>
+    <span class="eyebrow">لقطة</span>
+    <h2>حين تلتقي الصورة بالفكرة</h2>
   </div>
 </section>
 
