@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>في البرزخ</title>
+<title>في البرزخ | قناة وثائقية وكاتب سيناريو</title>
+<meta name="description" content="في البرزخ — قناة توثيقية وفلسفية تجمع بين الفلسفة والتاريخ والأدب والموسيقى، وموقع الكاتب يوسف السليني: أعمال أدبية، خدمات كتابة، ومشروع البرزخ.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/index.html">
+<meta property="og:title" content="في البرزخ | قناة وثائقية وكاتب سيناريو">
+<meta property="og:description" content="بين الإنسان وما يريد أن يكون — قناة في البرزخ وموقع الكاتب يوسف السليني.">
+<meta property="og:type" content="website">
 <link rel="icon" href="/images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -64,10 +69,11 @@
   nav a:hover{opacity:1; color:var(--gold-bright);}
   nav a:hover::after{width:100%;}
 
-  .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; justify-content:center;}
-  .hero-bg{position:absolute; inset:0; background-size:cover; background-position:center; background-image:url('/images/hero.jpg'); filter:saturate(.85) contrast(1.08);}
-  .hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.25) 0%, rgba(5,5,5,.6) 55%, rgba(5,5,5,.98) 100%);}
-  .hero-bg::before{content:""; position:absolute; inset:0; z-index:1; box-shadow:inset 0 0 220px rgba(0,0,0,.75);}
+  .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;}
+  .hero-bg{position:absolute; inset:0; background-size:cover; background-position:center; background-image:url('/images/hero.jpg'); filter:saturate(.85) contrast(1.08); animation:heroBreathe 28s ease-in-out infinite alternate;}
+  .hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.1) 0%, rgba(5,5,5,.28) 40%, rgba(5,5,5,.6) 72%, rgba(5,5,5,.94) 100%);}
+  .hero-bg::before{content:""; position:absolute; inset:0; z-index:1; box-shadow:inset 0 0 160px rgba(0,0,0,.55);}
+  @keyframes heroBreathe{from{transform:scale(1);} to{transform:scale(1.07);}}
   .hero-inner{position:relative; z-index:2; padding:0 6vw 90px; max-width:760px; text-align:center; margin:0 auto;}
   .eyebrow{font-size:.78rem; letter-spacing:3px; color:var(--gold); margin-bottom:18px; display:block;}
   .hero p.lede{font-size:clamp(1.05rem, 2vw, 1.35rem); line-height:1.85; color:var(--mist2); max-width:620px; margin:0 auto; white-space:pre-line;}
@@ -82,16 +88,16 @@
   .section-head h2{font-size:clamp(1.9rem, 4vw, 2.8rem); line-height:1.4;}
 
   /* manual identity image section */
-  .identity-shot{position:relative; min-height:62vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; background:radial-gradient(ellipse at 50% 30%, var(--surface-2) 0%, var(--bg) 70%);}
-  .identity-shot-bg{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 1.2s ease;}
+  .identity-shot{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center; overflow:hidden; background:radial-gradient(ellipse at 50% 30%, var(--surface-2) 0%, var(--bg) 70%);}
+  .identity-shot-bg{position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 1.4s ease;}
   .identity-shot-bg.loaded{opacity:1;}
-  .identity-shot-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.35), rgba(5,5,5,.85)); box-shadow:inset 0 0 180px rgba(0,0,0,.7);}
-  .identity-shot-inner{position:relative; z-index:2; padding:0 6vw;}
-  .identity-shot-inner h2{font-size:clamp(1.6rem, 3.4vw, 2.3rem); line-height:1.5; max-width:640px;}
+  .identity-shot-overlay{position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.06) 0%, rgba(5,5,5,.12) 55%, rgba(5,5,5,.5) 100%); box-shadow:inset 0 0 130px rgba(0,0,0,.45);}
+  .identity-shot-mark{position:absolute; bottom:34px; left:50%; transform:translateX(-50%); z-index:2; opacity:.8;}
 
   .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
   .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
-  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim);}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
+  .threshold span::before{content:""; display:inline-block; width:13px; height:13px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a734f' stroke-width='1.6'%3E%3Cpath d='M5 22V11a7 7 0 0 1 14 0v11'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; opacity:.85;}
 
   .cards{display:grid; grid-template-columns:repeat(2, 1fr); gap:1px; background:var(--border);}
   .card{position:relative; overflow:hidden; background:var(--bg); transition:background .4s;}
@@ -101,12 +107,6 @@
   .card:hover .thumb{transform:scale(1.05); filter:grayscale(0) contrast(1.05);}
   .card .card-body{padding:32px 34px 38px;}
   .card .tag{font-size:.7rem; color:var(--gold); letter-spacing:2.5px; margin-bottom:14px; display:block;}
-  .link-card{border:1px solid var(--border); border-radius:2px; padding:34px 24px; text-align:center; cursor:pointer; background:var(--surface); transition:transform .4s ease, border-color .4s ease;}
-  .link-card:hover{transform:translateY(-4px); border-color:var(--gold-dim);}
-  .link-card .lc-top{font-size:.75rem; color:var(--mist2); letter-spacing:1px; margin-bottom:14px;}
-  .link-card .lc-title{font-family:'Amiri',serif; font-size:1.35rem; color:var(--gold-bright); line-height:1.6; margin-bottom:22px; display:block;}
-  .link-card .lc-btn{font-size:.8rem; color:var(--gold); letter-spacing:.5px;}
-
   .portals{padding:70px 8vw 10px; position:relative; z-index:2;}
   .portals-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border);}
   .portal-card{position:relative; display:block; padding:40px 24px; text-align:center; text-decoration:none; background:var(--bg); transition:background .4s ease;}
@@ -123,24 +123,9 @@
   }
   @media (max-width:520px){
     .portals-grid{grid-template-columns:1fr;}
-    .identity-shot{min-height:46vh;}
+    .identity-shot{min-height:64vh;}
   }
   .writer-photo{width:120px; height:120px; border-radius:50%; object-fit:cover; margin-bottom:26px; border:1px solid rgba(201,168,118,.4);}
-  .glossary-list{display:grid; gap:22px; max-width:720px;}
-  .glossary-search-wrap{margin-bottom:24px;}
-  .glossary-search{width:100%; max-width:520px; padding:16px 20px; font-family:'Cairo'; font-size:1rem; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); transition:border-color .3s;}
-  .glossary-search:focus{outline:none; border-color:var(--gold);}
-  .glossary-search::placeholder{color:var(--mist2);}
-  .glossary-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
-  .glossary-pill{padding:8px 18px; border:1px solid rgba(201,168,118,.3); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
-  .glossary-pill:hover{border-color:var(--gold); color:var(--gold-bright);}
-  .glossary-pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
-  .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:18px;}
-  .glossary-card{border:1px solid rgba(201,168,118,.22); border-radius:2px; padding:22px; cursor:pointer; background:var(--panel); transition:border-color .3s, transform .3s;}
-  .glossary-card:hover{border-color:var(--gold); transform:translateY(-3px);}
-  .glossary-card .g-term{font-family:'Amiri',serif; font-size:1.25rem; color:var(--gold-bright); display:block; margin-bottom:8px;}
-  .glossary-card .g-summary{color:var(--mist2); font-size:.9rem; line-height:1.7; margin-bottom:14px;}
-  .glossary-card .g-cat{font-size:.7rem; color:var(--gold); letter-spacing:1px;}
   .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
   .glossary-modal.open{display:flex;}
   .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
@@ -149,10 +134,6 @@
   .glossary-modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
   .glossary-modal-box h2{font-size:1.6rem; color:var(--gold-bright); margin:10px 0 18px;}
   .glossary-modal-box .def{color:var(--mist2); line-height:1.9; margin-bottom:22px;}
-  .modal-related{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
-  .modal-related span{padding:6px 14px; border:1px solid rgba(201,168,118,.3); border-radius:16px; font-size:.8rem; color:var(--gold-bright); cursor:pointer;}
-  .modal-related span:hover{border-color:var(--gold);}
-  .modal-notes{color:var(--mist2); font-size:.85rem; border-top:1px solid rgba(201,168,118,.15); padding-top:16px;}
   #services-list li{display:flex; align-items:center; gap:10px; color:var(--mist2); padding:14px 18px; border:1px solid rgba(201,168,118,.2); border-radius:2px;}
   #services-list li::before{content:"◆"; color:var(--gold); font-size:.7rem;}
   .card h3{font-size:1.4rem; margin-bottom:14px; line-height:1.4;}
@@ -273,9 +254,8 @@
 <section class="identity-shot" id="identity-shot">
   <div class="identity-shot-bg" id="identity-shot-bg"></div>
   <div class="identity-shot-overlay"></div>
-  <div class="identity-shot-inner reveal">
-    <span class="eyebrow">لقطة</span>
-    <h2>حين تلتقي الصورة بالفكرة</h2>
+  <div class="identity-shot-mark" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c9a876" stroke-width="1.3"><path d="M5 22V11a7 7 0 0 1 14 0v11"/></svg>
   </div>
 </section>
 
@@ -308,33 +288,6 @@
 </section>
 
 
-<div id="glossary-modal" class="glossary-modal">
-  <div class="glossary-modal-overlay"></div>
-  <div class="glossary-modal-box">
-    <button class="glossary-modal-close" id="glossary-modal-close">✕</button>
-    <span class="tag" id="modal-category"></span>
-    <h2 id="modal-term"></h2>
-    <p class="def" id="modal-definition"></p>
-    <div id="modal-related" class="modal-related"></div>
-    <div id="modal-notes" class="modal-notes"></div>
-  </div>
-</div>
-
-
-
-<div id="links-modal" class="glossary-modal">
-  <div class="glossary-modal-overlay"></div>
-  <div class="glossary-modal-box">
-    <button class="glossary-modal-close" id="links-modal-close">✕</button>
-    <span class="tag" id="link-modal-category"></span>
-    <h2 id="link-modal-title"></h2>
-    <p class="def" id="link-modal-intro"></p>
-    <p class="def" id="link-modal-hidden"></p>
-    <div id="link-modal-episode" class="modal-notes"></div>
-    <div id="link-modal-related" class="modal-related"></div>
-  </div>
-</div>
-
 <section id="services" class="panel tone-soft">
   <div class="section-head reveal">
     <span class="eyebrow" id="services_eyebrow"></span>
@@ -351,9 +304,7 @@
   <div class="cta-row" id="contact-links"></div>
 </section>
 
-<footer>
-  <img src="/images/logo.jpg" alt="">
-  <div id="content-modal" class="glossary-modal">
+<div id="content-modal" class="glossary-modal">
   <div class="glossary-modal-overlay"></div>
   <div class="glossary-modal-box">
     <button class="glossary-modal-close" id="content-modal-close">✕</button>
@@ -363,7 +314,8 @@
     <a href="#" target="_blank" rel="noopener" id="content-modal-link" class="btn btn-primary" style="display:none; margin-top:10px;">شاهد الحلقة ↗</a>
   </div>
 </div>
-  <footer>
+
+<footer>
   <img src="/images/logo.jpg" alt="">
   © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
 </footer>
@@ -455,105 +407,6 @@ function openContentModal(item){
 
 function closeContentModal(){
   document.getElementById('content-modal').classList.remove('open');
-}
-
-
-
-
-let linksData = [];
-let activeLinkCategory = 'الكل';
-
-function linkCardHTML(item, index){
-  return `<div class="link-card" data-index="${index}">
-    <div class="lc-top">ماذا يجمع بين...</div>
-    <span class="lc-title">${item.title || ''}</span>
-    <div class="lc-btn">اكتشف الرابط ↚</div>
-  </div>`;
-}
-
-function renderLinkFilters(items){
-  const container = document.getElementById('links-filters');
-  if(!container) return;
-  const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
-  container.innerHTML = categories.map(cat =>
-    `<button class="glossary-pill${cat===activeLinkCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
-  ).join('');
-  container.querySelectorAll('.glossary-pill').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeLinkCategory = btn.dataset.cat;
-      renderLinkFilters(items);
-      applyLinksFilter();
-    });
-  });
-}
-
-function applyLinksFilter(){
-  const searchVal = (document.getElementById('links-search').value || '').trim();
-  let filtered = linksData;
-  if(activeLinkCategory !== 'الكل'){
-    filtered = filtered.filter(i => i.category === activeLinkCategory);
-  }
-  if(searchVal){
-    filtered = filtered.filter(i => (i.title||'').includes(searchVal));
-  }
-  const container = document.getElementById('links-container');
-  const empty = document.getElementById('links-empty');
-  if(filtered.length === 0){
-    container.innerHTML = '';
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    container.innerHTML = filtered.map((item) => linkCardHTML(item, linksData.indexOf(item))).join('');
-    container.querySelectorAll('.link-card').forEach(card => {
-      card.addEventListener('click', () => openLinkModal(linksData[parseInt(card.dataset.index)]));
-    });
-  }
-}
-
-function openLinkModal(item){
-  if(!item) return;
-  document.getElementById('link-modal-category').textContent = item.category || '';
-  document.getElementById('link-modal-title').textContent = item.title || '';
-  document.getElementById('link-modal-intro').textContent = item.intro || '';
-  document.getElementById('link-modal-hidden').textContent = item.hidden_idea || '';
-  const epEl = document.getElementById('link-modal-episode');
-  epEl.textContent = item.related_episode ? ('حلقة ذات صلة: ' + item.related_episode) : '';
-  epEl.style.display = item.related_episode ? 'block' : 'none';
-  const relatedContainer = document.getElementById('link-modal-related');
-  const relatedNames = (item.related_links || '').split(',').map(s => s.trim()).filter(Boolean);
-  relatedContainer.innerHTML = relatedNames.map(name => `<span data-title="${name}">${name}</span>`).join('');
-  relatedContainer.querySelectorAll('span').forEach(span => {
-    span.addEventListener('click', () => {
-      const target = linksData.find(l => l.title === span.dataset.title);
-      if(target) openLinkModal(target);
-    });
-  });
-  document.getElementById('links-modal').classList.add('open');
-}
-
-function closeLinkModal(){
-  document.getElementById('links-modal').classList.remove('open');
-}
-
-function renderLinks(items){
-  linksData = Array.isArray(items) ? items : [];
-  renderLinkFilters(linksData);
-  applyLinksFilter();
-}
-
-const linksSearch = document.getElementById('links-search');
-if (linksSearch) {
-  linksSearch.addEventListener('input', applyLinksFilter);
-}
-
-const linksModalClose = document.getElementById('links-modal-close');
-if (linksModalClose) {
-  linksModalClose.addEventListener('click', closeLinkModal);
-}
-
-const linksModalOverlay = document.querySelector('#links-modal .glossary-modal-overlay');
-if (linksModalOverlay) {
-  linksModalOverlay.addEventListener('click', closeLinkModal);
 }
 
 function renderTeam(items){
