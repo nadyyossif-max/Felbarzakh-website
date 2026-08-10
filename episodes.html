@@ -16,53 +16,36 @@
   :root{
     --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
     --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
-    --bg:#050505; --bg-soft:#0d0d0d; --surface:#11100f; --surface-2:#151311;
-    --text-primary:#ece7dc; --text-muted:#8f8b81; --gold-accent:#c9a876; --gold-accent-dim:#8a734f;
-    --border:rgba(201,168,118,.18); --border-strong:rgba(201,168,118,.4);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); position:relative;}
+  body{font-family:'Cairo',sans-serif; background:radial-gradient(ellipse 1100px 640px at 50% -10%, var(--panel) 0%, var(--black) 68%) var(--black); color:var(--text); overflow-x:hidden; position:relative;}
+  body::before{content:""; position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.045; mix-blend-mode:overlay; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
   h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
-  body::before{
-    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
-    opacity:.045; mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-  }
-  .reveal{opacity:0; transform:translateY(18px); transition:opacity .9s ease, transform .9s ease;}
-  .reveal.in-view{opacity:1; transform:translateY(0);}
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
-  }
-
-  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:22px 6vw; background:rgba(5,5,5,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--border); transition:padding .4s ease;}
-  nav.scrolled{padding:13px 6vw;}
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
   nav .brand{display:flex; align-items:center; gap:10px;}
-  nav .brand img{height:34px; width:auto; display:block; transition:height .4s ease;}
-  nav.scrolled .brand img{height:26px;}
+  nav .brand img{height:34px; width:auto; display:block;}
   nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
   nav a.back:hover{color:var(--gold);}
-
-  .page-head{padding:150px 8vw 60px; max-width:900px; position:relative; z-index:2;}
+  .page-hero{position:relative; min-height:56vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
+  .page-head{position:relative; z-index:2; padding:0 8vw 54px; max-width:900px; width:100%;}
   .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
   .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
   .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
   .threshold span::before{content:""; display:inline-block; width:13px; height:13px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a734f' stroke-width='1.6'%3E%3Cpath d='M5 22V11a7 7 0 0 1 14 0v11'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; opacity:.85;}
   .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
   .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
-
-  main{padding:0 8vw 100px; position:relative; z-index:2;}
-  .cards{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1px; background:var(--border);}
-  .card{position:relative; overflow:hidden; background:rgba(5,5,8,.6); cursor:pointer; transition:background .4s; backdrop-filter:blur(2px);}
-  .card:hover{background:rgba(17,16,21,.7);}
-  .card .thumb-wrap{overflow:hidden;}
-  .card .thumb{width:100%; aspect-ratio:16/9; object-fit:cover; display:block; filter:grayscale(.25) contrast(1.05); transition:transform .8s ease, filter .5s ease;}
-  .card:hover .thumb{transform:scale(1.05); filter:grayscale(0) contrast(1.05);}
-  .card .card-body{padding:30px 32px 36px;}
-  .card .tag{font-size:.7rem; color:var(--gold); letter-spacing:2.5px; margin-bottom:12px; display:block;}
+  main{padding:0 8vw 100px;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:26px;}
+  .card{position:relative; border:1px solid rgba(201,168,118,.22); border-radius:2px; overflow:hidden; background:var(--panel); cursor:pointer; transition:border-color .3s, transform .3s;}
+  .card:hover{border-color:var(--gold); transform:translateY(-4px);}
+  .card .thumb{width:100%; aspect-ratio:16/9; object-fit:cover; display:block;}
+  .card .card-body{padding:28px 30px 32px;}
+  .card .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px; margin-bottom:12px; display:block;}
   .card h3{font-size:1.4rem; margin-bottom:14px; line-height:1.4;}
   .card p{color:var(--mist2); line-height:1.85; font-size:.95rem; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;}
-
   .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
   .glossary-modal.open{display:flex;}
   .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
@@ -74,45 +57,8 @@
   .glossary-modal-box .tag{font-size:.72rem; color:var(--gold); letter-spacing:2px;}
   .btn{display:inline-flex; align-items:center; gap:10px; padding:15px 30px; border-radius:2px; text-decoration:none; font-size:.94rem;}
   .btn-primary{background:var(--gold); color:#111; font-weight:700;}
-  footer{text-align:center; padding:40px 6vw; color:var(--text-muted); font-size:.76rem; border-top:1px solid var(--border); background:var(--bg); position:relative; z-index:2;}
-  footer img{height:18px; vertical-align:middle; margin-left:8px; opacity:.7; filter:grayscale(1);}
-
-  @media (max-width:760px){
-    nav{padding:16px 5vw;}
-    .page-head{padding:120px 7vw 40px;}
-  }
-
-  /* real cosmic background — layered nebula + drawn spiral galaxy + varied glowing stars, pure CSS, no external images */
-  body{background:#030308;}
-  body::after{
-    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
-    mix-blend-mode:screen; opacity:.9;
-    background:
-      radial-gradient(2.4px 2.4px at 8% 12%, #fff 0, rgba(255,255,255,.4) 55%, transparent 75%),
-      radial-gradient(1.2px 1.2px at 22% 68%, #fff 0, transparent 70%),
-      radial-gradient(2.6px 2.6px at 38% 24%, #fff 0, rgba(255,255,255,.4) 55%, transparent 75%),
-      radial-gradient(1.2px 1.2px at 54% 82%, #fff 0, transparent 70%),
-      radial-gradient(3px 3px at 68% 14%, #fff 0, rgba(255,255,255,.45) 55%, transparent 75%),
-      radial-gradient(1.2px 1.2px at 79% 55%, #fff 0, transparent 70%),
-      radial-gradient(2.4px 2.4px at 91% 33%, #fff 0, rgba(255,255,255,.4) 55%, transparent 75%),
-      radial-gradient(1.2px 1.2px at 15% 90%, #fff 0, transparent 70%),
-      radial-gradient(2.8px 2.8px at 46% 45%, #fff 0, rgba(255,255,255,.45) 55%, transparent 75%),
-      radial-gradient(1.2px 1.2px at 85% 78%, #fff 0, transparent 70%),
-      radial-gradient(2.2px 2.2px at 6% 45%, #fff 0, transparent 70%),
-      radial-gradient(2.2px 2.2px at 62% 62%, #fff 0, transparent 70%),
-      radial-gradient(1.4px 1.4px at 30% 8%, #fff 0, transparent 70%),
-      radial-gradient(1.4px 1.4px at 72% 92%, #fff 0, transparent 70%),
-      radial-gradient(1.4px 1.4px at 95% 62%, #fff 0, transparent 70%),
-      linear-gradient(115deg, transparent 40%, rgba(201,168,118,.05) 48%, rgba(236,231,220,.08) 50%, rgba(201,168,118,.05) 52%, transparent 60%),
-      radial-gradient(60% 55% at 14% 18%, rgba(124,58,237,.55), transparent 70%),
-      radial-gradient(55% 50% at 88% 12%, rgba(37,99,235,.45), transparent 70%),
-      radial-gradient(55% 60% at 78% 82%, rgba(219,39,119,.4), transparent 70%),
-      radial-gradient(50% 45% at 20% 88%, rgba(13,148,136,.35), transparent 70%),
-      radial-gradient(65% 60% at 50% 50%, rgba(88,28,135,.25), transparent 75%);
-  }
-  .galaxy-mark{position:absolute; pointer-events:none; z-index:1; opacity:.5; filter:blur(.3px);}
-  .saturn-mark{position:absolute; pointer-events:none; opacity:.16; z-index:1;}
-  .saturn-mark svg{display:block;}
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15);}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
 </style>
 </head>
 <body>
@@ -122,27 +68,17 @@
   <a href="/index.html" class="back">→ الرئيسية</a>
 </nav>
 
-<div class="page-head reveal">
-  <div class="galaxy-mark" style="bottom:-60px; left:8%;"><svg width="260" height="260" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="galCore" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff" stop-opacity=".9"/><stop offset="35%" stop-color="#c9a876" stop-opacity=".5"/><stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/></radialGradient></defs>
-<g transform="translate(100 100)">
-<circle r="10" fill="url(#galCore)"/>
-<path d="M0,0 C 30,-8 55,-30 50,-60 C 46,-84 20,-96 -6,-90" stroke="rgba(124,58,237,.55)" stroke-width="7" fill="none" stroke-linecap="round"/>
-<path d="M0,0 C -30,8 -55,30 -50,60 C -46,84 -20,96 6,90" stroke="rgba(37,99,235,.5)" stroke-width="6" fill="none" stroke-linecap="round"/>
-<path d="M0,0 C -26,-14 -50,-6 -58,16 C -64,34 -54,54 -34,60" stroke="rgba(219,39,119,.4)" stroke-width="5" fill="none" stroke-linecap="round"/>
-<circle cx="46" cy="-58" r="1.6" fill="#fff"/>
-<circle cx="-46" cy="58" r="1.4" fill="#fff"/>
-<circle cx="-55" cy="18" r="1.2" fill="#fff"/>
-<circle cx="20" cy="-40" r="1" fill="#fff" opacity=".8"/>
-<circle cx="-24" cy="42" r="1" fill="#fff" opacity=".8"/>
-</g></svg></div>
-  <div class="saturn-mark" style="top:-40px; left:-40px;"><svg width="240" height="240" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="satBody" cx="35%" cy="35%" r="70%"><stop offset="0%" stop-color="#e8d4a8"/><stop offset="100%" stop-color="#8a734f"/></radialGradient></defs><circle cx="50" cy="50" r="18" fill="url(#satBody)"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#e0c496" stroke-width="1.6" fill="none"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#050505" stroke-width="5" fill="none" stroke-dasharray="0 63 63 0" transform="rotate(0 50 50)"/></svg></div>
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head">
   <div class="threshold"><span>القناة</span></div>
   <h1>حلقات القناة</h1>
   <p>حلقاتٌ تُكتب في العتمة قبل أن تُقال.</p>
+  </div>
 </div>
 
 <main>
-  <div class="cards reveal" id="episodes-container"></div>
+  <div class="cards" id="episodes-container"></div>
 </main>
 
 <div id="content-modal" class="glossary-modal">
@@ -163,27 +99,6 @@
 
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
-
-(function(){
-  const navEl = document.querySelector('nav');
-  const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 40);
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-})();
-
-(function(){
-  const items = document.querySelectorAll('.reveal');
-  if(!items.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
-  items.forEach(el => io.observe(el));
-})();
 
 let episodesData = [];
 
