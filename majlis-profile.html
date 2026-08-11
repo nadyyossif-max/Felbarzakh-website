@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>البروفايل | مجلس البرزخ</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:radial-gradient(ellipse 1100px 640px at 50% -10%, var(--panel) 0%, var(--black) 68%) var(--black); color:var(--text); overflow-x:hidden; position:relative;}
+  body::before{content:""; position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.045; mix-blend-mode:overlay; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  main{max-width:720px; margin:0 auto; padding:130px 6vw 100px; position:relative; z-index:2;}
+
+  .profile-head{display:flex; align-items:center; gap:22px; margin-bottom:14px; flex-wrap:wrap;}
+  .avatar-lg{width:84px; height:84px; border-radius:50%; object-fit:cover; border:1px solid rgba(201,168,118,.4); display:block; background:var(--panel);}
+  .avatar-lg-fallback{width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:2rem;}
+  .profile-head h1{font-size:1.7rem;}
+  .profile-head .joined{color:var(--mist2); font-size:.85rem; margin-top:6px;}
+  .profile-bio{color:var(--text); line-height:1.9; margin:20px 0 10px; max-width:560px;}
+  .profile-bio.empty{color:var(--mist2); font-style:italic;}
+
+  .btn{display:inline-flex; align-items:center; gap:10px; padding:11px 24px; border-radius:2px; text-decoration:none; font-size:.86rem; border:none; cursor:pointer; font-family:'Cairo'; transition:opacity .3s;}
+  .btn:hover{opacity:.88;}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
+  .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  h2.section-title{font-size:1.1rem; margin:36px 0 18px; color:var(--gold-bright); border-top:1px solid rgba(201,168,118,.15); padding-top:30px;}
+
+  .post-list{display:flex; flex-direction:column; gap:1px; background:rgba(201,168,118,.18); border:1px solid rgba(201,168,118,.18);}
+  .post-card{background:var(--black); padding:20px 24px; text-decoration:none; color:inherit; display:block; transition:background .3s;}
+  .post-card:hover{background:var(--panel);}
+  .post-card .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; margin-bottom:8px; display:block;}
+  .post-card h3{font-size:1.05rem; margin-bottom:8px; line-height:1.5;}
+  .post-meta{display:flex; align-items:center; gap:18px; font-size:.82rem; color:var(--mist2);}
+
+  .empty-state{text-align:center; padding:40px 20px; color:var(--mist2);}
+
+  .modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal.open{display:flex;}
+  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:500px; width:100%; max-height:86vh; overflow-y:auto; z-index:1;}
+  .modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .modal-box h2{font-size:1.4rem; color:var(--gold-bright); margin:6px 0 24px; border:none; padding:0;}
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:.82rem; color:var(--mist2); margin-bottom:8px;}
+  .field input, .field textarea{width:100%; padding:13px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--black); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text);}
+  .field input:focus, .field textarea:focus{outline:none; border-color:var(--gold);}
+  .field textarea{resize:vertical; min-height:90px; line-height:1.7;}
+  .form-error{color:#d98a8a; font-size:.85rem; margin-bottom:14px; display:none;}
+  .form-error.show{display:block;}
+
+  footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15); position:relative; z-index:2;}
+  footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+
+  @media (max-width:760px){
+    nav{padding:16px 5vw;}
+    main{padding:120px 6vw 80px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/majlis.html" class="back">→ مجلس البرزخ</a>
+</nav>
+
+<main id="main-content">
+  <p class="empty-state" id="loading-state">بنجيب البروفايل...</p>
+</main>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<div id="edit-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="edit-modal-close">✕</button>
+    <h2>تعديل البروفايل</h2>
+    <p class="form-error" id="edit-error"></p>
+    <form id="edit-form">
+      <div class="field">
+        <label>رابط الصورة الشخصية (اختياري، https فقط)</label>
+        <input type="url" id="edit-avatar" placeholder="https://...">
+      </div>
+      <div class="field">
+        <label>نبذة قصيرة</label>
+        <textarea id="edit-bio" maxlength="300" placeholder="اكتب نبذة عن نفسك..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">حفظ التعديلات</button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+const API = '/api/community';
+const username = new URLSearchParams(window.location.search).get('u');
+
+let currentUser = null;
+let profileUser = null;
+let profilePosts = [];
+
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+function formatDate(iso){
+  const d = new Date(iso + (iso.endsWith('Z') ? '' : 'Z'));
+  return d.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+}
+
+function timeAgo(iso){
+  const diffMs = Date.now() - new Date(iso + (iso.endsWith('Z') ? '' : 'Z')).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if(mins < 60) return 'الآن تقريبًا';
+  const hours = Math.floor(mins / 60);
+  if(hours < 24) return `منذ ${hours} س`;
+  const days = Math.floor(hours / 24);
+  if(days < 30) return `منذ ${days} يوم`;
+  return `منذ ${Math.floor(days / 30)} شهر`;
+}
+
+async function fetchSession(){
+  try{
+    const res = await fetch(`${API}/session`, { credentials: 'include' });
+    const data = await res.json();
+    currentUser = data.user || null;
+  } catch(e){ currentUser = null; }
+}
+
+async function loadProfile(){
+  const res = await fetch(`${API}/users/${encodeURIComponent(username)}`);
+  if(!res.ok){ profileUser = null; return; }
+  const data = await res.json();
+  profileUser = data.user;
+  profilePosts = data.posts || [];
+}
+
+function postCardHTML(p){
+  return `<a class="post-card" href="/majlis-post.html?id=${p.id}">
+    <span class="post-cat">${escapeHTML(p.category)}</span>
+    <h3>${escapeHTML(p.title)}</h3>
+    <div class="post-meta">
+      <span>${timeAgo(p.created_at)}</span>
+      <span>♡ ${p.like_count}</span>
+      <span>💬 ${p.comment_count}</span>
+    </div>
+  </a>`;
+}
+
+function renderPage(){
+  const main = document.getElementById('main-content');
+  if(!profileUser){
+    main.innerHTML = `<p class="empty-state">المستخدم ده مش موجود.<br><a href="/majlis.html" class="btn btn-ghost" style="margin-top:16px;">رجوع لمجلس البرزخ</a></p>`;
+    return;
+  }
+  const isOwn = currentUser && currentUser.username === profileUser.username;
+  main.innerHTML = `
+    <div class="profile-head">
+      ${profileUser.avatar_url
+        ? `<img class="avatar-lg" src="${escapeHTML(profileUser.avatar_url)}" alt="">`
+        : `<span class="avatar-lg-fallback">${escapeHTML(profileUser.username.charAt(0))}</span>`}
+      <div>
+        <h1>${escapeHTML(profileUser.username)}</h1>
+        <div class="joined">عضو منذ ${formatDate(profileUser.created_at)}</div>
+      </div>
+      ${isOwn ? `<button class="btn btn-ghost" id="edit-btn" style="margin-inline-start:auto;">تعديل البروفايل</button>` : ''}
+    </div>
+    <p class="profile-bio${profileUser.bio ? '' : ' empty'}">${profileUser.bio ? escapeHTML(profileUser.bio) : 'من غير نبذة لسه.'}</p>
+
+    <h2 class="section-title">منشورات ${escapeHTML(profileUser.username)}</h2>
+    ${profilePosts.length
+      ? `<div class="post-list">${profilePosts.map(postCardHTML).join('')}</div>`
+      : `<p class="empty-state">لسه مفيش منشورات.</p>`}
+  `;
+
+  if(isOwn){
+    document.getElementById('edit-btn').addEventListener('click', openEditModal);
+  }
+}
+
+function openEditModal(){
+  document.getElementById('edit-error').classList.remove('show');
+  document.getElementById('edit-avatar').value = profileUser.avatar_url || '';
+  document.getElementById('edit-bio').value = profileUser.bio || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeEditModal(){
+  document.getElementById('edit-modal').classList.remove('open');
+}
+document.getElementById('edit-modal-close').addEventListener('click', closeEditModal);
+document.querySelector('#edit-modal .modal-overlay').addEventListener('click', closeEditModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeEditModal(); });
+
+document.getElementById('edit-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('edit-error');
+  errEl.classList.remove('show');
+  const avatar_url = document.getElementById('edit-avatar').value.trim();
+  const bio = document.getElementById('edit-bio').value.trim();
+  try{
+    const res = await fetch(`${API}/profile`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ avatar_url: avatar_url || null, bio: bio || null })
+    });
+    const data = await res.json();
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    profileUser.avatar_url = data.user.avatar_url;
+    profileUser.bio = data.user.bio;
+    closeEditModal();
+    renderPage();
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
+
+async function init(){
+  if(!username){
+    document.getElementById('main-content').innerHTML = `<p class="empty-state">رابط بروفايل غير صالح.<br><a href="/majlis.html" class="btn btn-ghost" style="margin-top:16px;">رجوع لمجلس البرزخ</a></p>`;
+    return;
+  }
+  await fetchSession();
+  await loadProfile();
+  renderPage();
+}
+
+init();
+</script>
+
+</body>
+</html>
