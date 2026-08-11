@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الإشراف | مجلس البرزخ</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Cairo',sans-serif; background:var(--black); color:var(--text); min-height:100vh;}
+  h1,h2{font-family:'Amiri',serif; font-weight:700;}
+
+  nav{position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.96); border-bottom:1px solid rgba(201,168,118,.15);}
+  nav .brand{display:flex; align-items:center; gap:10px; color:var(--gold-bright); font-size:.9rem;}
+  nav .brand img{height:30px; width:auto; display:block;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  main{max-width:920px; margin:0 auto; padding:40px 6vw 100px;}
+
+  .stats-row{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1px; background:rgba(201,168,118,.18); border:1px solid rgba(201,168,118,.18); margin-bottom:36px;}
+  .stat-box{background:var(--panel); padding:20px; text-align:center;}
+  .stat-box .num{font-family:'Amiri',serif; font-size:1.8rem; color:var(--gold-bright);}
+  .stat-box .label{font-size:.78rem; color:var(--mist2); margin-top:6px;}
+
+  .tabs{display:flex; gap:10px; margin-bottom:28px; border-bottom:1px solid rgba(201,168,118,.2); flex-wrap:wrap;}
+  .tab{background:none; border:none; color:var(--mist2); font-family:'Cairo'; font-size:.9rem; padding:0 4px 12px; cursor:pointer; border-bottom:2px solid transparent;}
+  .tab.active{color:var(--gold-bright); border-color:var(--gold);}
+
+  .report-card{background:var(--panel); border:1px solid rgba(201,168,118,.2); border-radius:2px; padding:22px 26px; margin-bottom:14px;}
+  .report-top{display:flex; align-items:center; gap:10px; font-size:.82rem; color:var(--mist2); margin-bottom:12px; flex-wrap:wrap;}
+  .report-top .type-tag{font-size:.7rem; color:var(--gold); border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:2px 12px;}
+  .report-top .hidden-tag{font-size:.7rem; color:#d98a8a; border:1px solid rgba(217,138,138,.35); border-radius:14px; padding:2px 12px;}
+  .report-reason{color:var(--mist2); font-size:.85rem; margin-bottom:10px;}
+  .report-preview{background:var(--black); border-inline-start:2px solid var(--gold-dim); padding:12px 16px; color:var(--text); font-size:.92rem; line-height:1.7; margin-bottom:16px; max-height:120px; overflow-y:auto; white-space:pre-wrap;}
+  .report-actions{display:flex; flex-wrap:wrap; gap:10px;}
+
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:9px 18px; border-radius:2px; text-decoration:none; font-size:.82rem; border:1px solid rgba(201,168,118,.35); cursor:pointer; font-family:'Cairo'; background:transparent; color:var(--gold-bright); transition:all .25s;}
+  .btn:hover{border-color:var(--gold);}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700; border-color:var(--gold);}
+  .btn-danger{color:#d98a8a; border-color:rgba(217,138,138,.35);}
+  .btn-danger:hover{border-color:#d98a8a;}
+  .btn[disabled]{opacity:.4; cursor:default; pointer-events:none;}
+
+  .empty-state{text-align:center; padding:50px 20px; color:var(--mist2);}
+  .gate{text-align:center; padding:120px 20px; color:var(--mist2);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"> لوحة الإشراف</div>
+  <a href="/majlis.html" class="back">→ مجلس البرزخ</a>
+</nav>
+
+<main id="main-content">
+  <p class="empty-state">بنتأكد من صلاحيتك...</p>
+</main>
+
+<script>
+const API = '/api/community';
+let currentUser = null;
+let activeStatus = 'pending';
+
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+
+async function fetchSession(){
+  try{
+    const res = await fetch(`${API}/session`, { credentials: 'include' });
+    const data = await res.json();
+    currentUser = data.user || null;
+  } catch(e){ currentUser = null; }
+}
+
+/* ---------- gate + shell ---------- */
+
+async function init(){
+  await fetchSession();
+  const main = document.getElementById('main-content');
+  if(!currentUser || !currentUser.is_admin){
+    main.innerHTML = `<p class="gate">الصفحة دي للإشراف بس.<br><a href="/majlis.html" class="btn" style="margin-top:16px;">رجوع لمجلس البرزخ</a></p>`;
+    return;
+  }
+  main.innerHTML = `
+    <div class="stats-row" id="stats-row"></div>
+    <div class="tabs" id="tabs"></div>
+    <div id="reports-list"></div>
+  `;
+  renderTabs();
+  loadStats();
+  loadReports();
+}
+
+function renderTabs(){
+  const items = [
+    { label: 'قيد المراجعة', value: 'pending' },
+    { label: 'تمت المراجعة', value: 'resolved' },
+    { label: 'تم التجاهل', value: 'dismissed' },
+  ];
+  document.getElementById('tabs').innerHTML = items.map(i =>
+    `<button class="tab${activeStatus === i.value ? ' active' : ''}" data-val="${i.value}">${i.label}</button>`
+  ).join('');
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeStatus = btn.dataset.val;
+      renderTabs();
+      loadReports();
+    });
+  });
+}
+
+/* ---------- stats ---------- */
+
+async function loadStats(){
+  try{
+    const res = await fetch(`${API}/admin/stats`, { credentials: 'include' });
+    const data = await res.json();
+    const boxes = [
+      { num: data.pending_reports, label: 'بلاغات قيد المراجعة' },
+      { num: data.total_posts, label: 'منشورات ظاهرة' },
+      { num: data.total_comments, label: 'تعليقات ظاهرة' },
+      { num: data.total_users, label: 'مستخدمين' },
+      { num: data.banned_users, label: 'محظورين' },
+    ];
+    document.getElementById('stats-row').innerHTML = boxes.map(b =>
+      `<div class="stat-box"><div class="num">${b.num}</div><div class="label">${b.label}</div></div>`
+    ).join('');
+  } catch(e){}
+}
+
+/* ---------- reports ---------- */
+
+function reportCardHTML(r){
+  const typeLabel = r.target_type === 'post' ? 'منشور' : 'تعليق';
+  const hiddenNow = !!r.target_hidden;
+  const isPending = r.status === 'pending';
+  return `<div class="report-card" data-id="${r.id}" data-target-type="${r.target_type}" data-target-id="${r.target_id}" data-author-id="${r.target_author_id || ''}">
+    <div class="report-top">
+      <span class="type-tag">${typeLabel}</span>
+      ${hiddenNow ? '<span class="hidden-tag">مخفي حاليًا</span>' : ''}
+      <span>بلّغ عنه: ${escapeHTML(r.reporter_username)}</span>
+      <span>·</span>
+      <span>كاتب المحتوى: ${r.target_author_username ? escapeHTML(r.target_author_username) : 'محذوف'}</span>
+    </div>
+    ${r.reason ? `<div class="report-reason">السبب: ${escapeHTML(r.reason)}</div>` : ''}
+    <div class="report-preview">${r.target_preview ? escapeHTML(r.target_preview) : '(المحتوى الأصلي اتحذف)'}</div>
+    <div class="report-actions">
+      ${isPending ? `
+        <button class="btn toggle-hide-btn">${hiddenNow ? 'إظهار المحتوى' : 'إخفاء المحتوى'}</button>
+        <button class="btn btn-danger delete-btn">حذف نهائي</button>
+        ${r.target_author_id ? `<button class="btn btn-danger ban-btn">حظر الكاتب</button>` : ''}
+        <button class="btn resolve-btn">تحديد كمُراجَع</button>
+        <button class="btn dismiss-btn">تجاهل البلاغ</button>
+      ` : `<button class="btn reopen-btn">إرجاع لقيد المراجعة</button>`}
+    </div>
+  </div>`;
+}
+
+async function loadReports(){
+  const container = document.getElementById('reports-list');
+  container.innerHTML = `<p class="empty-state">بنجيب البلاغات...</p>`;
+  try{
+    const res = await fetch(`${API}/admin/reports?status=${activeStatus}`, { credentials: 'include' });
+    const data = await res.json();
+    const reports = data.reports || [];
+    if(reports.length === 0){
+      container.innerHTML = `<p class="empty-state">مفيش بلاغات في القسم ده دلوقتي.</p>`;
+      return;
+    }
+    container.innerHTML = reports.map(reportCardHTML).join('');
+    wireCardActions();
+  } catch(e){
+    container.innerHTML = `<p class="empty-state">مقدرناش نجيب البلاغات — حاول تحدّث الصفحة.</p>`;
+  }
+}
+
+function wireCardActions(){
+  document.querySelectorAll('.report-card').forEach(card => {
+    const reportId = parseInt(card.dataset.id, 10);
+    const targetType = card.dataset.targetType;
+    const targetId = parseInt(card.dataset.targetId, 10);
+    const authorId = card.dataset.authorId ? parseInt(card.dataset.authorId, 10) : null;
+
+    card.querySelector('.toggle-hide-btn')?.addEventListener('click', async () => {
+      const hiddenNow = card.querySelector('.hidden-tag') !== null;
+      await moderateContent(targetType, targetId, !hiddenNow);
+      loadReports(); loadStats();
+    });
+    card.querySelector('.delete-btn')?.addEventListener('click', async () => {
+      if(!confirm('حذف نهائي للمحتوى ده؟ الإجراء ده مش قابل للتراجع.')) return;
+      await deleteContent(targetType, targetId);
+      loadReports(); loadStats();
+    });
+    card.querySelector('.ban-btn')?.addEventListener('click', async () => {
+      if(!authorId) return;
+      if(!confirm('حظر الكاتب ده من مجلس البرزخ؟')) return;
+      await setBanned(authorId, true);
+      loadReports(); loadStats();
+    });
+    card.querySelector('.resolve-btn')?.addEventListener('click', async () => {
+      await setReportStatus(reportId, 'resolved');
+      loadReports(); loadStats();
+    });
+    card.querySelector('.dismiss-btn')?.addEventListener('click', async () => {
+      await setReportStatus(reportId, 'dismissed');
+      loadReports(); loadStats();
+    });
+    card.querySelector('.reopen-btn')?.addEventListener('click', async () => {
+      await setReportStatus(reportId, 'pending');
+      loadReports(); loadStats();
+    });
+  });
+}
+
+/* ---------- actions ---------- */
+
+async function moderateContent(targetType, targetId, hide){
+  const endpoint = targetType === 'post' ? '/admin/posts' : '/admin/comments';
+  const key = targetType === 'post' ? 'post_id' : 'comment_id';
+  try{
+    await fetch(`${API}${endpoint}`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [key]: targetId, is_hidden: hide })
+    });
+  } catch(e){}
+}
+
+async function deleteContent(targetType, targetId){
+  try{
+    if(targetType === 'post'){
+      await fetch(`${API}/posts/${targetId}`, { method: 'DELETE', credentials: 'include' });
+    } else {
+      await fetch(`${API}/comments`, {
+        method: 'DELETE', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: targetId })
+      });
+    }
+  } catch(e){}
+}
+
+async function setBanned(userId, isBanned){
+  try{
+    await fetch(`${API}/admin/users`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, is_banned: isBanned })
+    });
+  } catch(e){}
+}
+
+async function setReportStatus(reportId, status){
+  try{
+    await fetch(`${API}/admin/reports`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ report_id: reportId, status })
+    });
+  } catch(e){}
+}
+
+init();
+</script>
+
+</body>
+</html>
