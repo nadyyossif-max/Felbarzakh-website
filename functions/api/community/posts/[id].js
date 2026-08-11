@@ -10,7 +10,7 @@ export async function onRequestGet(context) {
   if (!id) return json({ error: 'رقم منشور غير صالح.' }, 400);
 
   const post = await db.prepare(
-    `SELECT p.id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
+    `SELECT p.id, p.user_id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
             p.is_pinned, p.created_at, u.username, u.avatar_url,
             (SELECT COUNT(*) FROM likes WHERE target_type='post' AND target_id=p.id) AS like_count
      FROM posts p JOIN users u ON u.id = p.user_id
