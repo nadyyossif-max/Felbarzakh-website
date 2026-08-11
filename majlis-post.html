@@ -32,6 +32,8 @@
   .avatar-fallback{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:1rem;}
   .avatar-sm{width:26px; height:26px; font-size:.85rem;}
   .post-top .uname{color:var(--gold-bright);}
+  a.uname{color:var(--gold-bright); text-decoration:none;}
+  a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
 
@@ -162,7 +164,7 @@ function renderPage(){
   main.innerHTML = `
     <div class="post-top">
       ${avatarHTML(p.username, p.avatar_url)}
-      <span class="uname">${escapeHTML(p.username)}</span>
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}">${escapeHTML(p.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>
@@ -214,7 +216,7 @@ function commentHTML(c, isReply){
   return `<div class="comment" data-id="${c.id}">
     <div class="post-top" style="margin-bottom:0;">
       ${avatarHTML(c.username, c.avatar_url, 'avatar-sm')}
-      <span class="uname">${escapeHTML(c.username)}</span>
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(c.username)}">${escapeHTML(c.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(c.created_at)}</span>
     </div>
