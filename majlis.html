@@ -63,11 +63,13 @@
 
   /* posts feed */
   .post-list{display:flex; flex-direction:column; gap:1px; background:rgba(201,168,118,.18); border:1px solid rgba(201,168,118,.18);}
-  .post-card{background:var(--black); padding:26px 28px; cursor:pointer; transition:background .3s; text-decoration:none; color:inherit; display:block;}
+  .post-card{background:var(--black); padding:26px 28px; cursor:pointer; transition:background .3s; color:inherit; display:block;}
   .post-card:hover{background:var(--panel);}
   .post-card.pinned{box-shadow:inset 3px 0 0 var(--gold);}
   .post-top{display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.82rem; color:var(--mist2);}
   .post-top .uname{color:var(--gold-bright);}
+  a.uname{color:var(--gold-bright); text-decoration:none;}
+  a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
   .post-card h3{font-size:1.2rem; margin-bottom:8px; line-height:1.5;}
@@ -267,7 +269,7 @@ function renderAuthArea(){
         ${currentUser.avatar_url
           ? `<img class="avatar" src="${escapeHTML(currentUser.avatar_url)}" alt="">`
           : `<span class="avatar-fallback">${escapeHTML(currentUser.username.charAt(0))}</span>`}
-        <span class="uname">${escapeHTML(currentUser.username)}</span>
+        <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(currentUser.username)}">${escapeHTML(currentUser.username)}</a>
         <button class="btn btn-ghost btn-small" id="logout-btn">خروج</button>
       </div>`;
     document.getElementById('logout-btn').addEventListener('click', logout);
@@ -433,12 +435,12 @@ function renderFilters(){
 
 function postCardHTML(p){
   const pinned = p.is_pinned ? ' pinned' : '';
-  return `<a class="post-card${pinned}" href="/majlis-post.html?id=${p.id}">
+  return `<div class="post-card${pinned}" data-href="/majlis-post.html?id=${p.id}">
     <div class="post-top">
       ${p.avatar_url
         ? `<img class="avatar" style="width:24px;height:24px;" src="${escapeHTML(p.avatar_url)}" alt="">`
         : `<span class="avatar-fallback" style="width:24px;height:24px;font-size:.8rem;">${escapeHTML((p.username||'?').charAt(0))}</span>`}
-      <span class="uname">${escapeHTML(p.username)}</span>
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>
@@ -449,7 +451,7 @@ function postCardHTML(p){
       <span class="stat">${HEART_ICON} ${p.like_count}</span>
       <span class="stat">${COMMENT_ICON} ${p.comment_count}</span>
     </div>
-  </a>`;
+  </div>`;
 }
 
 async function loadPosts(reset){
@@ -486,6 +488,12 @@ async function loadPosts(reset){
 document.getElementById('load-more-btn').addEventListener('click', () => loadPosts(false));
 
 /* ---------- init ---------- */
+
+document.getElementById('post-list').addEventListener('click', (e) => {
+  if(e.target.closest('a.uname')) return; // let the profile link navigate on its own
+  const card = e.target.closest('.post-card');
+  if(card && card.dataset.href) window.location.href = card.dataset.href;
+});
 
 renderFilters();
 fetchSession();
