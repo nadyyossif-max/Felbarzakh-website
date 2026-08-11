@@ -221,6 +221,11 @@
         <label>المحتوى</label>
         <textarea id="composer-body" required minlength="5" maxlength="8000"></textarea>
       </div>
+      <div class="field">
+        <label>صورة (اختياري)</label>
+        <input type="file" id="composer-image" accept="image/jpeg,image/png,image/webp,image/gif">
+        <p id="composer-image-status" style="font-size:.78rem; color:var(--mist2); margin-top:6px;"></p>
+      </div>
       <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">نشر</button>
     </form>
   </div>
@@ -392,19 +397,42 @@ document.getElementById('composer-form').addEventListener('submit', async (e) =>
   const title = document.getElementById('composer-title').value.trim();
   const body = document.getElementById('composer-body').value.trim();
   const category = document.getElementById('composer-category').value;
+  const imageInput = document.getElementById('composer-image');
+  const imageStatus = document.getElementById('composer-image-status');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+
+  let imageUrl = null;
   try{
+    if (imageInput.files && imageInput.files[0]) {
+      submitBtn.disabled = true;
+      imageStatus.textContent = 'جاري رفع الصورة...';
+      const fd = new FormData();
+      fd.append('image', imageInput.files[0]);
+      const upRes = await fetch(`${API}/upload-image`, { method: 'POST', credentials: 'include', body: fd });
+      const upData = await upRes.json();
+      if (!upRes.ok) {
+        errEl.textContent = upData.error || 'تعذر رفع الصورة.'; errEl.classList.add('show');
+        submitBtn.disabled = false; imageStatus.textContent = ''; return;
+      }
+      imageUrl = upData.url;
+      imageStatus.textContent = 'الصورة اتحملت — بتظهر على الموقع خلال نصف دقيقة تقريبًا بعد النشر.';
+    }
+
     const res = await fetch(`${API}/posts`, {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, body, category })
+      body: JSON.stringify({ title, body, category, image_url: imageUrl })
     });
     const data = await res.json();
+    submitBtn.disabled = false;
     if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
     document.getElementById('composer-form').reset();
+    imageStatus.textContent = '';
     closeComposer();
     nextCursor = null;
     loadPosts(true);
   } catch(e){
+    submitBtn.disabled = false;
     errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
   }
 });
@@ -447,6 +475,7 @@ function postCardHTML(p){
     </div>
     <h3>${escapeHTML(p.title)}</h3>
     <p class="excerpt">${escapeHTML(p.body)}</p>
+    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; max-height:220px; object-fit:cover; border-radius:2px; margin-bottom:14px; display:block;" loading="lazy">` : ''}
     <div class="post-meta">
       <span class="stat">${HEART_ICON} ${p.like_count}</span>
       <span class="stat">${COMMENT_ICON} ${p.comment_count}</span>
