@@ -16,7 +16,7 @@ export async function onRequestGet(context) {
 
   let query = `
     SELECT p.id, p.user_id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
-           p.is_pinned, p.created_at, u.username, u.avatar_url,
+           p.image_url, p.is_pinned, p.created_at, u.username, u.avatar_url,
            (SELECT COUNT(*) FROM likes WHERE target_type='post' AND target_id=p.id) AS like_count,
            (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND is_hidden=0) AS comment_count
     FROM posts p JOIN users u ON u.id = p.user_id
@@ -59,6 +59,11 @@ export async function onRequestPost(context) {
   const category = body.category;
   const relatedEpisode = body.related_episode_slug ? String(body.related_episode_slug).slice(0, 120) : null;
   const relatedArticle = body.related_article_slug ? String(body.related_article_slug).slice(0, 120) : null;
+  const imageUrl = body.image_url ? String(body.image_url).slice(0, 500) : null;
+
+  if (imageUrl && !imageUrl.startsWith('https://felbarzakh-website.pages.dev/images/community-uploads/')) {
+    return json({ error: 'رابط صورة غير صالح.' }, 400);
+  }
 
   if (title.length < 3 || title.length > 200) {
     return json({ error: 'عنوان المنشور لازم يكون بين 3 و200 حرف.' }, 400);
@@ -71,9 +76,9 @@ export async function onRequestPost(context) {
   }
 
   const result = await db.prepare(
-    `INSERT INTO posts (user_id, title, body, category, related_episode_slug, related_article_slug)
-     VALUES (?, ?, ?, ?, ?, ?)`
-  ).bind(user.id, title, content, category, relatedEpisode, relatedArticle).run();
+    `INSERT INTO posts (user_id, title, body, category, related_episode_slug, related_article_slug, image_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
+  ).bind(user.id, title, content, category, relatedEpisode, relatedArticle, imageUrl).run();
 
   return json({ post_id: result.meta.last_row_id }, 201);
 }
