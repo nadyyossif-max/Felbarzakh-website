@@ -12,7 +12,7 @@ export async function onRequestGet(context) {
   if (!postId) return json({ error: 'post_id مطلوب.' }, 400);
 
   const { results } = await db.prepare(
-    `SELECT c.id, c.body, c.parent_comment_id, c.created_at, u.username, u.avatar_url,
+    `SELECT c.id, c.user_id, c.body, c.parent_comment_id, c.created_at, u.username, u.avatar_url,
             (SELECT COUNT(*) FROM likes WHERE target_type='comment' AND target_id=c.id) AS like_count
      FROM comments c JOIN users u ON u.id = c.user_id
      WHERE c.post_id = ? AND c.is_hidden = 0
