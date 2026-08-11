@@ -15,7 +15,7 @@ export async function onRequestGet(context) {
   const category = url.searchParams.get('category');
 
   let query = `
-    SELECT p.id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
+    SELECT p.id, p.user_id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
            p.is_pinned, p.created_at, u.username, u.avatar_url,
            (SELECT COUNT(*) FROM likes WHERE target_type='post' AND target_id=p.id) AS like_count,
            (SELECT COUNT(*) FROM comments WHERE post_id=p.id AND is_hidden=0) AS comment_count
