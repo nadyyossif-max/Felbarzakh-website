@@ -100,8 +100,10 @@
     <p class="form-error" id="edit-error"></p>
     <form id="edit-form">
       <div class="field">
-        <label>رابط الصورة الشخصية (اختياري، https فقط)</label>
-        <input type="url" id="edit-avatar" placeholder="https://...">
+        <label>الصورة الشخصية (اختياري)</label>
+        <input type="file" id="edit-avatar-file" accept="image/jpeg,image/png,image/webp,image/gif">
+        <input type="hidden" id="edit-avatar">
+        <p id="edit-avatar-status" style="font-size:.78rem; color:var(--mist2); margin-top:6px;"></p>
       </div>
       <div class="field">
         <label>نبذة قصيرة</label>
@@ -220,21 +222,43 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const errEl = document.getElementById('edit-error');
   errEl.classList.remove('show');
-  const avatar_url = document.getElementById('edit-avatar').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
+  const fileInput = document.getElementById('edit-avatar-file');
+  const statusEl = document.getElementById('edit-avatar-status');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  let avatar_url = document.getElementById('edit-avatar').value.trim() || null;
+
   try{
+    if (fileInput.files && fileInput.files[0]) {
+      submitBtn.disabled = true;
+      statusEl.textContent = 'جاري رفع الصورة...';
+      const fd = new FormData();
+      fd.append('image', fileInput.files[0]);
+      const upRes = await fetch(`${API}/upload-image`, { method: 'POST', credentials: 'include', body: fd });
+      const upData = await upRes.json();
+      if (!upRes.ok) {
+        errEl.textContent = upData.error || 'تعذر رفع الصورة.'; errEl.classList.add('show');
+        submitBtn.disabled = false; statusEl.textContent = ''; return;
+      }
+      avatar_url = upData.url;
+      statusEl.textContent = 'الصورة اتحملت — هتظهر خلال نصف دقيقة تقريبًا.';
+    }
+
     const res = await fetch(`${API}/profile`, {
       method: 'PATCH', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ avatar_url: avatar_url || null, bio: bio || null })
+      body: JSON.stringify({ avatar_url, bio: bio || null })
     });
     const data = await res.json();
+    submitBtn.disabled = false;
     if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
     profileUser.avatar_url = data.user.avatar_url;
     profileUser.bio = data.user.bio;
+    statusEl.textContent = '';
     closeEditModal();
     renderPage();
   } catch(e){
+    submitBtn.disabled = false;
     errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
   }
 });
