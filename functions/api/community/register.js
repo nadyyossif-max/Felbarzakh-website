@@ -3,6 +3,7 @@
 // Completely separate from functions/api/auth.js (Decap CMS / GitHub OAuth) —
 // does not touch it, does not share any state with it.
 import { hashPassword, randomToken, sessionCookie } from './_lib/crypto.js';
+import { verifyTurnstile } from './_lib/turnstile.js';
 
 const USERNAME_RE = /^[a-zA-Z0-9_\u0600-\u06FF]{3,24}$/;
 const SESSION_DAYS = 30;
@@ -16,6 +17,13 @@ export async function onRequestPost(context) {
     body = await request.json();
   } catch {
     return json({ error: 'بيانات غير صالحة.' }, 400);
+  }
+
+  const turnstileToken = body.turnstile_token;
+  const remoteIp = request.headers.get('CF-Connecting-IP');
+  const humanVerified = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, remoteIp);
+  if (!humanVerified) {
+    return json({ error: 'تحقق الحماية من البوتات فشل، حاول تاني.' }, 403);
   }
 
   const username = (body.username || '').trim();
