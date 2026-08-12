@@ -1,6 +1,7 @@
 // functions/api/community/login.js
 // POST { email, password } -> verifies credentials, creates a session, sets cookie.
 import { verifyPassword, randomToken, sessionCookie } from './_lib/crypto.js';
+import { verifyTurnstile } from './_lib/turnstile.js';
 
 const SESSION_DAYS = 30;
 
@@ -13,6 +14,13 @@ export async function onRequestPost(context) {
     body = await request.json();
   } catch {
     return json({ error: 'بيانات غير صالحة.' }, 400);
+  }
+
+  const turnstileToken = body.turnstile_token;
+  const remoteIp = request.headers.get('CF-Connecting-IP');
+  const humanVerified = await verifyTurnstile(turnstileToken, env.TURNSTILE_SECRET_KEY, remoteIp);
+  if (!humanVerified) {
+    return json({ error: 'تحقق الحماية من البوتات فشل، حاول تاني.' }, 403);
   }
 
   const email = (body.email || '').trim().toLowerCase();
