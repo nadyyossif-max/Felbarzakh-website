@@ -12,6 +12,7 @@
 <link rel="icon" href="/images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   :root{
     --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
@@ -176,6 +177,7 @@
           <label>كلمة المرور</label>
           <input type="password" id="login-password" required autocomplete="current-password">
         </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAENYjaN9og0O07j5" style="margin-bottom:16px;"></div>
         <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">دخول</button>
       </form>
     </div>
@@ -195,6 +197,7 @@
           <label>كلمة المرور</label>
           <input type="password" id="register-password" required minlength="8" autocomplete="new-password">
         </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAENYjaN9og0O07j5" style="margin-bottom:16px;"></div>
         <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">إنشاء حساب</button>
       </form>
     </div>
@@ -329,20 +332,31 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
   errEl.classList.remove('show');
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
+  const turnstileEl = e.target.querySelector('.cf-turnstile');
+  const turnstile_token = window.turnstile ? window.turnstile.getResponse(turnstileEl) : '';
+  if (!turnstile_token) {
+    errEl.textContent = 'من فضلك أكمل التحقق من إنك مش روبوت.'; errEl.classList.add('show'); return;
+  }
   try{
     const res = await fetch(`${API}/login`, {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password, turnstile_token })
     });
     const data = await res.json();
-    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    if(!res.ok){
+      errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show');
+      if (window.turnstile) window.turnstile.reset(turnstileEl);
+      return;
+    }
     currentUser = data.user;
     renderAuthArea();
     closeAuthModal();
     document.getElementById('login-form').reset();
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
   } catch(e){
     errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
   }
 });
 
@@ -353,20 +367,31 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
   const username = document.getElementById('register-username').value.trim();
   const email = document.getElementById('register-email').value.trim();
   const password = document.getElementById('register-password').value;
+  const turnstileEl = e.target.querySelector('.cf-turnstile');
+  const turnstile_token = window.turnstile ? window.turnstile.getResponse(turnstileEl) : '';
+  if (!turnstile_token) {
+    errEl.textContent = 'من فضلك أكمل التحقق من إنك مش روبوت.'; errEl.classList.add('show'); return;
+  }
   try{
     const res = await fetch(`${API}/register`, {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password })
+      body: JSON.stringify({ username, email, password, turnstile_token })
     });
     const data = await res.json();
-    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    if(!res.ok){
+      errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show');
+      if (window.turnstile) window.turnstile.reset(turnstileEl);
+      return;
+    }
     currentUser = data.user;
     renderAuthArea();
     closeAuthModal();
     document.getElementById('register-form').reset();
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
   } catch(e){
     errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
   }
 });
 
