@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بورتفوليو | يوسف السليني</title>
+<meta name="description" content="بورتفوليو الكاتب يوسف السليني — سكريبتات، كتابة أدبية، تحليل نصوص، ودراماتورجيا. أعمال كاملة وحصرية غير منشورة على القناة.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/portfolio.html">
+<meta property="og:title" content="بورتفوليو | يوسف السليني">
+<meta property="og:description" content="سكريبتات، كتابة أدبية، تحليل نصوص، ودراماتورجيا — أعمال كاملة.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+    --bg:#050505; --bg-soft:#0d0d0d; --surface:#11100f; --surface-2:#151311;
+    --text-primary:#ece7dc; --text-muted:#8f8b81; --gold-accent:#c9a876; --gold-accent-dim:#8a734f;
+    --border:rgba(201,168,118,.18); --border-strong:rgba(201,168,118,.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); position:relative;}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+  body::before{
+    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .9s ease, transform .9s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  }
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:22px 6vw; background:rgba(5,5,5,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-bottom:1px solid var(--border); transition:padding .4s ease;}
+  nav.scrolled{padding:13px 6vw;}
+  nav .brand{display:flex; align-items:center; gap:10px;}
+  nav .brand img{height:34px; width:auto; display:block; transition:height .4s ease;}
+  nav.scrolled .brand img{height:26px;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  .page-head{padding:150px 8vw 40px; max-width:900px; position:relative; z-index:2;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
+  .threshold span::before{content:""; display:inline-block; width:13px; height:13px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a734f' stroke-width='1.6'%3E%3Cpath d='M5 22V11a7 7 0 0 1 14 0v11'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; opacity:.85;}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
+
+  main{padding:0 8vw 100px; position:relative; z-index:2;}
+
+  .filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
+  .pill{padding:8px 18px; border:1px solid var(--border); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
+  .pill:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+
+  .portfolio-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:1px; background:var(--border);}
+  .p-card{padding:28px 26px; cursor:pointer; background:var(--bg); transition:background .4s; display:flex; flex-direction:column;}
+  .p-card:hover{background:var(--surface);}
+  .p-card .subcat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; margin-bottom:12px; display:block;}
+  .p-card h3{font-size:1.2rem; margin-bottom:8px; line-height:1.5; color:var(--text);}
+  .p-card .meta{font-size:.78rem; color:var(--text-muted); margin-bottom:14px;}
+  .p-card .excerpt{color:var(--mist2); font-size:.9rem; line-height:1.8; margin-bottom:16px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; flex:1;}
+  .skill-chips{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px;}
+  .skill-chip{font-size:.68rem; color:var(--gold-bright); border:1px solid var(--border); padding:3px 10px; border-radius:12px;}
+  .p-card .read-btn{font-size:.78rem; color:var(--gold); letter-spacing:.5px; margin-top:auto;}
+
+  .p-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .p-modal.open{display:flex;}
+  .p-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.8);}
+  .p-modal-box{position:relative; background:var(--panel); border:1px solid var(--border-strong); border-radius:4px; padding:44px; max-width:760px; width:100%; max-height:85vh; overflow-y:auto; z-index:1;}
+  .p-modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid var(--border-strong); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .p-modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .p-modal-box .subcat{font-size:.72rem; color:var(--gold); letter-spacing:1.5px;}
+  .p-modal-box h2{font-size:1.7rem; color:var(--gold-bright); margin:10px 0 8px; line-height:1.5;}
+  .p-modal-box .meta{font-size:.82rem; color:var(--text-muted); margin-bottom:18px;}
+  .p-modal-box .creative-challenge{color:var(--mist2); font-size:.9rem; line-height:1.85; background:var(--surface); border-right:2px solid var(--wine); padding:14px 18px; margin-bottom:22px;}
+  .p-modal-box .full-text{color:var(--text); line-height:2.1; font-size:1rem; white-space:pre-wrap; margin-bottom:26px;}
+  .p-modal-box .note{color:var(--text-muted); font-size:.82rem; font-style:italic; margin-bottom:20px;}
+
+  footer{text-align:center; padding:40px 6vw; color:var(--text-muted); font-size:.76rem; border-top:1px solid var(--border); background:var(--bg); position:relative; z-index:2;}
+  footer img{height:18px; vertical-align:middle; margin-left:8px; opacity:.7; filter:grayscale(1);}
+
+  @media (max-width:760px){
+    nav{padding:16px 5vw;}
+    .page-head{padding:120px 7vw 30px;}
+    .p-modal-box{padding:28px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <a href="/index.html" class="back">→ الرئيسية</a>
+</nav>
+
+<div class="page-head reveal">
+  <div class="threshold"><span>بورتفوليو</span></div>
+  <h1>يوسف السليني</h1>
+  <p>روائي، كاتب مسرحي، وكاتب محتوى إبداعي — أعمال كاملة في كتابة السيناريو، الأدب، وتحليل النصوص، غير منشورة على القناة.</p>
+</div>
+
+<main>
+  <div id="filters" class="filters reveal"></div>
+  <div id="portfolio-container" class="portfolio-grid reveal"></div>
+</main>
+
+<div id="p-modal" class="p-modal">
+  <div class="p-modal-overlay"></div>
+  <div class="p-modal-box">
+    <button class="p-modal-close" id="p-modal-close">✕</button>
+    <span class="subcat" id="modal-subcat"></span>
+    <h2 id="modal-title"></h2>
+    <p class="meta" id="modal-meta"></p>
+    <div class="skill-chips" id="modal-skills"></div>
+    <p class="creative-challenge" id="modal-challenge" style="display:none;"></p>
+    <div class="full-text" id="modal-fulltext"></div>
+    <p class="note" id="modal-note" style="display:none;"></p>
+  </div>
+</div>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+(function(){
+  const navEl = document.querySelector('nav');
+  const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+
+(function(){
+  const items = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){ entry.target.classList.add('in-view'); io.unobserve(entry.target); }
+    });
+  }, { threshold: .1, rootMargin: '0px 0px -50px 0px' });
+  items.forEach(el => io.observe(el));
+})();
+
+let portfolioData = null;
+let activeSection = 'الكل';
+
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function renderFilters(){
+  const container = document.getElementById('filters');
+  const sectionTitles = ['الكل', ...portfolioData.sections.map(s => s.title)];
+  container.innerHTML = sectionTitles.map(t =>
+    `<button class="pill${t===activeSection ? ' active':''}" data-sec="${escapeHTML(t)}">${escapeHTML(t)}</button>`
+  ).join('');
+  container.querySelectorAll('.pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeSection = btn.dataset.sec;
+      renderFilters();
+      renderGrid();
+    });
+  });
+}
+
+function allItemsFlat(){
+  const flat = [];
+  portfolioData.sections.forEach(sec => {
+    sec.items.forEach(item => flat.push({ ...item, sectionTitle: sec.title }));
+  });
+  return flat;
+}
+
+function cardHTML(item){
+  const excerpt = (item.full_text || '').slice(0, 160).trim() + '…';
+  const skillsHTML = (item.skills || []).slice(0, 3).map(s => `<span class="skill-chip">${escapeHTML(s)}</span>`).join('');
+  return `<div class="p-card" data-id="${item.id}">
+    <span class="subcat">${escapeHTML(item.subcategory || item.sectionTitle)}</span>
+    <h3>${escapeHTML(item.title)}</h3>
+    ${item.meta ? `<div class="meta">${escapeHTML(item.meta)}</div>` : ''}
+    <p class="excerpt">${escapeHTML(excerpt)}</p>
+    <div class="skill-chips">${skillsHTML}</div>
+    <span class="read-btn">اقرأ النص كامل ↗</span>
+  </div>`;
+}
+
+function renderGrid(){
+  const container = document.getElementById('portfolio-container');
+  const items = allItemsFlat().filter(it => activeSection === 'الكل' || it.sectionTitle === activeSection);
+  container.innerHTML = items.map(cardHTML).join('');
+  container.querySelectorAll('.p-card').forEach(card => {
+    card.addEventListener('click', () => openModal(card.dataset.id));
+  });
+}
+
+function openModal(id){
+  const item = allItemsFlat().find(it => it.id === id);
+  if(!item) return;
+  document.getElementById('modal-subcat').textContent = item.subcategory || item.sectionTitle || '';
+  document.getElementById('modal-title').textContent = item.title || '';
+  document.getElementById('modal-meta').textContent = item.meta || '';
+  document.getElementById('modal-skills').innerHTML = (item.skills || []).map(s => `<span class="skill-chip">${escapeHTML(s)}</span>`).join('');
+  const challengeEl = document.getElementById('modal-challenge');
+  if(item.creative_challenge){ challengeEl.textContent = item.creative_challenge; challengeEl.style.display = 'block'; }
+  else { challengeEl.style.display = 'none'; }
+  document.getElementById('modal-fulltext').textContent = item.full_text || '';
+  const noteEl = document.getElementById('modal-note');
+  if(item.note){ noteEl.textContent = item.note; noteEl.style.display = 'block'; }
+  else { noteEl.style.display = 'none'; }
+  document.getElementById('p-modal').classList.add('open');
+  document.querySelector('.p-modal-box').scrollTop = 0;
+}
+
+function closeModal(){
+  document.getElementById('p-modal').classList.remove('open');
+}
+
+document.getElementById('p-modal-close').addEventListener('click', closeModal);
+document.querySelector('.p-modal-overlay').addEventListener('click', closeModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+fetch('/content/portfolio.json').then(r => r.json()).then(data => {
+  portfolioData = data;
+  renderFilters();
+  renderGrid();
+}).catch(e => console.error('failed to load portfolio.json', e));
+</script>
+
+</body>
+</html>
