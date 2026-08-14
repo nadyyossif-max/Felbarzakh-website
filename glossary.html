@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الروابط المستحيلة | في البرزخ</title>
-<meta name="description" content="أفكار تبدو بلا أي علاقة، يخفي بينها خيط واحد فقط. متحف الأفكار المستحيلة من قناة في البرزخ.">
-<link rel="canonical" href="https://felbarzakh-website.pages.dev/impossible-links.html">
-<meta property="og:title" content="الروابط المستحيلة | في البرزخ">
-<meta property="og:description" content="أفكار تبدو بلا أي علاقة، يخفي بينها خيط واحد فقط.">
+<title>قاموس البرزخ | معجم المفاهيم الفلسفية والنفسية — في البرزخ</title>
+<meta name="description" content="معجم حي للمفاهيم التي تتكرر عبر حلقات ومقالات قناة في البرزخ: علم النفس، الفلسفة، التاريخ، والسرد. ابحث وتصفح المصطلحات بحسب التصنيف.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/glossary.html">
+<meta property="og:title" content="قاموس البرزخ | معجم المفاهيم">
+<meta property="og:description" content="معجم حي للمفاهيم التي تتكرر عبر حلقات ومقالات قناة في البرزخ.">
 <meta property="og:type" content="website">
 <link rel="icon" href="/images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -43,7 +43,7 @@
   nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
   nav a.back:hover{color:var(--gold);}
 
-  .page-head{padding:150px 8vw 60px; max-width:900px; position:relative; z-index:2;}
+  .page-head{position:relative; z-index:2; padding:0 8vw 54px; max-width:900px; width:100%;}
   .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
   .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
   .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
@@ -52,8 +52,9 @@
   .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
 
   main{padding:0 8vw 100px; position:relative; z-index:2;}
+
   .glossary-search-wrap{margin-bottom:24px;}
-  .glossary-search{width:100%; max-width:520px; padding:16px 20px; font-family:'Cairo'; font-size:1rem; background:var(--surface); border:1px solid var(--border); border-radius:2px; color:var(--text);}
+  .glossary-search{width:100%; max-width:520px; padding:16px 20px; font-family:'Cairo'; font-size:1rem; background:var(--surface); border:1px solid var(--border); border-radius:2px; color:var(--text); transition:border-color .3s;}
   .glossary-search:focus{outline:none; border-color:var(--gold);}
   .glossary-search::placeholder{color:var(--mist2);}
   .glossary-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
@@ -61,11 +62,12 @@
   .glossary-pill:hover{border-color:var(--gold); color:var(--gold-bright);}
   .glossary-pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
   .glossary-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1px; background:var(--border);}
-  .link-card{padding:34px 24px; text-align:center; cursor:pointer; background:var(--bg); transition:background .4s;}
-  .link-card:hover{background:var(--surface);}
-  .link-card .lc-top{font-size:.75rem; color:var(--mist2); letter-spacing:1px; margin-bottom:14px;}
-  .link-card .lc-title{font-family:'Amiri',serif; font-size:1.35rem; color:var(--gold-bright); line-height:1.6; margin-bottom:22px; display:block;}
-  .link-card .lc-btn{font-size:.8rem; color:var(--gold); letter-spacing:.5px;}
+  .glossary-card{padding:24px; cursor:pointer; background:var(--bg); transition:background .4s;}
+  .glossary-card:hover{background:var(--surface);}
+  .glossary-card .g-term{font-family:'Amiri',serif; font-size:1.25rem; color:var(--gold-bright); display:block; margin-bottom:8px;}
+  .glossary-card .g-summary{color:var(--mist2); font-size:.9rem; line-height:1.7; margin-bottom:14px;}
+  .glossary-card .g-cat{font-size:.7rem; color:var(--gold); letter-spacing:1px;}
+
   .glossary-modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
   .glossary-modal.open{display:flex;}
   .glossary-modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
@@ -79,6 +81,7 @@
   .modal-related span{padding:6px 14px; border:1px solid rgba(201,168,118,.3); border-radius:16px; font-size:.8rem; color:var(--gold-bright); cursor:pointer;}
   .modal-related span:hover{border-color:var(--gold);}
   .modal-notes{color:var(--mist2); font-size:.85rem; border-top:1px solid rgba(201,168,118,.15); padding-top:16px;}
+
   footer{text-align:center; padding:40px 6vw; color:var(--text-muted); font-size:.76rem; border-top:1px solid var(--border); background:var(--bg); position:relative; z-index:2;}
   footer img{height:18px; vertical-align:middle; margin-left:8px; opacity:.7; filter:grayscale(1);}
 
@@ -87,26 +90,18 @@
     .page-head{padding:120px 7vw 40px;}
   }
 
-  /* atmosphere — faint stars + nebula glow + saturn watermark, pure CSS/SVG, no external images */
-  body::after{
-    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
-    background-image:
-      radial-gradient(1.5px 1.5px at 8% 12%, rgba(236,231,220,.5) 0, transparent 60%),
-      radial-gradient(1px 1px at 22% 68%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 38% 24%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 54% 82%, rgba(236,231,220,.45) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 68% 14%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 79% 55%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 91% 33%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1px 1px at 15% 90%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 46% 45%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1px 1px at 85% 78%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(900px 600px at 88% 8%, rgba(201,168,118,.05), transparent 60%),
-      radial-gradient(700px 500px at 6% 92%, rgba(110,38,53,.06), transparent 60%);
-    opacity:.55;
-  }
-  .saturn-mark{position:absolute; pointer-events:none; opacity:.05; z-index:1;}
-  .saturn-mark svg{display:block;}
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
+
+  .page-hero{position:relative; min-height:52vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
 </style>
 </head>
 <body>
@@ -119,32 +114,36 @@
   </div>
 </nav>
 
-<div class="page-head reveal">
-  <div class="saturn-mark" style="top:-40px; left:-40px;"><svg width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="18" stroke="#c9a876" stroke-width="1.4"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#c9a876" stroke-width="1"/></svg></div>
-  <div class="threshold"><span>روابط</span></div>
-  <h1>الروابط المستحيلة</h1>
-  <p>أحيانًا... أكثر فكرتين تبدوان بلا أي علاقة، يخفي بينهما خيط واحد فقط. هنا نحاول العثور عليه.</p>
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head reveal">
+  <div class="threshold"><span>قاموس</span></div>
+  <h1>قاموس البرزخ</h1>
+  <p>معجم حيّ للمفاهيم التي تتكرر عبر حلقات ومقالات البرزخ.</p>
+</div>
 </div>
 
 <main>
   <div class="glossary-search-wrap reveal">
-    <input type="text" id="links-search" class="glossary-search" placeholder="ابحث عن رابط مستحيل...">
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="ابحث عن مصطلح...">
   </div>
-  <div id="links-filters" class="glossary-filters reveal"></div>
-  <div id="links-container" class="glossary-grid reveal"></div>
-  <p id="links-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش روابط مطابقة للبحث.</p>
+  <div id="glossary-filters" class="glossary-filters reveal"></div>
+  <div id="glossary-container" class="glossary-grid reveal"></div>
+  <p id="glossary-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش مصطلحات مطابقة للبحث.</p>
 </main>
 
-<div id="links-modal" class="glossary-modal">
+<div class="mid-band corridor"></div>
+
+
+<div id="glossary-modal" class="glossary-modal">
   <div class="glossary-modal-overlay"></div>
   <div class="glossary-modal-box">
-    <button class="glossary-modal-close" id="links-modal-close">✕</button>
-    <span class="tag" id="link-modal-category"></span>
-    <h2 id="link-modal-title"></h2>
-    <p class="def" id="link-modal-intro"></p>
-    <p class="def" id="link-modal-hidden"></p>
-    <div id="link-modal-episode" class="modal-notes"></div>
-    <div id="link-modal-related" class="modal-related"></div>
+    <button class="glossary-modal-close" id="glossary-modal-close">✕</button>
+    <span class="tag" id="modal-category"></span>
+    <h2 id="modal-term"></h2>
+    <p class="def" id="modal-definition"></p>
+    <div id="modal-related" class="modal-related"></div>
+    <div id="modal-notes" class="modal-notes"></div>
   </div>
 </div>
 
@@ -177,90 +176,93 @@ document.getElementById('year').textContent = new Date().getFullYear();
   items.forEach(el => io.observe(el));
 })();
 
-let linksData = [];
-let activeLinkCategory = 'الكل';
+let glossaryData = [];
+let activeCategory = 'الكل';
 
-function linkCardHTML(item, index){
-  return `<div class="link-card" data-index="${index}">
-    <div class="lc-top">ماذا يجمع بين...</div>
-    <span class="lc-title">${item.title || ''}</span>
-    <div class="lc-btn">اكتشف الرابط ↚</div>
-  </div>`;
+function sortArabic(items){
+  return items.slice().sort((a,b) => (a.term||'').localeCompare(b.term||'', 'ar'));
 }
 
-function renderLinkFilters(items){
-  const container = document.getElementById('links-filters');
+function renderGlossaryFilters(items){
+  const container = document.getElementById('glossary-filters');
   if(!container) return;
   const categories = ['الكل', ...new Set(items.map(i => i.category).filter(Boolean))];
   container.innerHTML = categories.map(cat =>
-    `<button class="glossary-pill${cat===activeLinkCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
+    `<button class="glossary-pill${cat===activeCategory ? ' active':''}" data-cat="${cat}">${cat}</button>`
   ).join('');
   container.querySelectorAll('.glossary-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      activeLinkCategory = btn.dataset.cat;
-      renderLinkFilters(items);
-      applyLinksFilter();
+      activeCategory = btn.dataset.cat;
+      renderGlossaryFilters(items);
+      applyGlossaryFilter();
     });
   });
 }
 
-function applyLinksFilter(){
-  const searchVal = (document.getElementById('links-search').value || '').trim();
-  let filtered = linksData;
-  if(activeLinkCategory !== 'الكل'){
-    filtered = filtered.filter(i => i.category === activeLinkCategory);
+function glossaryCardHTML(item, index){
+  return `<div class="glossary-card" data-index="${index}">
+    <span class="g-term">${item.term || ''}</span>
+    <p class="g-summary">${item.summary || ''}</p>
+    <span class="g-cat">${item.category || ''}</span>
+  </div>`;
+}
+
+function applyGlossaryFilter(){
+  const searchVal = (document.getElementById('glossary-search').value || '').trim();
+  let filtered = glossaryData;
+  if(activeCategory !== 'الكل'){
+    filtered = filtered.filter(i => i.category === activeCategory);
   }
   if(searchVal){
-    filtered = filtered.filter(i => (i.title||'').includes(searchVal));
+    filtered = filtered.filter(i => (i.term||'').includes(searchVal) || (i.summary||'').includes(searchVal));
   }
-  const container = document.getElementById('links-container');
-  const empty = document.getElementById('links-empty');
+  filtered = sortArabic(filtered);
+  const container = document.getElementById('glossary-container');
+  const empty = document.getElementById('glossary-empty');
   if(filtered.length === 0){
     container.innerHTML = '';
     empty.style.display = 'block';
   } else {
     empty.style.display = 'none';
-    container.innerHTML = filtered.map((item) => linkCardHTML(item, linksData.indexOf(item))).join('');
-    container.querySelectorAll('.link-card').forEach(card => {
-      card.addEventListener('click', () => openLinkModal(linksData[parseInt(card.dataset.index)]));
+    container.innerHTML = filtered.map((item) => glossaryCardHTML(item, glossaryData.indexOf(item))).join('');
+    container.querySelectorAll('.glossary-card').forEach(card => {
+      card.addEventListener('click', () => openGlossaryModal(glossaryData[parseInt(card.dataset.index)]));
     });
   }
 }
 
-function openLinkModal(item){
+function openGlossaryModal(item){
   if(!item) return;
-  document.getElementById('link-modal-category').textContent = item.category || '';
-  document.getElementById('link-modal-title').textContent = item.title || '';
-  document.getElementById('link-modal-intro').textContent = item.intro || '';
-  document.getElementById('link-modal-hidden').textContent = item.hidden_idea || '';
-  const epEl = document.getElementById('link-modal-episode');
-  epEl.textContent = item.related_episode ? ('حلقة ذات صلة: ' + item.related_episode) : '';
-  epEl.style.display = item.related_episode ? 'block' : 'none';
-  const relatedContainer = document.getElementById('link-modal-related');
-  const relatedNames = (item.related_links || '').split(',').map(s => s.trim()).filter(Boolean);
-  relatedContainer.innerHTML = relatedNames.map(name => `<span data-title="${name}">${name}</span>`).join('');
+  document.getElementById('modal-category').textContent = item.category || '';
+  document.getElementById('modal-term').textContent = item.term || '';
+  document.getElementById('modal-definition').textContent = item.definition || item.summary || '';
+  const relatedContainer = document.getElementById('modal-related');
+  const relatedNames = (item.related_terms || '').split(',').map(s => s.trim()).filter(Boolean);
+  relatedContainer.innerHTML = relatedNames.map(name => `<span data-term="${name}">${name}</span>`).join('');
   relatedContainer.querySelectorAll('span').forEach(span => {
     span.addEventListener('click', () => {
-      const target = linksData.find(l => l.title === span.dataset.title);
-      if(target) openLinkModal(target);
+      const target = glossaryData.find(g => g.term === span.dataset.term);
+      if(target) openGlossaryModal(target);
     });
   });
-  document.getElementById('links-modal').classList.add('open');
+  document.getElementById('modal-notes').textContent = item.notes || '';
+  document.getElementById('modal-notes').style.display = item.notes ? 'block' : 'none';
+  document.getElementById('glossary-modal').classList.add('open');
 }
 
-function closeLinkModal(){
-  document.getElementById('links-modal').classList.remove('open');
+function closeGlossaryModal(){
+  document.getElementById('glossary-modal').classList.remove('open');
 }
 
-document.getElementById('links-search').addEventListener('input', applyLinksFilter);
-document.getElementById('links-modal-close').addEventListener('click', closeLinkModal);
-document.querySelector('#links-modal .glossary-modal-overlay').addEventListener('click', closeLinkModal);
-document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLinkModal(); });
+document.getElementById('glossary-search').addEventListener('input', applyGlossaryFilter);
+document.getElementById('glossary-modal-close').addEventListener('click', closeGlossaryModal);
+document.querySelector('.glossary-modal-overlay').addEventListener('click', closeGlossaryModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeGlossaryModal(); });
 
-fetch('/content/links.json').then(r => r.json()).then(data => {
-  linksData = Array.isArray(data.links) ? data.links : [];
-  renderLinkFilters(linksData);
-  applyLinksFilter();
+fetch('/content/glossary.json').then(r => r.json()).then(data => {
+  glossaryData = Array.isArray(data.glossary) ? data.glossary : [];
+  renderGlossaryFilters(glossaryData);
+  applyGlossaryFilter();
 }).catch(e => console.error(e));
 </script>
 
