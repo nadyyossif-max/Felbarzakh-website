@@ -43,7 +43,7 @@
   nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
   nav a.back:hover{color:var(--gold);}
 
-  .page-head{padding:150px 8vw 60px; max-width:900px; position:relative; z-index:2;}
+  .page-head{position:relative; z-index:2; padding:0 8vw 54px; max-width:900px; width:100%;}
   .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
   .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
   .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
@@ -87,26 +87,18 @@
     .page-head{padding:120px 7vw 40px;}
   }
 
-  /* atmosphere — faint stars + nebula glow + saturn watermark, pure CSS/SVG, no external images */
-  body::after{
-    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
-    background-image:
-      radial-gradient(1.5px 1.5px at 8% 12%, rgba(236,231,220,.5) 0, transparent 60%),
-      radial-gradient(1px 1px at 22% 68%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 38% 24%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 54% 82%, rgba(236,231,220,.45) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 68% 14%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 79% 55%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 91% 33%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1px 1px at 15% 90%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 46% 45%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1px 1px at 85% 78%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(900px 600px at 88% 8%, rgba(201,168,118,.05), transparent 60%),
-      radial-gradient(700px 500px at 6% 92%, rgba(110,38,53,.06), transparent 60%);
-    opacity:.55;
-  }
-  .saturn-mark{position:absolute; pointer-events:none; opacity:.05; z-index:1;}
-  .saturn-mark svg{display:block;}
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
+
+  .page-hero{position:relative; min-height:52vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
 </style>
 </head>
 <body>
@@ -114,16 +106,18 @@
 <nav>
   <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
   <div style="display:flex; align-items:center; gap:22px;">
-    <a href="/majlis.html" class="back">مجلس البرزخ</a>
+    <a href="/majlis.html" class="back">مجلس البرزخ</a> <a href="/portfolio.html" class="back">بورتفوليو</a>
     <a href="/index.html" class="back">→ الرئيسية</a>
   </div>
 </nav>
 
-<div class="page-head reveal">
-  <div class="saturn-mark" style="top:-40px; left:-40px;"><svg width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="18" stroke="#c9a876" stroke-width="1.4"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#c9a876" stroke-width="1"/></svg></div>
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head reveal">
   <div class="threshold"><span>روابط</span></div>
   <h1>الروابط المستحيلة</h1>
   <p>أحيانًا... أكثر فكرتين تبدوان بلا أي علاقة، يخفي بينهما خيط واحد فقط. هنا نحاول العثور عليه.</p>
+</div>
 </div>
 
 <main>
@@ -134,6 +128,9 @@
   <div id="links-container" class="glossary-grid reveal"></div>
   <p id="links-empty" style="display:none; color:var(--mist2); text-align:center; padding:40px 0;">مفيش روابط مطابقة للبحث.</p>
 </main>
+
+<div class="mid-band temple"></div>
+
 
 <div id="links-modal" class="glossary-modal">
   <div class="glossary-modal-overlay"></div>
