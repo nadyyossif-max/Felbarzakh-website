@@ -90,6 +90,19 @@
     .page-head{padding:120px 7vw 30px;}
     .p-modal-box{padding:28px 22px;}
   }
+
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
+
+  .page-hero{position:relative; min-height:52vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
 </style>
 </head>
 <body>
@@ -99,16 +112,22 @@
   <a href="/index.html" class="back">→ الرئيسية</a>
 </nav>
 
-<div class="page-head reveal">
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head reveal">
   <div class="threshold"><span>بورتفوليو</span></div>
   <h1>يوسف السليني</h1>
   <p>روائي، كاتب مسرحي، وكاتب محتوى إبداعي — أعمال كاملة في كتابة السيناريو، الأدب، وتحليل النصوص، غير منشورة على القناة.</p>
+</div>
 </div>
 
 <main>
   <div id="filters" class="filters reveal"></div>
   <div id="portfolio-container" class="portfolio-grid reveal"></div>
 </main>
+
+<div class="mid-band corridor"></div>
+
 
 <div id="p-modal" class="p-modal">
   <div class="p-modal-overlay"></div>
