@@ -80,26 +80,15 @@
   .hero-divider{width:1px; height:56px; background:linear-gradient(180deg, transparent, var(--gold-dim)); margin:0 auto 26px; position:relative; z-index:2;}
   .scroll-hint{position:absolute; bottom:28px; left:50%; transform:translateX(-50%); font-size:.7rem; color:var(--gold-dim); letter-spacing:2px; z-index:2;}
 
-  /* atmosphere — faint stars + nebula glow, pure CSS, no external images. NOT applied to .identity-shot (left untouched per instruction) */
-  body::after{
-    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
-    background-image:
-      radial-gradient(1.5px 1.5px at 8% 12%, rgba(236,231,220,.5) 0, transparent 60%),
-      radial-gradient(1px 1px at 22% 68%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 38% 24%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 54% 82%, rgba(236,231,220,.45) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 68% 14%, rgba(236,231,220,.35) 0, transparent 60%),
-      radial-gradient(1px 1px at 79% 55%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 91% 33%, rgba(236,231,220,.4) 0, transparent 60%),
-      radial-gradient(1px 1px at 15% 90%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1.5px 1.5px at 46% 45%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(1px 1px at 85% 78%, rgba(236,231,220,.3) 0, transparent 60%),
-      radial-gradient(900px 600px at 88% 8%, rgba(201,168,118,.05), transparent 60%),
-      radial-gradient(700px 500px at 6% 92%, rgba(110,38,53,.06), transparent 60%);
-    opacity:.55;
-  }
-  .saturn-mark{position:absolute; pointer-events:none; opacity:.05; z-index:1;}
-  .saturn-mark svg{display:block;}
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
+</style>
   section.panel{padding:120px 8vw; position:relative; overflow:hidden;}
   section.tone-soft{background:var(--bg-soft);}
   section.tone-surface{background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
@@ -259,7 +248,6 @@
 </section>
 
 <section id="works" class="panel">
-  <div class="saturn-mark" style="top:-30px; left:-30px;"><svg width="220" height="220" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="18" stroke="#c9a876" stroke-width="1.4"/><ellipse cx="50" cy="50" rx="40" ry="10" stroke="#c9a876" stroke-width="1"/></svg></div>
   <div class="section-head reveal">
     <div class="threshold"><span>الأعمال الأدبية</span></div>
     <span class="eyebrow" id="works_eyebrow"></span>
@@ -316,6 +304,7 @@
   <div class="team-grid reveal" id="team-container"></div>
 </section>
 
+<div class="mid-band corridor"></div>
 
 <section id="services" class="panel tone-soft">
   <div class="section-head reveal">
