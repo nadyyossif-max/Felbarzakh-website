@@ -59,6 +59,15 @@
   .btn-primary{background:var(--gold); color:#111; font-weight:700;}
   footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15);}
   footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
+
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
 </style>
 </head>
 <body>
@@ -83,6 +92,9 @@
 <main>
   <div class="cards" id="episodes-container"></div>
 </main>
+
+<div class="mid-band corridor"></div>
+
 
 <div id="content-modal" class="glossary-modal">
   <div class="glossary-modal-overlay"></div>
