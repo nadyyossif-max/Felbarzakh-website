@@ -69,6 +69,8 @@
   nav a:hover{opacity:1; color:var(--gold-bright);}
   nav a:hover::after{width:100%;}
 
+  .nav-toggle{display:none; background:transparent; border:1px solid var(--border-strong); color:var(--gold-bright); width:40px; height:40px; border-radius:2px; font-size:1.1rem; cursor:pointer; align-items:center; justify-content:center;}
+
   .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;}
   .hero-bg{position:absolute; inset:0; background-size:cover; background-position:center; background-image:url('/images/hero.jpg'); filter:saturate(.85) contrast(1.08); animation:heroBreathe 28s ease-in-out infinite alternate;}
   .hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.1) 0%, rgba(5,5,5,.28) 40%, rgba(5,5,5,.6) 72%, rgba(5,5,5,.94) 100%);}
@@ -181,8 +183,13 @@
   @media (max-width:760px){
     .cards, .writer-grid, .team-grid{grid-template-columns:1fr;}
     .stat-block{border-right:none; border-top:2px solid var(--wine); padding-right:0; padding-top:20px; display:flex; gap:34px;}
-    nav ul{gap:12px; font-size:.78rem;}
     nav{padding:16px 5vw;}
+    .nav-toggle{display:flex;}
+    nav ul{display:none; position:absolute; top:100%; right:0; left:0; flex-direction:column; gap:0; background:rgba(5,5,5,.97); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:8px 0;}
+    nav ul.open{display:flex;}
+    nav ul li{width:100%;}
+    nav ul a{display:block; padding:14px 6vw; font-size:.92rem; opacity:.9;}
+    nav ul a::after{display:none;}
     section.panel{padding:80px 7vw;}
     .section-head{margin-bottom:44px;}
   }
@@ -192,7 +199,8 @@
 
 <nav>
   <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
-  <ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+  <ul id="nav-list">
     <li><a href="/episodes.html">القناة</a></li>
     <li><a href="/articles.html">المقالات</a></li>
     <li><a href="#works">الأعمال</a></li>
@@ -347,6 +355,25 @@ document.getElementById('year').textContent = new Date().getFullYear();
   const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 60);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+})();
+
+/* mobile hamburger menu */
+(function(){
+  const toggle = document.getElementById('nav-toggle');
+  const list = document.getElementById('nav-list');
+  if(!toggle || !list) return;
+  toggle.addEventListener('click', () => {
+    const isOpen = list.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    toggle.textContent = isOpen ? '✕' : '☰';
+  });
+  list.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      list.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.textContent = '☰';
+    });
+  });
 })();
 
 /* manual identity image — loads /images/identity-placeholder.jpg if present,
