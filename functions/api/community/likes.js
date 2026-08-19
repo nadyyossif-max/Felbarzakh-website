@@ -1,7 +1,15 @@
 // functions/api/community/likes.js
-// POST { target_type: 'post'|'comment', target_id } -> toggles the current
-// user's like on/off. Returns { liked: true|false, like_count }.
+// POST { target_type: 'post'|'comment', target_id, reaction_type? }
+// Toggles / changes the current user's reaction on a post or comment.
+// reaction_type is one of: 'مفيد' | 'مثير_للتفكير' | 'اتفق' | 'مختلف_عليه'
+// (defaults to 'اتفق' for backward compatibility with the old simple-like calls).
+// - If the user has no reaction yet -> creates one.
+// - If the user already reacted with the SAME type -> removes it (toggle off).
+// - If the user already reacted with a DIFFERENT type -> updates it in place.
+// Returns { reaction: <type>|null, counts: { <type>: n, ... }, total: n }
 import { getSessionUser } from './_lib/crypto.js';
+
+const REACTION_TYPES = ['مفيد', 'مثير_للتفكير', 'اتفق', 'مختلف_عليه'];
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -19,6 +27,7 @@ export async function onRequestPost(context) {
 
   const targetType = body.target_type;
   const targetId = parseInt(body.target_id, 10);
+  const reactionType = REACTION_TYPES.includes(body.reaction_type) ? body.reaction_type : 'اتفق';
   if (!['post', 'comment'].includes(targetType) || !targetId) {
     return json({ error: 'بيانات غير صالحة.' }, 400);
   }
@@ -27,26 +36,34 @@ export async function onRequestPost(context) {
   const exists = await db.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(targetId).first();
   if (!exists) return json({ error: 'العنصر غير موجود.' }, 404);
 
-  const existingLike = await db.prepare(
-    'SELECT id FROM likes WHERE user_id = ? AND target_type = ? AND target_id = ?'
+  const existing = await db.prepare(
+    'SELECT id, reaction_type FROM likes WHERE user_id = ? AND target_type = ? AND target_id = ?'
   ).bind(user.id, targetType, targetId).first();
 
-  let liked;
-  if (existingLike) {
-    await db.prepare('DELETE FROM likes WHERE id = ?').bind(existingLike.id).run();
-    liked = false;
+  let currentReaction;
+  if (existing && existing.reaction_type === reactionType) {
+    await db.prepare('DELETE FROM likes WHERE id = ?').bind(existing.id).run();
+    currentReaction = null;
+  } else if (existing) {
+    await db.prepare('UPDATE likes SET reaction_type = ? WHERE id = ?').bind(reactionType, existing.id).run();
+    currentReaction = reactionType;
   } else {
     await db.prepare(
-      'INSERT INTO likes (user_id, target_type, target_id) VALUES (?, ?, ?)'
-    ).bind(user.id, targetType, targetId).run();
-    liked = true;
+      'INSERT INTO likes (user_id, target_type, target_id, reaction_type) VALUES (?, ?, ?, ?)'
+    ).bind(user.id, targetType, targetId, reactionType).run();
+    currentReaction = reactionType;
   }
 
-  const countRow = await db.prepare(
-    'SELECT COUNT(*) AS c FROM likes WHERE target_type = ? AND target_id = ?'
-  ).bind(targetType, targetId).first();
+  const { results } = await db.prepare(
+    'SELECT reaction_type, COUNT(*) AS c FROM likes WHERE target_type = ? AND target_id = ? GROUP BY reaction_type'
+  ).bind(targetType, targetId).all();
 
-  return json({ liked, like_count: countRow.c });
+  const counts = {};
+  REACTION_TYPES.forEach(t => { counts[t] = 0; });
+  let total = 0;
+  results.forEach(r => { counts[r.reaction_type] = r.c; total += r.c; });
+
+  return json({ reaction: currentReaction, counts, total });
 }
 
 function json(data, status = 200) {
