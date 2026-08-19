@@ -70,6 +70,13 @@
   nav a:hover::after{width:100%;}
 
   .nav-toggle{display:none; background:transparent; border:1px solid var(--border-strong); color:var(--gold-bright); width:40px; height:40px; border-radius:2px; font-size:1.1rem; cursor:pointer; align-items:center; justify-content:center;}
+  .nav-right{display:flex; align-items:center; gap:14px;}
+  .home-auth{display:flex; align-items:center; gap:12px; font-size:.82rem;}
+  .home-auth a.auth-btn{color:var(--text); text-decoration:none; border:1px solid var(--border-strong); padding:7px 16px; border-radius:2px; transition:border-color .25s, color .25s; opacity:1;}
+  .home-auth a.auth-btn:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .home-auth a.auth-btn.primary{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+  .home-auth a.auth-btn.primary:hover{background:var(--gold-bright);}
+  .home-auth .who{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
 
   .hero{position:relative; min-height:100vh; display:flex; align-items:flex-end; justify-content:center; overflow:hidden;}
   .hero-bg{position:absolute; inset:0; background-size:cover; background-position:center; background-image:url('/images/hero.jpg'); filter:saturate(.85) contrast(1.08); animation:heroBreathe 28s ease-in-out infinite alternate;}
@@ -185,6 +192,8 @@
     .stat-block{border-right:none; border-top:2px solid var(--wine); padding-right:0; padding-top:20px; display:flex; gap:34px;}
     nav{padding:16px 5vw;}
     .nav-toggle{display:flex;}
+    .home-auth{font-size:.74rem; gap:8px;}
+    .home-auth a.auth-btn{padding:6px 10px; font-size:.72rem;}
     nav ul{display:none; position:absolute; top:100%; right:0; left:0; flex-direction:column; gap:0; background:rgba(5,5,5,.97); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:8px 0;}
     nav ul.open{display:flex;}
     nav ul li{width:100%;}
@@ -192,6 +201,8 @@
     nav ul a::after{display:none;}
     section.panel{padding:80px 7vw;}
     .section-head{margin-bottom:44px;}
+    .hero{min-height:80vh;}
+    .hero-bg{background-position:center 30%;}
   }
 </style>
 </head>
@@ -199,7 +210,10 @@
 
 <nav>
   <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
-  <button class="nav-toggle" id="nav-toggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+  <div class="nav-right">
+    <div class="home-auth" id="home-auth"></div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="فتح القائمة" aria-expanded="false">☰</button>
+  </div>
   <ul id="nav-list">
     <li><a href="/episodes.html">القناة</a></li>
     <li><a href="/articles.html">المقالات</a></li>
@@ -374,6 +388,27 @@ document.getElementById('year').textContent = new Date().getFullYear();
       toggle.textContent = '☰';
     });
   });
+})();
+
+/* مجلس البرزخ — auth status shown right in the homepage nav */
+(function(){
+  const box = document.getElementById('home-auth');
+  if(!box) return;
+  function escapeHTML(str){
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+  function renderLoggedOut(){
+    box.innerHTML = `<a class="auth-btn" href="/majlis.html">دخول</a><a class="auth-btn primary" href="/majlis.html">إنشاء حساب</a>`;
+  }
+  function renderLoggedIn(user){
+    box.innerHTML = `<a class="who" href="/majlis-profile.html?u=${encodeURIComponent(user.username)}">${escapeHTML(user.username)}</a><a class="auth-btn" href="/majlis.html">مجلس البرزخ</a>`;
+  }
+  fetch('/api/community/session', { credentials: 'include' })
+    .then(r => r.json())
+    .then(data => { data && data.user ? renderLoggedIn(data.user) : renderLoggedOut(); })
+    .catch(() => renderLoggedOut());
 })();
 
 /* manual identity image — loads /images/identity-placeholder.jpg if present,
