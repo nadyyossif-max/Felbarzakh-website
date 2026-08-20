@@ -11,6 +11,8 @@ export async function onRequestGet(context) {
   const postId = parseInt(url.searchParams.get('post_id'), 10);
   if (!postId) return json({ error: 'post_id مطلوب.' }, 400);
 
+  const currentUser = await getSessionUser(request, db);
+
   const { results } = await db.prepare(
     `SELECT c.id, c.user_id, c.body, c.parent_comment_id, c.created_at, u.username, u.avatar_url,
             (SELECT COUNT(*) FROM likes WHERE target_type='comment' AND target_id=c.id) AS like_count
@@ -18,6 +20,18 @@ export async function onRequestGet(context) {
      WHERE c.post_id = ? AND c.is_hidden = 0
      ORDER BY c.id ASC`
   ).bind(postId).all();
+
+  if (currentUser && results.length) {
+    const { results: myReactions } = await db.prepare(
+      `SELECT target_id, reaction_type FROM likes
+       WHERE user_id = ? AND target_type = 'comment' AND target_id IN (${results.map(() => '?').join(',')})`
+    ).bind(currentUser.id, ...results.map(c => c.id)).all();
+    const map = {};
+    myReactions.forEach(r => { map[r.target_id] = r.reaction_type; });
+    results.forEach(c => { c.my_reaction = map[c.id] || null; });
+  } else {
+    results.forEach(c => { c.my_reaction = null; });
+  }
 
   return json({ comments: results });
 }
