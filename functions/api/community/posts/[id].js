@@ -1,13 +1,15 @@
 // functions/api/community/posts/[id].js
-// GET    -> single post details
+// GET    -> single post details, including the current user's reaction (if any)
 // DELETE -> deletes the post (only its own author, or an admin)
 import { getSessionUser } from '../_lib/crypto.js';
 
 export async function onRequestGet(context) {
-  const { params, env } = context;
+  const { request, params, env } = context;
   const db = env.DB;
   const id = parseInt(params.id, 10);
   if (!id) return json({ error: 'رقم منشور غير صالح.' }, 400);
+
+  const currentUser = await getSessionUser(request, db);
 
   const post = await db.prepare(
     `SELECT p.id, p.user_id, p.title, p.body, p.category, p.related_episode_slug, p.related_article_slug,
@@ -18,6 +20,16 @@ export async function onRequestGet(context) {
   ).bind(id).first();
 
   if (!post) return json({ error: 'المنشور غير موجود.' }, 404);
+
+  if (currentUser) {
+    const myReaction = await db.prepare(
+      'SELECT reaction_type FROM likes WHERE user_id = ? AND target_type = ? AND target_id = ?'
+    ).bind(currentUser.id, 'post', id).first();
+    post.my_reaction = myReaction ? myReaction.reaction_type : null;
+  } else {
+    post.my_reaction = null;
+  }
+
   return json({ post });
 }
 
