@@ -3,11 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>منشور | مجلس البرزخ</title>
-<meta name="robots" content="noindex">
+<title>مجلس البرزخ | في البرزخ</title>
+<meta name="description" content="مجلس البرزخ — مساحة نقاش لجمهور قناة في البرزخ: أفكار، أسئلة، اقتراحات ومناقشات حول الحلقات والمقالات.">
+<link rel="canonical" href="https://felbarzakh-website.pages.dev/majlis.html">
+<meta property="og:title" content="مجلس البرزخ | في البرزخ">
+<meta property="og:description" content="مساحة للنقاش، والاختلاف، والأفكار التي تستحق أن تُسمع.">
+<meta property="og:type" content="website">
 <link rel="icon" href="/images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   :root{
     --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
@@ -25,96 +30,233 @@
   nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
   nav a.back:hover{color:var(--gold);}
 
-  main{max-width:760px; margin:0 auto; padding:120px 6vw 100px; position:relative; z-index:2;}
+  .page-hero{position:relative; min-height:48vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .page-hero-bg{position:absolute; inset:0; background-image:url('/images/hero.jpg'); background-size:cover; background-position:center 35%; filter:saturate(.8) contrast(1.05);}
+  .page-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 58%, rgba(5,5,5,.97) 100%);}
+  .page-head{position:relative; z-index:2; padding:0 8vw 54px; max-width:900px; width:100%;}
+  .threshold{display:flex; align-items:center; gap:16px; width:100%; margin-bottom:16px;}
+  .threshold::before, .threshold::after{content:""; height:1px; flex:1; background:var(--gold-dim); opacity:.4;}
+  .threshold span{font-size:.7rem; letter-spacing:3px; color:var(--gold-dim); display:inline-flex; align-items:center; gap:9px;}
+  .threshold span::before{content:""; display:inline-block; width:13px; height:13px; flex-shrink:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a734f' stroke-width='1.6'%3E%3Cpath d='M5 22V11a7 7 0 0 1 14 0v11'/%3E%3C/svg%3E"); background-size:contain; background-repeat:no-repeat; background-position:center; opacity:.85;}
+  .page-head h1{font-size:clamp(2.2rem, 5vw, 3.2rem); margin-bottom:14px;}
+  .page-head p{color:var(--mist2); max-width:640px; line-height:1.9;}
 
-  .post-top{display:flex; align-items:center; gap:10px; margin-bottom:18px; font-size:.85rem; color:var(--mist2); flex-wrap:wrap;}
-  .avatar{width:34px; height:34px; border-radius:50%; object-fit:cover; border:1px solid rgba(201,168,118,.4); display:block; background:var(--panel);}
-  .avatar-fallback{width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:1rem;}
-  .avatar-sm{width:26px; height:26px; font-size:.85rem;}
+  main{padding:0 8vw 100px; position:relative; z-index:2;}
+
+  /* auth / composer bar */
+  .majlis-bar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px; padding:26px 0; border-bottom:1px solid rgba(201,168,118,.15); margin-bottom:30px;}
+  .user-chip{display:flex; align-items:center; gap:12px;}
+  .avatar{width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border-strong, rgba(201,168,118,.4)); display:block; background:var(--panel);}
+  .avatar-fallback{width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:1.1rem;}
+  .user-chip .uname{font-size:.92rem; color:var(--text);}
+  .btn{display:inline-flex; align-items:center; gap:10px; padding:13px 26px; border-radius:2px; text-decoration:none; font-size:.9rem; border:none; cursor:pointer; font-family:'Cairo'; transition:opacity .3s;}
+  .btn:hover{opacity:.88;}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
+  .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
+  .btn-ghost:hover{border-color:var(--gold);}
+  .btn-small{padding:9px 18px; font-size:.82rem;}
+
+  /* filters */
+  .majlis-filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:34px;}
+  .pill{padding:8px 18px; border:1px solid rgba(201,168,118,.3); border-radius:20px; font-size:.82rem; color:var(--mist2); cursor:pointer; background:transparent; transition:all .25s; font-family:'Cairo';}
+  .pill:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .pill.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+
+  /* posts feed */
+  .post-list{display:flex; flex-direction:column; gap:1px; background:rgba(201,168,118,.18); border:1px solid rgba(201,168,118,.18);}
+  .post-card{background:var(--black); padding:26px 28px; cursor:pointer; transition:background .3s; color:inherit; display:block;}
+  .post-card:hover{background:var(--panel);}
+  .post-card.pinned{box-shadow:inset 3px 0 0 var(--gold);}
+  .post-top{display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.82rem; color:var(--mist2);}
   .post-top .uname{color:var(--gold-bright);}
   a.uname{color:var(--gold-bright); text-decoration:none;}
   a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
+  .post-card h3{font-size:1.2rem; margin-bottom:8px; line-height:1.5;}
+  .post-card .excerpt{color:var(--mist2); font-size:.92rem; line-height:1.8; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:16px;}
+  .post-meta{display:flex; align-items:center; gap:22px; font-size:.85rem; color:var(--mist2);}
+  .post-meta .stat{display:inline-flex; align-items:center; gap:6px;}
+  .post-meta svg{width:15px; height:15px; opacity:.75;}
 
-  #post-title{font-size:clamp(1.6rem, 4vw, 2.2rem); line-height:1.5; margin-bottom:22px;}
-  #post-body{color:var(--text); line-height:2; font-size:1.02rem; white-space:pre-wrap; margin-bottom:28px;}
+  .empty-state{text-align:center; padding:60px 20px; color:var(--mist2);}
+  .load-more-wrap{text-align:center; margin-top:34px;}
 
-  .post-actions{display:flex; align-items:center; gap:14px; padding:18px 0; border-top:1px solid rgba(201,168,118,.15); border-bottom:1px solid rgba(201,168,118,.15); margin-bottom:36px;}
-  .icon-btn{display:inline-flex; align-items:center; gap:7px; background:none; border:none; color:var(--mist2); font-family:'Cairo'; font-size:.88rem; cursor:pointer; padding:6px 10px; border-radius:20px; transition:color .25s, background .25s;}
-  .icon-btn svg{width:16px; height:16px;}
-  .icon-btn:hover{color:var(--gold-bright); background:rgba(201,168,118,.08);}
-  .icon-btn.liked{color:var(--gold);}
-  .icon-btn.danger:hover{color:#d98a8a;}
-  .spacer{margin-inline-start:auto;}
+  /* modals */
+  .modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal.open{display:flex;}
+  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:560px; width:100%; max-height:86vh; overflow-y:auto; z-index:1;}
+  .modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .modal-box h2{font-size:1.5rem; color:var(--gold-bright); margin:6px 0 26px;}
 
-  h2.section-title{font-size:1.15rem; margin-bottom:20px; color:var(--gold-bright);}
+  .auth-tabs{display:flex; gap:24px; margin-bottom:26px; border-bottom:1px solid rgba(201,168,118,.2);}
+  .auth-tab{background:none; border:none; color:var(--mist2); font-family:'Cairo'; font-size:.95rem; padding:0 0 12px; cursor:pointer; border-bottom:2px solid transparent;}
+  .auth-tab.active{color:var(--gold-bright); border-color:var(--gold);}
+  .auth-panel{display:none;}
+  .auth-panel.active{display:block;}
 
-  .comment-form{margin-bottom:34px;}
-  .comment-form textarea{width:100%; min-height:90px; padding:14px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); resize:vertical; line-height:1.7; margin-bottom:10px;}
-  .comment-form textarea:focus{outline:none; border-color:var(--gold);}
-  .login-prompt{background:var(--panel); border:1px solid rgba(201,168,118,.2); border-radius:2px; padding:20px 24px; margin-bottom:34px; color:var(--mist2); font-size:.92rem; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
-
-  .btn{display:inline-flex; align-items:center; gap:10px; padding:12px 26px; border-radius:2px; text-decoration:none; font-size:.88rem; border:none; cursor:pointer; font-family:'Cairo'; transition:opacity .3s;}
-  .btn:hover{opacity:.88;}
-  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
-  .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
-  .btn-ghost:hover{border-color:var(--gold);}
-
-  .comment{padding:20px 0; border-bottom:1px solid rgba(201,168,118,.1);}
-  .comment .c-body{color:var(--text); line-height:1.85; font-size:.95rem; margin:10px 0 12px; white-space:pre-wrap;}
-  .comment .c-actions{display:flex; align-items:center; gap:8px;}
-  .replies{margin-inline-start:32px; margin-top:6px; border-inline-start:1px solid rgba(201,168,118,.15); padding-inline-start:20px;}
-  .replies .comment{padding:16px 0;}
-  .reply-form{margin-top:12px; display:none;}
-  .reply-form.open{display:block;}
-  .reply-form textarea{width:100%; min-height:70px; padding:12px 14px; font-family:'Cairo'; font-size:.9rem; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); resize:vertical; line-height:1.6; margin-bottom:8px;}
-  .reply-form textarea:focus{outline:none; border-color:var(--gold);}
-
-  .empty-state{text-align:center; padding:30px 20px; color:var(--mist2); font-size:.9rem;}
-  .form-error{color:#d98a8a; font-size:.85rem; margin:8px 0; display:none;}
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:.82rem; color:var(--mist2); margin-bottom:8px;}
+  .field input, .field textarea, .field select{width:100%; padding:13px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--black); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text); transition:border-color .3s;}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--gold);}
+  .field textarea{resize:vertical; min-height:110px; line-height:1.7;}
+  .form-error{color:#d98a8a; font-size:.85rem; margin-bottom:14px; display:none;}
   .form-error.show{display:block;}
+  .form-note{color:var(--mist2); font-size:.85rem; margin-bottom:18px; line-height:1.8;}
 
   footer{text-align:center; padding:36px 6vw; color:var(--mist2); font-size:.78rem; border-top:1px solid rgba(201,168,118,.15); position:relative; z-index:2;}
   footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
 
   @media (max-width:760px){
     nav{padding:16px 5vw;}
-    main{padding:110px 6vw 80px;}
-    .replies{margin-inline-start:16px; padding-inline-start:12px;}
+    .page-head{padding:0 7vw 40px;}
+    .page-hero{min-height:40vh;}
+    .majlis-bar{flex-direction:column; align-items:stretch;}
+    .post-top{flex-wrap:wrap;}
+    .post-cat{margin-inline-start:0;}
   }
+
+  /* real photographic backgrounds — hero band + mid-page image breaks */
+  .hero-band{position:relative; min-height:48vh; display:flex; align-items:center; justify-content:center; text-align:center; background-size:cover; background-position:center; overflow:hidden; background-image:url('/images/hero.jpg');}
+  .hero-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.55) 0%, rgba(5,5,5,.7) 55%, rgba(5,5,5,.95) 100%);}
+  .hero-band-inner{position:relative; z-index:2; padding:150px 8vw 50px; max-width:900px;}
+  .mid-band{position:relative; min-height:34vh; background-size:cover; background-position:center; overflow:hidden;}
+  .mid-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.45), rgba(5,5,5,.65));}
+  .mid-band.temple{background-image:url('/images/section-temple.jpg');}
+  .mid-band.corridor{background-image:url('/images/section-corridor.jpg');}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
-  <a href="/majlis.html" class="back">→ مجلس البرزخ</a>
+  <a href="/index.html" class="back">→ الرئيسية</a>
 </nav>
 
-<main id="main-content">
-  <p class="empty-state" id="loading-state">بنجيب المنشور...</p>
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-head">
+    <div class="threshold"><span>مجلس</span></div>
+    <h1>مجلس البرزخ</h1>
+    <p>مساحة للنقاش، والاختلاف، والأفكار التي تستحق أن تُسمع.</p>
+  </div>
+</div>
+
+<main>
+  <div class="majlis-bar">
+    <div id="auth-area"></div>
+    <button class="btn btn-primary" id="start-discussion-btn">ابدأ نقاشًا</button>
+  </div>
+
+  <div class="majlis-filters" id="filters"></div>
+
+  <div class="post-list" id="post-list"></div>
+  <p class="empty-state" id="empty-state" style="display:none;">لسه مفيش نقاشات هنا — يبقى إنت أول واحد يبدأ.</p>
+
+  <div class="load-more-wrap" id="load-more-wrap" style="display:none;">
+    <button class="btn btn-ghost" id="load-more-btn">تحميل المزيد</button>
+  </div>
 </main>
+
+<div class="mid-band temple"></div>
 
 <footer>
   <img src="/images/logo.jpg" alt="">
   © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
 </footer>
 
+<!-- auth modal (login / register) -->
+<div id="auth-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="auth-modal-close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">تسجيل الدخول</button>
+      <button class="auth-tab" data-tab="register">حساب جديد</button>
+    </div>
+
+    <div class="auth-panel active" id="panel-login">
+      <p class="form-error" id="login-error"></p>
+      <form id="login-form">
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="login-email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input type="password" id="login-password" required autocomplete="current-password">
+        </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAENYjaN9og0O07j5" style="margin-bottom:16px;"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">دخول</button>
+      </form>
+    </div>
+
+    <div class="auth-panel" id="panel-register">
+      <p class="form-error" id="register-error"></p>
+      <form id="register-form">
+        <div class="field">
+          <label>اسم المستخدم</label>
+          <input type="text" id="register-username" required minlength="3" maxlength="24">
+        </div>
+        <div class="field">
+          <label>البريد الإلكتروني</label>
+          <input type="email" id="register-email" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input type="password" id="register-password" required minlength="8" autocomplete="new-password">
+        </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAENYjaN9og0O07j5" style="margin-bottom:16px;"></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">إنشاء حساب</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- create-post modal -->
+<div id="composer-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="composer-modal-close">✕</button>
+    <h2>ابدأ نقاشًا</h2>
+    <p class="form-error" id="composer-error"></p>
+    <form id="composer-form">
+      <div class="field">
+        <label>التصنيف</label>
+        <select id="composer-category" required></select>
+      </div>
+      <div class="field">
+        <label>العنوان</label>
+        <input type="text" id="composer-title" required minlength="3" maxlength="200">
+      </div>
+      <div class="field">
+        <label>المحتوى</label>
+        <textarea id="composer-body" required minlength="5" maxlength="8000"></textarea>
+      </div>
+      <div class="field">
+        <label>صورة (اختياري)</label>
+        <input type="file" id="composer-image" accept="image/jpeg,image/png,image/webp,image/gif">
+        <p id="composer-image-status" style="font-size:.78rem; color:var(--mist2); margin-top:6px;"></p>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">نشر</button>
+    </form>
+  </div>
+</div>
+
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
 const API = '/api/community';
-const postId = new URLSearchParams(window.location.search).get('id');
+const CATEGORIES = ['نقاش', 'اقتراح حلقة', 'مناقشة حلقة', 'فكرة', 'سؤال', 'كتاب / فيلم / موسيقى', 'أخرى'];
 
 let currentUser = null;
-let postData = null;
-let commentsData = [];
+let activeCategory = null; // null = الكل
+let nextCursor = null;
 
 const HEART_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20.5s-7.5-4.6-9.7-9C.8 8 2 4.7 5.2 4c2.1-.5 3.9.4 4.9 1.9C11.1 4.4 12.9 3.5 15 4c3.2.7 4.4 4 3 7.5-2.2 4.4-6 9-6 9z"/></svg>';
-const FLAG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 21V4h13l-3 4 3 4H5"/></svg>';
-const TRASH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>';
-const REPLY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 17l-5-5 5-5M4 12h11a5 5 0 0 1 5 5v2"/></svg>';
+const COMMENT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 5h16v11H8l-4 4V5z"/></svg>';
 
 function escapeHTML(str){
   const div = document.createElement('div');
@@ -136,10 +278,25 @@ function timeAgo(iso){
   return `منذ ${Math.floor(months / 12)} سنة`;
 }
 
-function avatarHTML(username, avatarUrl, sizeClass){
-  return avatarUrl
-    ? `<img class="avatar ${sizeClass||''}" src="${escapeHTML(avatarUrl)}" alt="">`
-    : `<span class="avatar-fallback ${sizeClass||''}">${escapeHTML((username||'?').charAt(0))}</span>`;
+/* ---------- auth state ---------- */
+
+function renderAuthArea(){
+  const el = document.getElementById('auth-area');
+  if(currentUser){
+    el.innerHTML = `
+      <div class="user-chip">
+        ${currentUser.avatar_url
+          ? `<img class="avatar" src="${escapeHTML(currentUser.avatar_url)}" alt="">`
+          : `<span class="avatar-fallback">${escapeHTML(currentUser.username.charAt(0))}</span>`}
+        <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(currentUser.username)}">${escapeHTML(currentUser.username)}</a>
+        <a class="btn btn-ghost btn-small" href="/majlis-space.html">مساحتي</a>
+        <button class="btn btn-ghost btn-small" id="logout-btn">خروج</button>
+      </div>`;
+    document.getElementById('logout-btn').addEventListener('click', logout);
+  } else {
+    el.innerHTML = `<button class="btn btn-ghost" id="login-open-btn">تسجيل الدخول / حساب جديد</button>`;
+    document.getElementById('login-open-btn').addEventListener('click', () => openAuthModal('login'));
+  }
 }
 
 async function fetchSession(){
@@ -147,244 +304,266 @@ async function fetchSession(){
     const res = await fetch(`${API}/session`, { credentials: 'include' });
     const data = await res.json();
     currentUser = data.user || null;
-  } catch(e){ currentUser = null; }
+  } catch(e){
+    currentUser = null;
+  }
+  renderAuthArea();
 }
 
-/* ---------- render ---------- */
+async function logout(){
+  try{
+    await fetch(`${API}/logout`, { method: 'POST', credentials: 'include' });
+  } catch(e){}
+  currentUser = null;
+  renderAuthArea();
+}
 
-function renderPage(){
-  const main = document.getElementById('main-content');
-  if(!postData){
-    main.innerHTML = `<p class="empty-state">المنشور ده مش موجود، أو اتحذف.<br><a href="/majlis.html" class="btn btn-ghost" style="margin-top:16px;">رجوع لمجلس البرزخ</a></p>`;
-    return;
+/* ---------- auth modal ---------- */
+
+function openAuthModal(tab){
+  switchAuthTab(tab || 'login');
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('register-error').classList.remove('show');
+  document.getElementById('auth-modal').classList.add('open');
+}
+function closeAuthModal(){
+  document.getElementById('auth-modal').classList.remove('open');
+}
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+  document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+}
+document.querySelectorAll('.auth-tab').forEach(b => b.addEventListener('click', () => switchAuthTab(b.dataset.tab)));
+document.getElementById('auth-modal-close').addEventListener('click', closeAuthModal);
+document.querySelector('#auth-modal .modal-overlay').addEventListener('click', closeAuthModal);
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('login-error');
+  errEl.classList.remove('show');
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const turnstileEl = e.target.querySelector('.cf-turnstile');
+  const turnstile_token = window.turnstile ? window.turnstile.getResponse(turnstileEl) : '';
+  if (!turnstile_token) {
+    errEl.textContent = 'من فضلك أكمل التحقق من إنك مش روبوت.'; errEl.classList.add('show'); return;
   }
-  const p = postData;
-  const canDeletePost = currentUser && (currentUser.id === p.user_id || currentUser.is_admin);
+  try{
+    const res = await fetch(`${API}/login`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, turnstile_token })
+    });
+    const data = await res.json();
+    if(!res.ok){
+      errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show');
+      if (window.turnstile) window.turnstile.reset(turnstileEl);
+      return;
+    }
+    currentUser = data.user;
+    renderAuthArea();
+    closeAuthModal();
+    document.getElementById('login-form').reset();
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
+  }
+});
 
-  main.innerHTML = `
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('register-error');
+  errEl.classList.remove('show');
+  const username = document.getElementById('register-username').value.trim();
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  const turnstileEl = e.target.querySelector('.cf-turnstile');
+  const turnstile_token = window.turnstile ? window.turnstile.getResponse(turnstileEl) : '';
+  if (!turnstile_token) {
+    errEl.textContent = 'من فضلك أكمل التحقق من إنك مش روبوت.'; errEl.classList.add('show'); return;
+  }
+  try{
+    const res = await fetch(`${API}/register`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password, turnstile_token })
+    });
+    const data = await res.json();
+    if(!res.ok){
+      errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show');
+      if (window.turnstile) window.turnstile.reset(turnstileEl);
+      return;
+    }
+    currentUser = data.user;
+    renderAuthArea();
+    closeAuthModal();
+    document.getElementById('register-form').reset();
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
+  } catch(e){
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+    if (window.turnstile) window.turnstile.reset(turnstileEl);
+  }
+});
+
+/* ---------- composer modal ---------- */
+
+function populateComposerCategories(){
+  const sel = document.getElementById('composer-category');
+  sel.innerHTML = CATEGORIES.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+}
+populateComposerCategories();
+
+function openComposer(){
+  if(!currentUser){ openAuthModal('login'); return; }
+  document.getElementById('composer-error').classList.remove('show');
+  document.getElementById('composer-modal').classList.add('open');
+}
+function closeComposer(){
+  document.getElementById('composer-modal').classList.remove('open');
+}
+document.getElementById('start-discussion-btn').addEventListener('click', openComposer);
+document.getElementById('composer-modal-close').addEventListener('click', closeComposer);
+document.querySelector('#composer-modal .modal-overlay').addEventListener('click', closeComposer);
+
+document.getElementById('composer-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('composer-error');
+  errEl.classList.remove('show');
+  const title = document.getElementById('composer-title').value.trim();
+  const body = document.getElementById('composer-body').value.trim();
+  const category = document.getElementById('composer-category').value;
+  const imageInput = document.getElementById('composer-image');
+  const imageStatus = document.getElementById('composer-image-status');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+
+  let imageUrl = null;
+  try{
+    if (imageInput.files && imageInput.files[0]) {
+      submitBtn.disabled = true;
+      imageStatus.textContent = 'جاري رفع الصورة...';
+      const fd = new FormData();
+      fd.append('image', imageInput.files[0]);
+      const upRes = await fetch(`${API}/upload-image`, { method: 'POST', credentials: 'include', body: fd });
+      const upData = await upRes.json();
+      if (!upRes.ok) {
+        errEl.textContent = upData.error || 'تعذر رفع الصورة.'; errEl.classList.add('show');
+        submitBtn.disabled = false; imageStatus.textContent = ''; return;
+      }
+      imageUrl = upData.url;
+      imageStatus.textContent = 'الصورة اتحملت — بتظهر على الموقع خلال نصف دقيقة تقريبًا بعد النشر.';
+    }
+
+    const res = await fetch(`${API}/posts`, {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, body, category, image_url: imageUrl })
+    });
+    const data = await res.json();
+    submitBtn.disabled = false;
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    document.getElementById('composer-form').reset();
+    imageStatus.textContent = '';
+    closeComposer();
+    nextCursor = null;
+    loadPosts(true);
+  } catch(e){
+    submitBtn.disabled = false;
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){ closeAuthModal(); closeComposer(); }
+});
+
+/* ---------- filters ---------- */
+
+function renderFilters(){
+  const el = document.getElementById('filters');
+  const items = [{ label: 'أحدث النقاشات', value: null }, ...CATEGORIES.map(c => ({ label: c, value: c }))];
+  el.innerHTML = items.map(i =>
+    `<button class="pill${activeCategory === i.value ? ' active' : ''}" data-val="${i.value ? escapeHTML(i.value) : ''}">${escapeHTML(i.label)}</button>`
+  ).join('');
+  el.querySelectorAll('.pill').forEach((btn, idx) => {
+    btn.addEventListener('click', () => {
+      activeCategory = items[idx].value;
+      renderFilters();
+      nextCursor = null;
+      loadPosts(true);
+    });
+  });
+}
+
+/* ---------- posts feed ---------- */
+
+function postCardHTML(p){
+  const pinned = p.is_pinned ? ' pinned' : '';
+  return `<div class="post-card${pinned}" data-href="/majlis-post.html?id=${p.id}">
     <div class="post-top">
-      ${avatarHTML(p.username, p.avatar_url)}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}">${escapeHTML(p.username)}</a>
+      ${p.avatar_url
+        ? `<img class="avatar" style="width:24px;height:24px;" src="${escapeHTML(p.avatar_url)}" alt="">`
+        : `<span class="avatar-fallback" style="width:24px;height:24px;font-size:.8rem;">${escapeHTML((p.username||'?').charAt(0))}</span>`}
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>
     </div>
-    <h1 id="post-title">${escapeHTML(p.title)}</h1>
-    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; max-height:480px; object-fit:cover; border-radius:2px; margin-bottom:24px; display:block;" loading="lazy">` : ''}
-    <div id="post-body">${escapeHTML(p.body)}</div>
-    <div class="post-actions">
-      <button class="icon-btn${p.liked_by_me ? ' liked' : ''}" id="like-post-btn">${HEART_ICON} <span id="like-count">${p.like_count}</span></button>
-      <button class="icon-btn" id="report-post-btn">${FLAG_ICON} إبلاغ</button>
-      ${canDeletePost ? `<button class="icon-btn danger spacer" id="delete-post-btn">${TRASH_ICON} حذف</button>` : ''}
+    <h3>${escapeHTML(p.title)}</h3>
+    <p class="excerpt">${escapeHTML(p.body)}</p>
+    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; max-height:220px; object-fit:cover; border-radius:2px; margin-bottom:14px; display:block;" loading="lazy">` : ''}
+    <div class="post-meta">
+      <span class="stat">${HEART_ICON} ${p.like_count}</span>
+      <span class="stat">${COMMENT_ICON} ${p.comment_count}</span>
     </div>
-
-    <h2 class="section-title">التعليقات (${commentsData.filter(c => !c.parent_comment_id).length + commentsData.filter(c => c.parent_comment_id).length})</h2>
-    <div id="comment-form-area"></div>
-    <div id="comments-container"></div>
-  `;
-
-  document.getElementById('like-post-btn').addEventListener('click', () => toggleLike('post', p.id, document.getElementById('like-post-btn'), document.getElementById('like-count')));
-  document.getElementById('report-post-btn').addEventListener('click', () => reportContent('post', p.id));
-  if(canDeletePost){
-    document.getElementById('delete-post-btn').addEventListener('click', deletePost);
-  }
-
-  renderCommentFormArea();
-  renderComments();
-}
-
-function renderCommentFormArea(){
-  const el = document.getElementById('comment-form-area');
-  if(currentUser){
-    el.innerHTML = `
-      <div class="comment-form">
-        <p class="form-error" id="comment-error"></p>
-        <textarea id="comment-body" placeholder="اكتب تعليقك..." maxlength="3000"></textarea>
-        <button class="btn btn-primary" id="submit-comment-btn">أضف تعليق</button>
-      </div>`;
-    document.getElementById('submit-comment-btn').addEventListener('click', () => submitComment(null));
-  } else {
-    el.innerHTML = `
-      <div class="login-prompt">
-        <span>لازم تسجل دخول عشان تشارك بتعليق.</span>
-        <a href="/majlis.html" class="btn btn-ghost">تسجيل الدخول</a>
-      </div>`;
-  }
-}
-
-function commentHTML(c, isReply){
-  const canDelete = currentUser && (currentUser.id === c.user_id || currentUser.is_admin);
-  return `<div class="comment" data-id="${c.id}">
-    <div class="post-top" style="margin-bottom:0;">
-      ${avatarHTML(c.username, c.avatar_url, 'avatar-sm')}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(c.username)}">${escapeHTML(c.username)}</a>
-      <span class="dot">·</span>
-      <span>${timeAgo(c.created_at)}</span>
-    </div>
-    <div class="c-body">${escapeHTML(c.body)}</div>
-    <div class="c-actions">
-      <button class="icon-btn like-comment-btn${c.liked_by_me ? ' liked' : ''}" data-id="${c.id}">${HEART_ICON} <span class="like-count">${c.like_count}</span></button>
-      ${!isReply ? `<button class="icon-btn reply-btn" data-id="${c.id}">${REPLY_ICON} رد</button>` : ''}
-      <button class="icon-btn report-comment-btn" data-id="${c.id}">${FLAG_ICON}</button>
-      ${canDelete ? `<button class="icon-btn danger delete-comment-btn" data-id="${c.id}">${TRASH_ICON}</button>` : ''}
-    </div>
-    ${!isReply ? `<div class="reply-form" id="reply-form-${c.id}">
-      <textarea placeholder="اكتب ردك..." maxlength="3000"></textarea>
-      <button class="btn btn-primary" style="padding:9px 20px; font-size:.82rem;" data-parent="${c.id}">إرسال الرد</button>
-    </div>` : ''}
   </div>`;
 }
 
-function renderComments(){
-  const container = document.getElementById('comments-container');
-  const topLevel = commentsData.filter(c => !c.parent_comment_id);
+async function loadPosts(reset){
+  const listEl = document.getElementById('post-list');
+  const emptyEl = document.getElementById('empty-state');
+  const loadMoreWrap = document.getElementById('load-more-wrap');
+  if(reset){ listEl.innerHTML = ''; }
 
-  if(topLevel.length === 0){
-    container.innerHTML = `<p class="empty-state">لسه مفيش تعليقات — كن أول من يعلّق.</p>`;
-    return;
-  }
+  const params = new URLSearchParams();
+  if(activeCategory) params.set('category', activeCategory);
+  if(nextCursor) params.set('cursor', nextCursor);
 
-  container.innerHTML = topLevel.map(c => {
-    const replies = commentsData.filter(r => r.parent_comment_id === c.id);
-    const repliesHTML = replies.length
-      ? `<div class="replies">${replies.map(r => commentHTML(r, true)).join('')}</div>`
-      : '';
-    return commentHTML(c, false) + repliesHTML;
-  }).join('');
-
-  container.querySelectorAll('.like-comment-btn').forEach(btn => {
-    btn.addEventListener('click', () => toggleLike('comment', parseInt(btn.dataset.id, 10), btn, btn.querySelector('.like-count')));
-  });
-  container.querySelectorAll('.report-comment-btn').forEach(btn => {
-    btn.addEventListener('click', () => reportContent('comment', parseInt(btn.dataset.id, 10)));
-  });
-  container.querySelectorAll('.delete-comment-btn').forEach(btn => {
-    btn.addEventListener('click', () => deleteComment(parseInt(btn.dataset.id, 10)));
-  });
-  container.querySelectorAll('.reply-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if(!currentUser){ window.location.href = '/majlis.html'; return; }
-      const form = document.getElementById(`reply-form-${btn.dataset.id}`);
-      form.classList.toggle('open');
-    });
-  });
-  container.querySelectorAll('.reply-form button[data-parent]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const parentId = parseInt(btn.dataset.parent, 10);
-      const textarea = btn.closest('.reply-form').querySelector('textarea');
-      submitComment(parentId, textarea);
-    });
-  });
-}
-
-/* ---------- actions ---------- */
-
-async function toggleLike(targetType, targetId, btn, countEl){
-  if(!currentUser){ window.location.href = '/majlis.html'; return; }
   try{
-    const res = await fetch(`${API}/likes`, {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ target_type: targetType, target_id: targetId })
-    });
+    const res = await fetch(`${API}/posts?${params.toString()}`);
     const data = await res.json();
-    if(!res.ok) return;
-    btn.classList.toggle('liked', data.liked);
-    countEl.textContent = data.like_count;
-  } catch(e){}
-}
+    const posts = data.posts || [];
+    nextCursor = data.next_cursor || null;
 
-async function reportContent(targetType, targetId){
-  if(!currentUser){ window.location.href = '/majlis.html'; return; }
-  if(!confirm('تأكيد الإبلاغ عن المحتوى ده؟')) return;
-  try{
-    await fetch(`${API}/reports`, {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ target_type: targetType, target_id: targetId })
-    });
-    alert('تم الإبلاغ، شكرًا لك.');
-  } catch(e){
-    alert('حصل خطأ، حاول تاني.');
-  }
-}
-
-async function deletePost(){
-  if(!confirm('متأكد إنك عايز تحذف المنشور ده؟ الإجراء ده مش قابل للتراجع.')) return;
-  try{
-    const res = await fetch(`${API}/posts/${postId}`, { method: 'DELETE', credentials: 'include' });
-    if(res.ok){ window.location.href = '/majlis.html'; }
-  } catch(e){}
-}
-
-async function deleteComment(commentId){
-  if(!confirm('متأكد إنك عايز تحذف التعليق ده؟')) return;
-  try{
-    const res = await fetch(`${API}/comments`, {
-      method: 'DELETE', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment_id: commentId })
-    });
-    if(res.ok){
-      commentsData = commentsData.filter(c => c.id !== commentId && c.parent_comment_id !== commentId);
-      renderComments();
+    if(reset && posts.length === 0){
+      emptyEl.style.display = 'block';
+    } else {
+      emptyEl.style.display = 'none';
+      listEl.insertAdjacentHTML('beforeend', posts.map(postCardHTML).join(''));
     }
-  } catch(e){}
-}
-
-async function submitComment(parentId, textareaEl){
-  const textarea = textareaEl || document.getElementById('comment-body');
-  const errEl = parentId ? null : document.getElementById('comment-error');
-  const body = textarea.value.trim();
-  if(errEl) errEl.classList.remove('show');
-  if(body.length < 1){ return; }
-  try{
-    const res = await fetch(`${API}/comments`, {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ post_id: parseInt(postId, 10), body, parent_comment_id: parentId })
-    });
-    const data = await res.json();
-    if(!res.ok){
-      if(errEl){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); }
-      return;
-    }
-    textarea.value = '';
-    await loadComments();
-    renderComments();
+    loadMoreWrap.style.display = nextCursor ? 'block' : 'none';
   } catch(e){
-    if(errEl){ errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show'); }
+    if(reset){
+      emptyEl.textContent = 'مقدرناش نجيب النقاشات دلوقتي — حاول تحدّث الصفحة.';
+      emptyEl.style.display = 'block';
+    }
   }
 }
 
-/* ---------- load ---------- */
+document.getElementById('load-more-btn').addEventListener('click', () => loadPosts(false));
 
-async function loadPost(){
-  const res = await fetch(`${API}/posts/${postId}`);
-  if(!res.ok){ postData = null; return; }
-  const data = await res.json();
-  postData = data.post;
-}
+/* ---------- init ---------- */
 
-async function loadComments(){
-  const res = await fetch(`${API}/comments?post_id=${postId}`);
-  if(!res.ok){ commentsData = []; return; }
-  const data = await res.json();
-  commentsData = data.comments || [];
-}
+document.getElementById('post-list').addEventListener('click', (e) => {
+  if(e.target.closest('a.uname')) return; // let the profile link navigate on its own
+  const card = e.target.closest('.post-card');
+  if(card && card.dataset.href) window.location.href = card.dataset.href;
+});
 
-async function init(){
-  if(!postId){
-    document.getElementById('main-content').innerHTML = `<p class="empty-state">رابط منشور غير صالح.<br><a href="/majlis.html" class="btn btn-ghost" style="margin-top:16px;">رجوع لمجلس البرزخ</a></p>`;
-    return;
-  }
-  await fetchSession();
-  await loadPost();
-  if(postData){ await loadComments(); }
-  renderPage();
-}
-
-init();
+renderFilters();
+fetchSession();
+loadPosts(true);
 </script>
 
 </body>
