@@ -1,5 +1,6 @@
 // functions/api/community/users/[username].js
-// GET -> public profile for a username: basic info + their recent posts.
+// GET -> public profile for a username: basic info + stats + their recent posts.
+// Never exposes email, password data, or any private field.
 export async function onRequestGet(context) {
   const { params, env } = context;
   const db = env.DB;
@@ -20,7 +21,28 @@ export async function onRequestGet(context) {
      ORDER BY p.id DESC LIMIT 20`
   ).bind(user.id).all();
 
-  return json({ user, posts });
+  const postsCountRow = await db.prepare(
+    'SELECT COUNT(*) AS c FROM posts WHERE user_id = ? AND is_hidden = 0'
+  ).bind(user.id).first();
+
+  const commentsCountRow = await db.prepare(
+    'SELECT COUNT(*) AS c FROM comments WHERE user_id = ? AND is_hidden = 0'
+  ).bind(user.id).first();
+
+  // reactions this user has RECEIVED, across all their posts and comments
+  const reactionsReceivedRow = await db.prepare(
+    `SELECT COUNT(*) AS c FROM likes l
+     WHERE (l.target_type = 'post' AND l.target_id IN (SELECT id FROM posts WHERE user_id = ?))
+        OR (l.target_type = 'comment' AND l.target_id IN (SELECT id FROM comments WHERE user_id = ?))`
+  ).bind(user.id, user.id).first();
+
+  const stats = {
+    posts_count: postsCountRow.c,
+    comments_count: commentsCountRow.c,
+    reactions_received: reactionsReceivedRow.c,
+  };
+
+  return json({ user, stats, posts });
 }
 
 function json(data, status = 200) {
