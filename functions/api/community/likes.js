@@ -8,6 +8,7 @@
 // - If the user already reacted with a DIFFERENT type -> updates it in place.
 // Returns { reaction: <type>|null, counts: { <type>: n, ... }, total: n }
 import { getSessionUser } from './_lib/crypto.js';
+import { awardPoints, checkAndAwardBadges, notify } from './_lib/gamification.js';
 
 const REACTION_TYPES = ['مفيد', 'مثير_للتفكير', 'اتفق', 'مختلف_عليه'];
 
@@ -33,14 +34,16 @@ export async function onRequestPost(context) {
   }
 
   const table = targetType === 'post' ? 'posts' : 'comments';
-  const exists = await db.prepare(`SELECT id FROM ${table} WHERE id = ?`).bind(targetId).first();
-  if (!exists) return json({ error: 'العنصر غير موجود.' }, 404);
+  const selectCols = targetType === 'post' ? 'id, user_id' : 'id, user_id, post_id';
+  const target = await db.prepare(`SELECT ${selectCols} FROM ${table} WHERE id = ?`).bind(targetId).first();
+  if (!target) return json({ error: 'العنصر غير موجود.' }, 404);
 
   const existing = await db.prepare(
     'SELECT id, reaction_type FROM likes WHERE user_id = ? AND target_type = ? AND target_id = ?'
   ).bind(user.id, targetType, targetId).first();
 
   let currentReaction;
+  let isNewReaction = false;
   if (existing && existing.reaction_type === reactionType) {
     await db.prepare('DELETE FROM likes WHERE id = ?').bind(existing.id).run();
     currentReaction = null;
@@ -52,7 +55,17 @@ export async function onRequestPost(context) {
       'INSERT INTO likes (user_id, target_type, target_id, reaction_type) VALUES (?, ?, ?, ?)'
     ).bind(user.id, targetType, targetId, reactionType).run();
     currentReaction = reactionType;
+    isNewReaction = true;
   }
+
+  if (isNewReaction && target.user_id !== user.id) {
+    await awardPoints(db, target.user_id, 1);
+    const link = targetType === 'post' ? `/majlis-post.html?id=${targetId}`
+      : `/majlis-post.html?id=${target.post_id || ''}`;
+    await notify(db, target.user_id, 'reaction', `${user.username} تفاعل مع ${targetType === 'post' ? 'نقاشك' : 'تعليقك'}`, link);
+    await checkAndAwardBadges(db, target.user_id);
+  }
+  await checkAndAwardBadges(db, user.id);
 
   const { results } = await db.prepare(
     'SELECT reaction_type, COUNT(*) AS c FROM likes WHERE target_type = ? AND target_id = ? GROUP BY reaction_type'
