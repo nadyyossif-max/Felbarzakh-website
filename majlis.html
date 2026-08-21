@@ -49,6 +49,17 @@
   .avatar{width:38px; height:38px; border-radius:50%; object-fit:cover; border:1px solid var(--border-strong, rgba(201,168,118,.4)); display:block; background:var(--panel);}
   .avatar-fallback{width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid rgba(201,168,118,.4); color:var(--gold-bright); font-family:'Amiri',serif; font-size:1.1rem;}
   .user-chip .uname{font-size:.92rem; color:var(--text);}
+
+  .notif-wrap{position:relative;}
+  .notif-bell{position:relative; padding:9px 14px; font-size:1rem;}
+  .notif-badge{position:absolute; top:-4px; left:-4px; background:var(--wine, #6e2635); color:#fff; font-size:.62rem; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px; line-height:1;}
+  .notif-dropdown{position:absolute; top:calc(100% + 10px); left:0; width:320px; max-height:400px; overflow-y:auto; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:4px; z-index:500; box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  .notif-item{display:block; padding:14px 16px; text-decoration:none; border-bottom:1px solid rgba(201,168,118,.1); transition:background .2s;}
+  .notif-item:hover{background:rgba(201,168,118,.06);}
+  .notif-item.unread{background:rgba(201,168,118,.08); border-right:2px solid var(--gold);}
+  .notif-item .notif-msg{display:block; color:var(--text); font-size:.85rem; line-height:1.6; margin-bottom:4px;}
+  .notif-item .notif-time{color:var(--mist2); font-size:.72rem;}
+  .notif-empty{padding:24px 16px; text-align:center; color:var(--mist2); font-size:.85rem;}
   .btn{display:inline-flex; align-items:center; gap:10px; padding:13px 26px; border-radius:2px; text-decoration:none; font-size:.9rem; border:none; cursor:pointer; font-family:'Cairo'; transition:opacity .3s;}
   .btn:hover{opacity:.88;}
   .btn-primary{background:var(--gold); color:#111; font-weight:700;}
@@ -285,17 +296,73 @@ function renderAuthArea(){
   if(currentUser){
     el.innerHTML = `
       <div class="user-chip">
+        <div class="notif-wrap">
+          <button class="btn btn-ghost btn-small notif-bell" id="notif-bell-btn">🔔<span class="notif-badge" id="notif-badge" style="display:none;">0</span></button>
+          <div class="notif-dropdown" id="notif-dropdown" style="display:none;"></div>
+        </div>
         ${currentUser.avatar_url
           ? `<img class="avatar" src="${escapeHTML(currentUser.avatar_url)}" alt="">`
           : `<span class="avatar-fallback">${escapeHTML(currentUser.username.charAt(0))}</span>`}
         <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(currentUser.username)}">${escapeHTML(currentUser.username)}</a>
+        <a class="btn btn-ghost btn-small" href="/majlis-space.html">مساحتي</a>
         <button class="btn btn-ghost btn-small" id="logout-btn">خروج</button>
       </div>`;
     document.getElementById('logout-btn').addEventListener('click', logout);
+    setupNotifications();
   } else {
     el.innerHTML = `<button class="btn btn-ghost" id="login-open-btn">تسجيل الدخول / حساب جديد</button>`;
     document.getElementById('login-open-btn').addEventListener('click', () => openAuthModal('login'));
   }
+}
+
+function notifTimeAgo(iso){
+  const diffMs = Date.now() - new Date(iso + 'Z').getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'الآن';
+  if (mins < 60) return `منذ ${mins} دقيقة`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `منذ ${hours} ساعة`;
+  return `منذ ${Math.floor(hours / 24)} يوم`;
+}
+
+async function setupNotifications(){
+  const bellBtn = document.getElementById('notif-bell-btn');
+  const dropdown = document.getElementById('notif-dropdown');
+  const badge = document.getElementById('notif-badge');
+
+  async function refresh(){
+    try{
+      const res = await fetch(`${API}/notifications`, { credentials: 'include' });
+      const data = await res.json();
+      const list = data.notifications || [];
+      if(data.unread_count > 0){
+        badge.style.display = 'flex';
+        badge.textContent = data.unread_count > 9 ? '9+' : data.unread_count;
+      } else {
+        badge.style.display = 'none';
+      }
+      dropdown.innerHTML = list.length
+        ? list.map(n => `<a class="notif-item${n.is_read ? '' : ' unread'}" href="${n.link || '#'}">
+            <span class="notif-msg">${escapeHTML(n.message)}</span>
+            <span class="notif-time">${notifTimeAgo(n.created_at)}</span>
+          </a>`).join('')
+        : `<p class="notif-empty">مفيش إشعارات لسه.</p>`;
+    } catch(e){}
+  }
+
+  bellBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const isOpen = dropdown.style.display === 'block';
+    dropdown.style.display = isOpen ? 'none' : 'block';
+    if(!isOpen){
+      await fetch(`${API}/notifications`, { method: 'PATCH', credentials: 'include', headers: {'Content-Type':'application/json'}, body: '{}' });
+      badge.style.display = 'none';
+      dropdown.querySelectorAll('.notif-item.unread').forEach(a => a.classList.remove('unread'));
+    }
+  });
+  document.addEventListener('click', () => { dropdown.style.display = 'none'; });
+
+  await refresh();
 }
 
 async function fetchSession(){
