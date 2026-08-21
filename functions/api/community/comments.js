@@ -3,6 +3,7 @@
 // POST   { post_id, body, parent_comment_id? } -> create a comment or reply (requires login)
 // DELETE { comment_id }             -> delete own comment (requires login)
 import { getSessionUser } from './_lib/crypto.js';
+import { awardPoints, checkAndAwardBadges, notify } from './_lib/gamification.js';
 
 export async function onRequestGet(context) {
   const { request, env } = context;
@@ -59,19 +60,48 @@ export async function onRequestPost(context) {
     return json({ error: 'التعليق لازم يكون بين 1 و3000 حرف.' }, 400);
   }
 
-  const post = await db.prepare('SELECT id FROM posts WHERE id = ? AND is_hidden = 0').bind(postId).first();
+  const post = await db.prepare('SELECT id, user_id, title FROM posts WHERE id = ? AND is_hidden = 0').bind(postId).first();
   if (!post) return json({ error: 'المنشور غير موجود.' }, 404);
 
+  let parentOwnerId = null;
   if (parentId) {
-    const parent = await db.prepare('SELECT id FROM comments WHERE id = ? AND post_id = ?').bind(parentId, postId).first();
+    const parent = await db.prepare('SELECT id, user_id FROM comments WHERE id = ? AND post_id = ?').bind(parentId, postId).first();
     if (!parent) return json({ error: 'التعليق الأصلي غير موجود.' }, 404);
+    parentOwnerId = parent.user_id;
   }
 
   const result = await db.prepare(
     'INSERT INTO comments (post_id, user_id, parent_comment_id, body) VALUES (?, ?, ?, ?)'
   ).bind(postId, user.id, parentId, content).run();
+  const commentId = result.meta.last_row_id;
+  const link = `/majlis-post.html?id=${postId}`;
 
-  return json({ comment_id: result.meta.last_row_id }, 201);
+  await awardPoints(db, user.id, 2);
+  await checkAndAwardBadges(db, user.id);
+
+  const notifiedUserIds = new Set([user.id]); // never notify yourself
+
+  if (!notifiedUserIds.has(post.user_id)) {
+    await notify(db, post.user_id, 'reply_to_post', `${user.username} رد على نقاشك "${post.title}"`, link);
+    notifiedUserIds.add(post.user_id);
+  }
+
+  if (parentOwnerId && !notifiedUserIds.has(parentOwnerId)) {
+    await notify(db, parentOwnerId, 'reply_to_comment', `${user.username} رد على تعليقك`, link);
+    notifiedUserIds.add(parentOwnerId);
+  }
+
+  const { results: followers } = await db.prepare(
+    'SELECT user_id FROM post_follows WHERE post_id = ?'
+  ).bind(postId).all();
+  for (const f of followers) {
+    if (!notifiedUserIds.has(f.user_id)) {
+      await notify(db, f.user_id, 'followed_post_reply', `فيه رد جديد على نقاش بتتابعه: "${post.title}"`, link);
+      notifiedUserIds.add(f.user_id);
+    }
+  }
+
+  return json({ comment_id: commentId }, 201);
 }
 
 export async function onRequestDelete(context) {
