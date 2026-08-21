@@ -3,6 +3,7 @@
 // POST { title, body, category, related_episode_slug?, related_article_slug? }
 //      -> creates a post (requires login)
 import { getSessionUser } from './_lib/crypto.js';
+import { awardPoints, checkAndAwardBadges } from './_lib/gamification.js';
 
 const CATEGORIES = ['نقاش', 'اقتراح حلقة', 'مناقشة حلقة', 'فكرة', 'سؤال', 'كتاب / فيلم / موسيقى', 'أخرى'];
 const PAGE_SIZE = 20;
@@ -79,6 +80,9 @@ export async function onRequestPost(context) {
     `INSERT INTO posts (user_id, title, body, category, related_episode_slug, related_article_slug, image_url)
      VALUES (?, ?, ?, ?, ?, ?, ?)`
   ).bind(user.id, title, content, category, relatedEpisode, relatedArticle, imageUrl).run();
+
+  await awardPoints(db, user.id, 5);
+  await checkAndAwardBadges(db, user.id);
 
   return json({ post_id: result.meta.last_row_id }, 201);
 }
