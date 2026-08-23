@@ -305,6 +305,7 @@ function renderAuthArea(){
           : `<span class="avatar-fallback">${escapeHTML(currentUser.username.charAt(0))}</span>`}
         <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(currentUser.username)}">${escapeHTML(currentUser.username)}</a>
         <a class="btn btn-ghost btn-small" href="/majlis-space.html">مساحتي</a>
+        <a class="btn btn-ghost btn-small" href="/majlis-notebook.html">دفتر البرزخ</a>
         <button class="btn btn-ghost btn-small" id="logout-btn">خروج</button>
       </div>`;
     document.getElementById('logout-btn').addEventListener('click', logout);
