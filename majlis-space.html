@@ -44,6 +44,11 @@
   .badge-chip{display:flex; align-items:center; gap:7px; background:rgba(201,168,118,.06); border:1px solid rgba(201,168,118,.25); border-radius:20px; padding:8px 14px; font-size:.8rem; color:var(--gold-bright);}
   .badge-chip .icon{font-size:1.05rem;}
 
+  .activity-list{display:flex; flex-direction:column; gap:1px; background:rgba(201,168,118,.15);}
+  .activity-item{background:var(--black); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; gap:14px;}
+  .activity-msg{color:var(--text); font-size:.88rem; line-height:1.7;}
+  .activity-date{color:var(--mist2); font-size:.76rem; white-space:nowrap;}
+
   .tabs{display:flex; gap:8px; margin:36px 0 20px; border-bottom:1px solid rgba(201,168,118,.15); flex-wrap:wrap;}
   .tab-btn{background:transparent; border:none; color:var(--mist2); font-family:'Cairo'; font-size:.88rem; padding:10px 6px; cursor:pointer; border-bottom:2px solid transparent; transition:color .25s, border-color .25s;}
   .tab-btn.active{color:var(--gold-bright); border-color:var(--gold);}
@@ -173,6 +178,7 @@ async function init(){
     </div>
     <p class="profile-bio${user.bio ? '' : ' empty'}">${user.bio ? escapeHTML(user.bio) : 'مفيش نبذة لسه.'}</p>
     <a class="btn btn-ghost" href="/majlis-profile.html?u=${encodeURIComponent(user.username)}">عدّل البروفايل ↗</a>
+    <a class="btn btn-ghost" href="/majlis-notebook.html">دفتر البرزخ ↗</a>
 
     <div class="stats-row">
       <div class="stat-box"><span class="num">${user.reputation ?? 0}</span><span class="label">نقاط السمعة</span></div>
@@ -190,6 +196,7 @@ async function init(){
       <button class="tab-btn active" data-tab="posts">نقاشاتي (${posts.length})</button>
       <button class="tab-btn" data-tab="saves">محفوظاتي (${saves.length})</button>
       <button class="tab-btn" data-tab="follows">بتابعها (${follows.length})</button>
+      <button class="tab-btn" data-tab="activity">آخر نشاط</button>
     </div>
 
     <div class="tab-panel active" id="tab-posts">
@@ -201,7 +208,21 @@ async function init(){
     <div class="tab-panel" id="tab-follows">
       ${follows.length ? `<div class="post-list">${follows.map(f => postCardHTML({ id: f.post_id, title: f.title, category: f.category, created_at: f.created_at })).join('')}</div>` : '<p class="empty-state">مش بتابع أي نقاش دلوقتي.</p>'}
     </div>
+    <div class="tab-panel" id="tab-activity">
+      <p class="empty-state" id="activity-loading">جاري التحميل...</p>
+    </div>
   `;
+
+  fetch(`${API}/activity?username=${encodeURIComponent(user.username)}`)
+    .then(r => r.json())
+    .then(data => {
+      const items = data.activity || [];
+      const el = document.getElementById('tab-activity');
+      el.innerHTML = items.length
+        ? `<div class="activity-list">${items.map(a => `<div class="activity-item"><span class="activity-msg">${escapeHTML(a.message)}</span><span class="activity-date">${timeAgo(a.created_at)}</span></div>`).join('')}</div>`
+        : '<p class="empty-state">لسه مفيش نشاط.</p>';
+    })
+    .catch(() => { document.getElementById('activity-loading').textContent = 'تعذر تحميل النشاط.'; });
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
