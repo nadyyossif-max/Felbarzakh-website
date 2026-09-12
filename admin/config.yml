@@ -119,47 +119,54 @@ collections:
               - { label: "الصورة الشخصية", name: "photo", widget: "image" }
               - { label: "لينك (سوشيال/بورتفوليو، اختياري)", name: "link", widget: "string", required: false }
 
-  - name: "glossary"
-    label: "قاموس البرزخ"
+  - name: "files_dossiers"
+    label: "ملفات البرزخ"
     files:
-      - name: "glossary"
-        label: "المصطلحات"
-        file: "content/glossary.json"
+      - name: "files_dossiers"
+        label: "قائمة الملفات"
+        file: "content/files.json"
         fields:
-          - label: "المصطلحات"
-            name: "glossary"
+          - label: "الملفات"
+            name: "files"
             widget: "list"
-            summary: "{{fields.term}} — {{fields.category}}"
+            summary: "ملف {{fields.number}} — {{fields.title}}"
             fields:
-              - { label: "المصطلح", name: "term", widget: "string" }
-              - label: "التصنيف"
-                name: "category"
-                widget: "select"
-                options: ["علم النفس", "فلسفة", "تاريخ", "دين وميثولوجيا", "سرد وحكاية", "سينما", "علم اجتماع", "سياسة", "مفاهيم أصلية للبرزخ"]
-              - { label: "ملخص سطر واحد", name: "summary", widget: "string" }
-              - { label: "الشرح الكامل", name: "definition", widget: "text" }
-              - { label: "مصطلحات مرتبطة (افصل بينهم بفاصلة)", name: "related_terms", widget: "string", required: false }
-              - { label: "ملاحظات / مصادر / حلقات ذات صلة", name: "notes", widget: "text", required: false }
-
-  - name: "links"
-    label: "الروابط المستحيلة"
-    files:
-      - name: "links"
-        label: "قائمة الروابط"
-        file: "content/links.json"
-        fields:
-          - label: "الروابط"
-            name: "links"
-            widget: "list"
-            summary: "{{fields.title}}"
-            fields:
-              - { label: "العنوان (مثال: فكرة × فكرة)", name: "title", widget: "string" }
-              - label: "التصنيف"
-                name: "category"
-                widget: "select"
-                options: ["فلسفة", "تاريخ", "علم نفس", "سياسة", "أفلام", "موسيقى", "دين", "علوم"]
-              - { label: "مقدمة: ليه الرابط ده يبدو مستحيل", name: "intro", widget: "text" }
-              - { label: "الفكرة المخفية اللي بتربطهم", name: "hidden_idea", widget: "text" }
-              - { label: "صورة (اختياري)", name: "image", widget: "image", required: false }
-              - { label: "حلقة وثائقية ذات صلة (اختياري)", name: "related_episode", widget: "string", required: false }
-              - { label: "روابط مستحيلة مرتبطة (افصل بينهم بفاصلة، اختياري)", name: "related_links", widget: "string", required: false }
+              - { label: "رقم الملف (مثال: 01)", name: "number", widget: "string" }
+              - { label: "الرابط الفريد (بالإنجليزي، بدون مسافات، مثال: egypt-dark-side-of-the-moon)", name: "slug", widget: "string" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "التصنيف/الموضوع", name: "category", widget: "string" }
+              - { label: "وصف قصير (يظهر في الكارت)", name: "short_description", widget: "text" }
+              - { label: "صورة الغلاف", name: "cover_image", widget: "image" }
+              - { label: "المقدمة التحريرية", name: "intro", widget: "text" }
+              - { label: "القراءة المعمقة (اختياري)", name: "reading", widget: "text", required: false }
+              - label: "الخط الزمني (اختياري)"
+                name: "timeline"
+                widget: "list"
+                required: false
+                summary: "{{fields.year}} — {{fields.label}}"
+                fields:
+                  - { label: "السنة/التاريخ", name: "year", widget: "string" }
+                  - { label: "عنوان الحدث", name: "label", widget: "string" }
+                  - { label: "ملاحظة", name: "note", widget: "text", required: false }
+              - label: "الأرشيف (صور، اختياري)"
+                name: "archive"
+                widget: "list"
+                required: false
+                summary: "{{fields.caption}}"
+                fields:
+                  - { label: "الصورة", name: "image", widget: "image" }
+                  - { label: "وصف الصورة", name: "caption", widget: "string", required: false }
+              - label: "مرتبط بالملف (شخصيات/أعمال/أفكار، اختياري)"
+                name: "related"
+                widget: "list"
+                required: false
+                summary: "{{fields.type}} — {{fields.name}}"
+                fields:
+                  - { label: "النوع (فكرة/عمل/شخصية/حدث)", name: "type", widget: "string" }
+                  - { label: "الاسم", name: "name", widget: "string" }
+              - { label: "لينك الحلقة المرتبطة على يوتيوب (اختياري)", name: "episode_url", widget: "string", required: false }
+              - label: "مصادر ومراجع (اختياري)"
+                name: "sources"
+                widget: "list"
+                required: false
+                field: { label: "مصدر", name: "source", widget: "string" }
