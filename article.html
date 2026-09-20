@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقال | في البرزخ</title>
+<link rel="icon" href="/images/logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --panel:#0e0e0e; --gold:#c9a876; --gold-bright:#e0c496; --gold-dim:#8a734f;
+    --wine:#6e2635; --mist:#a3a0987d; --mist2:#b8b3a8; --text:#ece7dc;
+    --bg:#050505; --bg-soft:#0d0d0d; --surface:#11100f;
+    --border:rgba(201,168,118,.18); --border-strong:rgba(201,168,118,.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); position:relative;}
+  h1,h2,h3{font-family:'Amiri',serif; font-weight:700;}
+  body::before{
+    content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+    opacity:.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  nav{position:fixed; top:0; right:0; left:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 6vw; background:rgba(5,5,5,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--border);}
+  nav .brand img{height:34px; width:auto; display:block;}
+  nav .nav-links{display:flex; gap:18px; align-items:center;}
+  nav a.back{color:var(--gold-bright); text-decoration:none; font-size:.85rem;}
+  nav a.back:hover{color:var(--gold);}
+
+  .article-hero{position:relative; min-height:56vh; display:flex; align-items:flex-end; overflow:hidden;}
+  .article-hero-bg{position:absolute; inset:0; background-size:cover; background-position:center; filter:saturate(.85) contrast(1.05);}
+  .article-hero-bg::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(5,5,5,.25) 0%, rgba(5,5,5,.6) 58%, rgba(5,5,5,.98) 100%);}
+  .article-hero-inner{position:relative; z-index:2; padding:0 8vw 54px; max-width:880px;}
+  .article-tag{font-size:.72rem; color:var(--gold); letter-spacing:2.5px; margin-bottom:16px; display:block;}
+  .article-hero-inner h1{font-size:clamp(1.9rem, 4.6vw, 3rem); line-height:1.5;}
+
+  /* the reading column — the heart of the fix: generous width, tall lines, real rhythm */
+  main{max-width:760px; margin:0 auto; padding:64px 7vw 110px; position:relative; z-index:2;}
+
+  .article-body{font-size:1.08rem; line-height:2.15; color:var(--text);}
+  .article-body p{margin-bottom:1.6em;}
+  .article-body h1, .article-body h2, .article-body h3{
+    color:var(--gold-bright); line-height:1.6; margin:2.2em 0 .9em;
+  }
+  .article-body h1{font-size:1.75rem;}
+  .article-body h2{font-size:1.45rem;}
+  .article-body h3{font-size:1.2rem;}
+  .article-body h1:first-child, .article-body h2:first-child{margin-top:0;}
+  .article-body strong{color:var(--gold-bright); font-weight:700;}
+  .article-body em{color:var(--mist2); font-style:italic;}
+  .article-body blockquote{
+    border-right:2px solid var(--gold-dim); padding:6px 20px 6px 0; margin:2em 0;
+    color:var(--mist2); font-family:'Amiri',serif; font-size:1.12rem; line-height:2;
+  }
+  .article-body ul, .article-body ol{margin:0 1.4em 1.6em 0; padding-right:.6em;}
+  .article-body li{margin-bottom:.7em;}
+  .article-body hr{border:none; border-top:1px solid var(--border); margin:2.6em 0;}
+  .article-body a{color:var(--gold-bright);}
+
+  .article-foot{margin-top:60px; padding-top:30px; border-top:1px solid var(--border); display:flex; gap:14px; flex-wrap:wrap;}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:2px; text-decoration:none; font-size:.88rem; transition:opacity .3s, border-color .3s;}
+  .btn-primary{background:var(--gold); color:#111; font-weight:700;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-ghost{border:1px solid var(--border-strong); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--gold);}
+
+  footer{text-align:center; padding:40px 6vw; color:var(--mist2); font-size:.76rem; border-top:1px solid var(--border); position:relative; z-index:2;}
+  footer img{height:18px; vertical-align:middle; margin-left:8px; opacity:.7; filter:grayscale(1);}
+
+  @media (max-width:760px){
+    nav{padding:14px 5vw;}
+    nav .nav-links{gap:12px;}
+    nav a.back{font-size:.78rem;}
+    .article-hero{min-height:44vh;}
+    .article-hero-inner{padding:0 7vw 40px;}
+    main{padding:44px 7vw 80px;}
+    .article-body{font-size:1.04rem; line-height:2.1;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><img src="/images/logo.jpg" alt="في البرزخ"></div>
+  <div class="nav-links">
+    <a href="/articles.html" class="back">→ كل المقالات</a>
+    <a href="/index.html" class="back">الرئيسية</a>
+  </div>
+</nav>
+
+<div id="article-root">
+  <p style="padding:160px 8vw; text-align:center; color:var(--mist2);">جاري تحميل المقال...</p>
+</div>
+
+<footer>
+  <img src="/images/logo.jpg" alt="">
+  © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+function escapeHTML(str){
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+/* Minimal, safe markdown renderer.
+   Everything is HTML-escaped FIRST, then a small set of markdown patterns is
+   turned into tags — so article text can never inject markup into the page. */
+function renderMarkdown(raw){
+  if(!raw) return '';
+  let text = escapeHTML(raw).replace(/\r\n/g, '\n');
+
+  // split into blocks on blank lines, handle each block by type
+  const blocks = text.split(/\n{2,}/);
+  const out = blocks.map(block => {
+    const b = block.trim();
+    if(!b) return '';
+
+    // horizontal rule
+    if(/^(---|\*\*\*|___)$/.test(b)) return '<hr>';
+
+    // headings
+    const h = b.match(/^(#{1,3})\s+(.+)$/);
+    if(h && !b.includes('\n')){
+      const level = h[1].length;
+      return `<h${level}>${inline(h[2])}</h${level}>`;
+    }
+
+    // blockquote (note: '>' is already escaped to '&gt;' at this point)
+    if(b.split('\n').every(l => /^(&gt;|>)\s?/.test(l))){
+      const inner = b.split('\n').map(l => l.replace(/^(&gt;|>)\s?/, '')).join(' ');
+      return `<blockquote>${inline(inner)}</blockquote>`;
+    }
+
+    // unordered list
+    if(b.split('\n').every(l => /^[-*]\s+/.test(l.trim()))){
+      const items = b.split('\n').map(l => `<li>${inline(l.trim().replace(/^[-*]\s+/, ''))}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    }
+
+    // ordered list
+    if(b.split('\n').every(l => /^\d+[.)]\s+/.test(l.trim()))){
+      const items = b.split('\n').map(l => `<li>${inline(l.trim().replace(/^\d+[.)]\s+/, ''))}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    }
+
+    // mixed block that starts with a heading line then prose
+    const lines = b.split('\n');
+    if(/^#{1,3}\s+/.test(lines[0])){
+      const m = lines[0].match(/^(#{1,3})\s+(.+)$/);
+      const rest = lines.slice(1).join('\n').trim();
+      const head = `<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`;
+      return rest ? head + `<p>${inline(rest).replace(/\n/g, '<br>')}</p>` : head;
+    }
+
+    // plain paragraph (single newlines become line breaks)
+    return `<p>${inline(b).replace(/\n/g, '<br>')}</p>`;
+  });
+
+  return out.join('\n');
+}
+
+/* inline formatting: bold, italic, links — applied to already-escaped text */
+function inline(s){
+  return s
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+function slugify(title){
+  return encodeURIComponent((title || '').trim());
+}
+
+function render(article){
+  document.title = `${article.title || 'مقال'} | في البرزخ`;
+  const root = document.getElementById('article-root');
+  const cover = article.image || '/images/hero.jpg';
+
+  root.innerHTML = `
+    <header class="article-hero">
+      <div class="article-hero-bg" style="background-image:url('${escapeHTML(cover)}');"></div>
+      <div class="article-hero-inner">
+        <span class="article-tag">${escapeHTML(article.tag || 'مقال')}</span>
+        <h1>${escapeHTML(article.title || '')}</h1>
+      </div>
+    </header>
+    <main>
+      <div class="article-body">${renderMarkdown(article.description || '')}</div>
+      <div class="article-foot">
+        ${article.link ? `<a class="btn btn-primary" href="${escapeHTML(article.link)}" target="_blank" rel="noopener">المصدر الأصلي ↗</a>` : ''}
+        <a class="btn btn-ghost" href="/articles.html">كل المقالات ↗</a>
+        <a class="btn btn-ghost" href="/majlis.html">ناقش في مجلس البرزخ ↗</a>
+      </div>
+    </main>
+  `;
+}
+
+const params = new URLSearchParams(window.location.search);
+const wantedTitle = params.get('title');
+const wantedIndex = params.get('i');
+
+fetch('/content/articles.json').then(r => r.json()).then(data => {
+  const list = Array.isArray(data.articles) ? data.articles : [];
+  let article = null;
+
+  if(wantedTitle){
+    article = list.find(a => (a.title || '').trim() === wantedTitle.trim());
+  }
+  if(!article && wantedIndex !== null){
+    const i = parseInt(wantedIndex, 10);
+    if(!isNaN(i) && list[i]) article = list[i];
+  }
+
+  if(!article){
+    document.getElementById('article-root').innerHTML =
+      `<p style="padding:160px 8vw; text-align:center; color:var(--mist2);">المقال غير موجود. <a href="/articles.html" style="color:var(--gold-bright);">ارجع لكل المقالات ↗</a></p>`;
+    return;
+  }
+  render(article);
+}).catch(() => {
+  document.getElementById('article-root').innerHTML =
+    `<p style="padding:160px 8vw; text-align:center; color:var(--mist2);">تعذر تحميل المقال.</p>`;
+});
+</script>
+
+</body>
+</html>
