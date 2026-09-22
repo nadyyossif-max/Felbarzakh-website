@@ -126,6 +126,8 @@
   .card:hover .thumb{transform:scale(1.05); filter:grayscale(0) contrast(1.05);}
   .card .card-body{padding:32px 34px 38px;}
   .card .tag{font-size:.7rem; color:var(--gold); letter-spacing:2.5px; margin-bottom:14px; display:block;}
+  .card .card-cta{font-size:.78rem; color:var(--gold-bright); letter-spacing:.5px; display:inline-block; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);}
+  .content-modal-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:18px;}
   .portals{padding:70px 8vw 10px; position:relative; z-index:2;}
   .portals-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:1px; background:var(--border);}
   .portal-card{position:relative; display:block; padding:40px 24px; text-align:center; text-decoration:none; background:var(--bg); transition:background .4s ease;}
@@ -349,7 +351,7 @@
     <span class="tag" id="content-modal-tag"></span>
     <h2 id="content-modal-title"></h2>
     <p class="def" id="content-modal-text"></p>
-    <a href="#" target="_blank" rel="noopener" id="content-modal-link" class="btn btn-primary" style="display:none; margin-top:10px;">شاهد الحلقة ↗</a>
+    <div id="content-modal-links" class="content-modal-links"></div>
   </div>
 </div>
 
@@ -454,6 +456,7 @@ function cardHTML(item, index){
       <span class="tag">${item.tag || ''}</span>
       <h3>${item.title || ''}</h3>
       <p>${item.description || ''}</p>
+      <span class="card-cta">التفاصيل والشراء ↗</span>
     </div>
   </div>`;
 }
@@ -472,13 +475,16 @@ function openContentModal(item){
   document.getElementById('content-modal-tag').textContent = item.tag || '';
   document.getElementById('content-modal-title').textContent = item.title || '';
   document.getElementById('content-modal-text').textContent = item.description || '';
-  const linkBtn = document.getElementById('content-modal-link');
-  if(item.link){
-    linkBtn.href = item.link;
-    linkBtn.style.display = 'inline-flex';
-  } else {
-    linkBtn.style.display = 'none';
-  }
+
+  const linksBox = document.getElementById('content-modal-links');
+  const links = Array.isArray(item.purchase_links) && item.purchase_links.length
+    ? item.purchase_links
+    : (item.link ? [{ label: 'رابط الشراء', url: item.link }] : []);
+
+  linksBox.innerHTML = links.map(l =>
+    `<a href="${l.url}" target="_blank" rel="noopener" class="btn btn-primary">${l.label || 'رابط'} ↗</a>`
+  ).join('');
+
   document.getElementById('content-modal').classList.add('open');
 }
 
