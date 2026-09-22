@@ -1,0 +1,180 @@
+backend:
+  name: github
+  repo: nadyyossif-max/Felbarzakh-website
+  branch: main
+  base_url: https://felbarzakh-website.pages.dev
+  auth_endpoint: api/auth
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "site"
+    label: "إعدادات عامة"
+    files:
+      - name: "site"
+        label: "الرئيسية والتواصل"
+        file: "content/site.json"
+        fields:
+          - { label: "نص فوق العنوان (الهيرو)", name: "hero_eyebrow", widget: "string" }
+          - { label: "فقرة الهيرو", name: "hero_lede", widget: "text" }
+          - { label: "عنوان صغير - قسم القناة", name: "channel_eyebrow", widget: "string" }
+          - { label: "عنوان قسم القناة", name: "channel_title", widget: "string" }
+          - { label: "عنوان صغير - قسم المقالات", name: "articles_eyebrow", widget: "string" }
+          - { label: "عنوان قسم المقالات", name: "articles_title", widget: "string" }
+          - { label: "عنوان صغير - قسم الأعمال", name: "works_eyebrow", widget: "string" }
+          - { label: "عنوان قسم الأعمال", name: "works_title", widget: "string" }
+          - { label: "عنوان صغير - قسم الكاتب", name: "writer_eyebrow", widget: "string" }
+          - { label: "عنوان قسم الكاتب", name: "writer_title", widget: "string" }
+          - { label: "نبذة عن الكاتب - فقرة ١", name: "writer_bio_1", widget: "text" }
+          - { label: "نبذة عن الكاتب - فقرة ٢", name: "writer_bio_2", widget: "text" }
+          - { label: "صورة الكاتب", name: "writer_photo", widget: "image", required: false }
+          - { label: "رقم: روايات", name: "stat_novels_num", widget: "string" }
+          - { label: "وصف: روايات", name: "stat_novels_label", widget: "string" }
+          - { label: "رقم: سنوات", name: "stat_years_num", widget: "string" }
+          - { label: "وصف: سنوات", name: "stat_years_label", widget: "string" }
+          - { label: "رقم: مسرحيات", name: "stat_plays_num", widget: "string" }
+          - { label: "وصف: مسرحيات", name: "stat_plays_label", widget: "string" }
+          - { label: "عنوان قسم التواصل", name: "contact_title", widget: "string" }
+          - { label: "فقرة قسم التواصل", name: "contact_lede", widget: "text" }
+          - { label: "لينك اليوتيوب", name: "youtube_url", widget: "string" }
+          - { label: "الإيميل", name: "email", widget: "string" }
+          - { label: "لينك فيسبوك", name: "facebook_url", widget: "string", required: false }
+          - { label: "لينك انستجرام", name: "instagram_url", widget: "string", required: false }
+          - { label: "لينك تويتر/X", name: "twitter_url", widget: "string", required: false }
+          - { label: "عنوان صغير - خدمات الكتابة", name: "services_eyebrow", widget: "string", required: false }
+          - { label: "عنوان قسم خدمات الكتابة", name: "services_title", widget: "string", required: false }
+          - { label: "وصف خدمات الكتابة", name: "services_lede", widget: "text", required: false }
+          - label: "قائمة الخدمات"
+            name: "services_items"
+            widget: "list"
+            required: false
+            field: { label: "خدمة", name: "item", widget: "string" }
+
+  - name: "episodes"
+    label: "حلقات القناة"
+    files:
+      - name: "episodes"
+        label: "قائمة الحلقات"
+        file: "content/episodes.json"
+        fields:
+          - label: "الحلقات"
+            name: "episodes"
+            widget: "list"
+            fields:
+              - { label: "تصنيف صغير", name: "tag", widget: "string", default: "حلقة" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "الصورة (تمبنيل)", name: "image", widget: "image" }
+              - { label: "لينك اليوتيوب (اختياري)", name: "link", widget: "string", required: false }
+
+  - name: "articles"
+    label: "المقالات"
+    files:
+      - name: "articles"
+        label: "قائمة المقالات"
+        file: "content/articles.json"
+        fields:
+          - label: "المقالات"
+            name: "articles"
+            widget: "list"
+            fields:
+              - { label: "تصنيف صغير", name: "tag", widget: "string", default: "مقال" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "الصورة", name: "image", widget: "image" }
+              - { label: "لينك خارجي (اختياري)", name: "link", widget: "string", required: false }
+
+  - name: "works"
+    label: "الأعمال الأدبية"
+    files:
+      - name: "works"
+        label: "قائمة الأعمال"
+        file: "content/works.json"
+        fields:
+          - label: "الأعمال"
+            name: "works"
+            widget: "list"
+            fields:
+              - { label: "النوع (رواية / مسرحية)", name: "tag", widget: "string" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "صورة الغلاف", name: "image", widget: "image" }
+              - label: "روابط الشراء (تقدر تضيف أكتر من رابط)"
+                name: "purchase_links"
+                widget: "list"
+                required: false
+                summary: "{{fields.label}}"
+                fields:
+                  - { label: "اسم الرابط (مثال: دار عين حورس، أمازون كيندل)", name: "label", widget: "string" }
+                  - { label: "الرابط", name: "url", widget: "string" }
+              - { label: "لينك قديم (اختياري، مش محتاجه لو استخدمت روابط الشراء فوق)", name: "link", widget: "string", required: false }
+
+  - name: "team"
+    label: "الفريق"
+    files:
+      - name: "team"
+        label: "أعضاء الفريق"
+        file: "content/team.json"
+        fields:
+          - label: "الأعضاء"
+            name: "team"
+            widget: "list"
+            fields:
+              - { label: "الاسم", name: "name", widget: "string" }
+              - { label: "الدور", name: "role", widget: "string" }
+              - { label: "نبذة قصيرة", name: "bio", widget: "text" }
+              - { label: "الصورة الشخصية", name: "photo", widget: "image" }
+              - { label: "لينك (سوشيال/بورتفوليو، اختياري)", name: "link", widget: "string", required: false }
+
+  - name: "files_dossiers"
+    label: "ملفات البرزخ"
+    files:
+      - name: "files_dossiers"
+        label: "قائمة الملفات"
+        file: "content/files.json"
+        fields:
+          - label: "الملفات"
+            name: "files"
+            widget: "list"
+            summary: "ملف {{fields.number}} — {{fields.title}}"
+            fields:
+              - { label: "رقم الملف (مثال: 01)", name: "number", widget: "string" }
+              - { label: "الرابط الفريد (بالإنجليزي، بدون مسافات، مثال: egypt-dark-side-of-the-moon)", name: "slug", widget: "string" }
+              - { label: "العنوان", name: "title", widget: "string" }
+              - { label: "التصنيف/الموضوع", name: "category", widget: "string" }
+              - { label: "وصف قصير (يظهر في الكارت)", name: "short_description", widget: "text" }
+              - { label: "صورة الغلاف", name: "cover_image", widget: "image" }
+              - { label: "المقدمة التحريرية", name: "intro", widget: "text" }
+              - { label: "القراءة المعمقة (اختياري)", name: "reading", widget: "text", required: false }
+              - label: "الخط الزمني (اختياري)"
+                name: "timeline"
+                widget: "list"
+                required: false
+                summary: "{{fields.year}} — {{fields.label}}"
+                fields:
+                  - { label: "السنة/التاريخ", name: "year", widget: "string" }
+                  - { label: "عنوان الحدث", name: "label", widget: "string" }
+                  - { label: "ملاحظة", name: "note", widget: "text", required: false }
+              - label: "الأرشيف (صور، اختياري)"
+                name: "archive"
+                widget: "list"
+                required: false
+                summary: "{{fields.caption}}"
+                fields:
+                  - { label: "الصورة", name: "image", widget: "image" }
+                  - { label: "وصف الصورة", name: "caption", widget: "string", required: false }
+              - label: "مرتبط بالملف (شخصيات/أعمال/أفكار، اختياري)"
+                name: "related"
+                widget: "list"
+                required: false
+                summary: "{{fields.type}} — {{fields.name}}"
+                fields:
+                  - { label: "النوع (فكرة/عمل/شخصية/حدث)", name: "type", widget: "string" }
+                  - { label: "الاسم", name: "name", widget: "string" }
+              - { label: "لينك الحلقة المرتبطة على يوتيوب (اختياري)", name: "episode_url", widget: "string", required: false }
+              - label: "مصادر ومراجع (اختياري)"
+                name: "sources"
+                widget: "list"
+                required: false
+                field: { label: "مصدر", name: "source", widget: "string" }
