@@ -51,6 +51,40 @@
   .intro-text{font-size:1.12rem; line-height:2.1; color:var(--text); font-family:'Amiri',serif;}
   .reading-text{line-height:2.1; font-size:1.02rem; color:var(--text); white-space:pre-line;}
 
+  .reading-preview-wrap{position:relative;}
+  .reading-preview-wrap.is-clamped .reading-text{
+    display:-webkit-box; -webkit-line-clamp:10; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .reading-preview-wrap.is-clamped::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:92px;
+    background:linear-gradient(180deg, transparent, var(--bg) 82%); pointer-events:none;
+  }
+  .enter-waraqa-btn{
+    display:inline-flex; align-items:center; gap:8px; margin-top:22px; padding:12px 24px;
+    border-radius:2px; border:1px solid var(--gold-dim); background:transparent; color:var(--gold-bright);
+    font-family:'Cairo',sans-serif; font-size:.88rem; cursor:pointer; transition:border-color .25s, color .25s, background .25s;
+  }
+  .enter-waraqa-btn:hover{border-color:var(--gold); background:rgba(201,168,118,.08); color:var(--gold);}
+
+  .waraqa-overlay{
+    position:fixed; inset:0; z-index:1000; background:rgba(4,4,4,.98); backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px); overflow-y:auto; display:none;
+  }
+  .waraqa-overlay.open{display:block;}
+  .waraqa-topbar{
+    position:sticky; top:0; z-index:2; display:flex; justify-content:flex-end; padding:20px 6vw;
+    background:linear-gradient(180deg, rgba(4,4,4,.98) 60%, transparent);
+  }
+  .waraqa-close{
+    background:transparent; border:1px solid var(--border-strong); color:var(--mist2); font-family:'Cairo',sans-serif;
+    font-size:.82rem; padding:9px 18px; border-radius:2px; cursor:pointer; transition:color .25s, border-color .25s;
+  }
+  .waraqa-close:hover{color:var(--gold-bright); border-color:var(--gold);}
+  .waraqa-inner{max-width:700px; margin:0 auto; padding:10px 8vw 130px;}
+  .waraqa-cat{font-size:.72rem; color:var(--gold-dim); letter-spacing:2px; display:block; margin-bottom:14px;}
+  .waraqa-inner h2{font-size:clamp(1.6rem, 3.6vw, 2.2rem); line-height:1.5; margin-bottom:38px;}
+  .waraqa-text{font-family:'Amiri',serif; font-size:1.18rem; line-height:2.35; color:var(--text); white-space:pre-line;}
+
   .timeline{position:relative; padding-right:26px; border-right:1px solid var(--border-strong);}
   .timeline-item{position:relative; margin-bottom:32px; padding-right:26px;}
   .timeline-item::before{content:""; position:absolute; right:-31px; top:4px; width:9px; height:9px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 3px var(--bg), 0 0 0 4px var(--border-strong);}
@@ -97,6 +131,18 @@
   <p style="padding:150px 8vw; text-align:center; color:var(--mist2);">جاري تحميل الملف...</p>
 </div>
 
+<div class="waraqa-overlay" id="waraqa-overlay">
+  <div class="waraqa-topbar">
+    <button class="waraqa-close" id="waraqa-close">✕ إغلاق</button>
+  </div>
+  <div class="waraqa-inner">
+    <div class="threshold"><span>الوراقة</span></div>
+    <span class="waraqa-cat" id="waraqa-cat"></span>
+    <h2 id="waraqa-heading"></h2>
+    <div class="waraqa-text" id="waraqa-body"></div>
+  </div>
+</div>
+
 <footer>
   <img src="/images/logo.jpg" alt="">
   © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
@@ -110,6 +156,31 @@ function escapeHTML(str){
   div.textContent = str || '';
   return div.innerHTML;
 }
+
+const WARAQA_THRESHOLD = 900; // chars — beyond this, القراءة تتعرض كمعاينة فقط
+
+function openWaraqa(f){
+  document.getElementById('waraqa-cat').textContent = f.category || '';
+  document.getElementById('waraqa-heading').textContent = f.title || '';
+  document.getElementById('waraqa-body').textContent = f.reading || '';
+  const overlay = document.getElementById('waraqa-overlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWaraqa(){
+  document.getElementById('waraqa-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('waraqa-close').addEventListener('click', closeWaraqa);
+document.getElementById('waraqa-overlay').addEventListener('click', (e) => {
+  if(e.target.id === 'waraqa-overlay') closeWaraqa();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape') closeWaraqa();
+});
 
 function timelineHTML(items){
   if(!items || !items.length) return '';
@@ -198,7 +269,10 @@ function render(f){
       </section>
       ${f.reading ? `<section class="dossier-section" id="sec-reading">
         <div class="section-label"><span>القراءة</span></div>
-        <div class="reading-text">${escapeHTML(f.reading)}</div>
+        <div class="reading-preview-wrap${f.reading.length > WARAQA_THRESHOLD ? ' is-clamped' : ''}">
+          <div class="reading-text">${escapeHTML(f.reading)}</div>
+        </div>
+        ${f.reading.length > WARAQA_THRESHOLD ? `<button class="enter-waraqa-btn" id="enter-waraqa-btn">ادخل الوراقة، واقرأ القراءة كاملة ↗</button>` : ''}
       </section>` : ''}
       ${timelineHTML(f.timeline)}
       ${archiveHTML(f.archive)}
@@ -207,6 +281,9 @@ function render(f){
       ${sourcesHTML(f.sources)}
     </main>
   `;
+
+  const enterBtn = document.getElementById('enter-waraqa-btn');
+  if(enterBtn) enterBtn.addEventListener('click', () => openWaraqa(f));
 
   const navLinks = root.querySelectorAll('.dossier-nav a');
   const sections = Array.from(root.querySelectorAll('main section'));
