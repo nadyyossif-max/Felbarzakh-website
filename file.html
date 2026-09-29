@@ -136,7 +136,6 @@
     <button class="waraqa-close" id="waraqa-close">✕ إغلاق</button>
   </div>
   <div class="waraqa-inner">
-    <div class="threshold"><span>الوراقة</span></div>
     <span class="waraqa-cat" id="waraqa-cat"></span>
     <h2 id="waraqa-heading"></h2>
     <div class="waraqa-text" id="waraqa-body"></div>
@@ -272,7 +271,7 @@ function render(f){
         <div class="reading-preview-wrap${f.reading.length > WARAQA_THRESHOLD ? ' is-clamped' : ''}">
           <div class="reading-text">${escapeHTML(f.reading)}</div>
         </div>
-        ${f.reading.length > WARAQA_THRESHOLD ? `<button class="enter-waraqa-btn" id="enter-waraqa-btn">ادخل الوراقة، واقرأ القراءة كاملة ↗</button>` : ''}
+        ${f.reading.length > WARAQA_THRESHOLD ? `<button class="enter-waraqa-btn" id="enter-waraqa-btn">استكمل القراءة ↓</button>` : ''}
       </section>` : ''}
       ${timelineHTML(f.timeline)}
       ${archiveHTML(f.archive)}
