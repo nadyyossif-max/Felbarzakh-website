@@ -84,6 +84,7 @@
   .post-top{display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.82rem; color:var(--mist2);}
   .post-top .uname{color:var(--gold-bright);}
   a.uname{color:var(--gold-bright); text-decoration:none;}
+  .founder-badge{display:inline-flex; align-items:center; gap:3px; margin-inline-start:6px; padding:1px 9px; border:1px solid var(--gold-dim); border-radius:12px; font-size:.66rem; color:var(--gold-bright); vertical-align:middle;}
   a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
@@ -576,7 +577,7 @@ function postCardHTML(p){
       ${p.avatar_url
         ? `<img class="avatar" style="width:24px;height:24px;" src="${escapeHTML(p.avatar_url)}" alt="">`
         : `<span class="avatar-fallback" style="width:24px;height:24px;font-size:.8rem;">${escapeHTML((p.username||'?').charAt(0))}</span>`}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>${p.is_admin ? '<span class="founder-badge">👑 المؤسس</span>' : ''}
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>

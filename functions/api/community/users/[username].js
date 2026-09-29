@@ -8,7 +8,7 @@ export async function onRequestGet(context) {
   if (!username) return json({ error: 'اسم مستخدم غير صالح.' }, 400);
 
   const user = await db.prepare(
-    'SELECT id, username, avatar_url, bio, created_at, reputation FROM users WHERE username = ? AND is_banned = 0'
+    'SELECT id, username, avatar_url, bio, created_at, reputation, is_admin FROM users WHERE username = ? AND is_banned = 0'
   ).bind(username).first();
   if (!user) return json({ error: 'المستخدم غير موجود.' }, 404);
 
