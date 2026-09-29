@@ -100,7 +100,14 @@ collections:
               - { label: "العنوان", name: "title", widget: "string" }
               - { label: "الوصف", name: "description", widget: "text" }
               - { label: "صورة الغلاف", name: "image", widget: "image" }
-              - { label: "لينك (اختياري)", name: "link", widget: "string", required: false }
+              - label: "روابط الشراء (تقدر تضيف أكتر من لينك)"
+                name: "purchase_links"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "اسم اللينك (مثلاً: سماوي / أمازون)", name: "label", widget: "string" }
+                  - { label: "اللينك", name: "url", widget: "string" }
+              - { label: "لينك قديم (اختياري - سيبه فاضي لو استخدمت روابط الشراء فوق)", name: "link", widget: "string", required: false }
 
   - name: "team"
     label: "الفريق"
