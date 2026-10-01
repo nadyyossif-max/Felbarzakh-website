@@ -75,6 +75,18 @@
   .btn-primary{background:var(--gold); color:#111; font-weight:700;}
   .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
   .btn-ghost:hover{border-color:var(--gold);}
+  .modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal.open{display:flex;}
+  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
+  .modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:540px; width:100%; max-height:86vh; overflow-y:auto; z-index:1;}
+  .modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
+  .modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
+  .modal-box h2{font-size:1.4rem; color:var(--gold-bright); margin:6px 0 24px; border:none; padding:0;}
+  .field{margin-bottom:18px;}
+  .field label{display:block; font-size:.82rem; color:var(--mist2); margin-bottom:8px;}
+  .field input, .field textarea, .field select{width:100%; padding:13px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--black); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text);}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--gold);}
+  .field textarea{resize:vertical; min-height:140px; line-height:1.7;}
 
   .comment{padding:20px 0; border-bottom:1px solid rgba(201,168,118,.1);}
   .comment .c-body{color:var(--text); line-height:1.85; font-size:.95rem; margin:10px 0 12px; white-space:pre-wrap;}
@@ -120,6 +132,30 @@
   <p class="empty-state" id="loading-state">بنجيب المنشور...</p>
 </main>
 
+<div id="edit-post-modal" class="modal">
+  <div class="modal-overlay"></div>
+  <div class="modal-box">
+    <button class="modal-close" id="edit-post-modal-close">✕</button>
+    <h2>تعديل المنشور</h2>
+    <p class="form-error" id="edit-post-error"></p>
+    <form id="edit-post-form">
+      <div class="field">
+        <label>التصنيف</label>
+        <select id="edit-post-category" required></select>
+      </div>
+      <div class="field">
+        <label>العنوان</label>
+        <input type="text" id="edit-post-title" required minlength="3" maxlength="200">
+      </div>
+      <div class="field">
+        <label>النص</label>
+        <textarea id="edit-post-body" required minlength="5" maxlength="8000"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">حفظ التعديلات</button>
+    </form>
+  </div>
+</div>
+
 <footer>
   <img src="/images/logo.jpg" alt="">
   © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
@@ -134,6 +170,57 @@ const postId = new URLSearchParams(window.location.search).get('id');
 let currentUser = null;
 let postData = null;
 let commentsData = [];
+
+const CATEGORIES = ['نقاش', 'اقتراح حلقة', 'مناقشة حلقة', 'فكرة', 'سؤال', 'كتاب / فيلم / موسيقى', 'أخرى'];
+
+function openEditPostModal(){
+  const sel = document.getElementById('edit-post-category');
+  sel.innerHTML = CATEGORIES.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+  sel.value = postData.category;
+  document.getElementById('edit-post-title').value = postData.title;
+  document.getElementById('edit-post-body').value = postData.body;
+  document.getElementById('edit-post-error').classList.remove('show');
+  document.getElementById('edit-post-modal').classList.add('open');
+}
+function closeEditPostModal(){
+  document.getElementById('edit-post-modal').classList.remove('open');
+}
+document.getElementById('edit-post-modal-close').addEventListener('click', closeEditPostModal);
+document.querySelector('#edit-post-modal .modal-overlay').addEventListener('click', closeEditPostModal);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeEditPostModal(); });
+
+document.getElementById('edit-post-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('edit-post-error');
+  errEl.classList.remove('show');
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  const payload = {
+    title: document.getElementById('edit-post-title').value.trim(),
+    body: document.getElementById('edit-post-body').value.trim(),
+    category: document.getElementById('edit-post-category').value,
+    related_episode_slug: postData.related_episode_slug || null,
+    related_article_slug: postData.related_article_slug || null
+  };
+  try{
+    submitBtn.disabled = true;
+    const res = await fetch(`${API}/posts/${postId}`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    submitBtn.disabled = false;
+    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    postData.title = payload.title;
+    postData.body = payload.body;
+    postData.category = payload.category;
+    closeEditPostModal();
+    renderPage();
+  } catch(err){
+    submitBtn.disabled = false;
+    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
+  }
+});
 
 const HEART_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20.5s-7.5-4.6-9.7-9C.8 8 2 4.7 5.2 4c2.1-.5 3.9.4 4.9 1.9C11.1 4.4 12.9 3.5 15 4c3.2.7 4.4 4 3 7.5-2.2 4.4-6 9-6 9z"/></svg>';
 const FLAG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 21V4h13l-3 4 3 4H5"/></svg>';
@@ -206,6 +293,7 @@ function renderPage(){
       </div>
       <button class="icon-btn" id="report-post-btn">${FLAG_ICON} إبلاغ</button>
       ${currentUser && currentUser.is_admin ? `<button class="icon-btn spacer" id="pin-post-btn">${p.is_pinned ? '📌 إلغاء التثبيت' : '📌 تثبيت المنشور'}</button>` : ''}
+      ${canDeletePost ? `<button class="icon-btn spacer" id="edit-post-btn">✏️ تعديل</button>` : ''}
       ${canDeletePost ? `<button class="icon-btn danger spacer" id="delete-post-btn">${TRASH_ICON} حذف</button>` : ''}
     </div>
 
@@ -223,6 +311,7 @@ function renderPage(){
   document.getElementById('report-post-btn').addEventListener('click', () => reportContent('post', p.id));
   if(canDeletePost){
     document.getElementById('delete-post-btn').addEventListener('click', deletePost);
+    document.getElementById('edit-post-btn').addEventListener('click', openEditPostModal);
   }
 
   const pinBtn = document.getElementById('pin-post-btn');

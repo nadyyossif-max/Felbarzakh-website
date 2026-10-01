@@ -1,6 +1,8 @@
 // functions/api/community/profile.js
-// PATCH { bio?, avatar_url? } -> updates the logged-in user's own profile.
+// PATCH { bio?, avatar_url?, username? } -> updates the logged-in user's own profile.
 import { getSessionUser } from './_lib/crypto.js';
+
+const USERNAME_RE = /^[a-zA-Z0-9_\u0600-\u06FF]{3,24}$/;
 
 export async function onRequestPatch(context) {
   const { request, env } = context;
@@ -23,11 +25,28 @@ export async function onRequestPatch(context) {
     return json({ error: 'رابط الصورة لازم يبدأ بـ https://' }, 400);
   }
 
-  await db.prepare(
-    'UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?'
-  ).bind(bio || null, avatarUrl || null, user.id).run();
+  let username = user.username;
+  if (body.username != null) {
+    const newUsername = String(body.username).trim();
+    if (newUsername !== user.username) {
+      if (!USERNAME_RE.test(newUsername)) {
+        return json({ error: 'اسم المستخدم لازم يكون بين 3 و24 حرف (حروف، أرقام، أو _).' }, 400);
+      }
+      const existing = await db.prepare(
+        'SELECT id FROM users WHERE username = ? AND id != ?'
+      ).bind(newUsername, user.id).first();
+      if (existing) {
+        return json({ error: 'اسم المستخدم ده مستخدم بالفعل.' }, 409);
+      }
+      username = newUsername;
+    }
+  }
 
-  return json({ user: { ...user, bio: bio || null, avatar_url: avatarUrl || null } });
+  await db.prepare(
+    'UPDATE users SET username = ?, bio = ?, avatar_url = ? WHERE id = ?'
+  ).bind(username, bio || null, avatarUrl || null, user.id).run();
+
+  return json({ user: { ...user, username, bio: bio || null, avatar_url: avatarUrl || null } });
 }
 
 function json(data, status = 200) {

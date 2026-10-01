@@ -113,6 +113,11 @@
         <p id="edit-avatar-status" style="font-size:.78rem; color:var(--mist2); margin-top:6px;"></p>
       </div>
       <div class="field">
+        <label>اسم المستخدم</label>
+        <input type="text" id="edit-username" maxlength="24" placeholder="اسم المستخدم">
+        <p style="font-size:.76rem; color:var(--mist2); margin-top:6px;">حروف إنجليزية أو عربية وأرقام و "_" فقط، من 3 إلى 24 حرف.</p>
+      </div>
+      <div class="field">
         <label>نبذة قصيرة</label>
         <textarea id="edit-bio" maxlength="300" placeholder="اكتب نبذة عن نفسك..."></textarea>
       </div>
@@ -215,6 +220,7 @@ function renderPage(){
 function openEditModal(){
   document.getElementById('edit-error').classList.remove('show');
   document.getElementById('edit-avatar').value = profileUser.avatar_url || '';
+  document.getElementById('edit-username').value = profileUser.username || '';
   document.getElementById('edit-bio').value = profileUser.bio || '';
   document.getElementById('edit-modal').classList.add('open');
 }
@@ -230,6 +236,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
   const errEl = document.getElementById('edit-error');
   errEl.classList.remove('show');
   const bio = document.getElementById('edit-bio').value.trim();
+  const newUsername = document.getElementById('edit-username').value.trim();
   const fileInput = document.getElementById('edit-avatar-file');
   const statusEl = document.getElementById('edit-avatar-status');
   const submitBtn = e.target.querySelector('button[type="submit"]');
@@ -254,15 +261,21 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
     const res = await fetch(`${API}/profile`, {
       method: 'PATCH', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ avatar_url, bio: bio || null })
+      body: JSON.stringify({ avatar_url, bio: bio || null, username: newUsername })
     });
     const data = await res.json();
     submitBtn.disabled = false;
     if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
+    const usernameChanged = data.user.username !== profileUser.username;
     profileUser.avatar_url = data.user.avatar_url;
     profileUser.bio = data.user.bio;
+    profileUser.username = data.user.username;
     statusEl.textContent = '';
     closeEditModal();
+    if(usernameChanged){
+      window.location.href = `/majlis-profile.html?u=${encodeURIComponent(data.user.username)}`;
+      return;
+    }
     renderPage();
   } catch(e){
     submitBtn.disabled = false;
