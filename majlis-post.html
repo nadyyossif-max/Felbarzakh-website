@@ -351,7 +351,7 @@ function commentHTML(c, isReply){
       <span class="dot">·</span>
       <span>${timeAgo(c.created_at)}</span>
     </div>
-    <div class="c-body">${escapeHTML(c.body)}</div>
+    <div class="c-body" id="c-body-${c.id}">${escapeHTML(c.body)}</div>
     <div class="c-actions">
       <div class="reaction-bar compact" data-target-type="comment" data-target-id="${c.id}">
         <button class="reaction-btn${c.my_reaction === 'مفيد' ? ' active' : ''}" data-type="مفيد" title="مفيد">💡</button>
@@ -361,6 +361,7 @@ function commentHTML(c, isReply){
         <span class="reaction-total">${c.like_count}</span>
       </div>
       ${!isReply ? `<button class="icon-btn reply-btn" data-id="${c.id}">${REPLY_ICON} رد</button>` : ''}
+      ${canDelete ? `<button class="icon-btn edit-comment-btn" data-id="${c.id}">✏️</button>` : ''}
       <button class="icon-btn report-comment-btn" data-id="${c.id}">${FLAG_ICON}</button>
       ${canDelete ? `<button class="icon-btn danger delete-comment-btn" data-id="${c.id}">${TRASH_ICON}</button>` : ''}
     </div>
@@ -396,6 +397,9 @@ function renderComments(){
   });
   container.querySelectorAll('.report-comment-btn').forEach(btn => {
     btn.addEventListener('click', () => reportContent('comment', parseInt(btn.dataset.id, 10)));
+  });
+  container.querySelectorAll('.edit-comment-btn').forEach(btn => {
+    btn.addEventListener('click', () => startEditComment(parseInt(btn.dataset.id, 10)));
   });
   container.querySelectorAll('.delete-comment-btn').forEach(btn => {
     btn.addEventListener('click', () => deleteComment(parseInt(btn.dataset.id, 10)));
@@ -482,6 +486,40 @@ async function deleteComment(commentId){
     });
     if(res.ok){
       commentsData = commentsData.filter(c => c.id !== commentId && c.parent_comment_id !== commentId);
+      renderComments();
+    }
+  } catch(e){}
+}
+
+function startEditComment(id){
+  const c = commentsData.find(x => x.id === id);
+  if(!c) return;
+  const bodyEl = document.getElementById(`c-body-${id}`);
+  bodyEl.innerHTML = `<div class="field" style="margin:0 0 8px;">
+    <textarea id="edit-c-textarea-${id}" maxlength="3000"></textarea>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <button class="btn btn-primary" style="padding:8px 18px; font-size:.8rem;" id="save-c-${id}">حفظ</button>
+    <button class="icon-btn" id="cancel-c-${id}">إلغاء</button>
+  </div>`;
+  document.getElementById(`edit-c-textarea-${id}`).value = c.body;
+  document.getElementById(`save-c-${id}`).addEventListener('click', () => saveEditComment(id));
+  document.getElementById(`cancel-c-${id}`).addEventListener('click', () => renderComments());
+}
+
+async function saveEditComment(id){
+  const textarea = document.getElementById(`edit-c-textarea-${id}`);
+  const newBody = textarea.value.trim();
+  if(!newBody) return;
+  try{
+    const res = await fetch(`${API}/comments`, {
+      method: 'PATCH', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ comment_id: id, body: newBody })
+    });
+    if(res.ok){
+      const c = commentsData.find(x => x.id === id);
+      if(c) c.body = newBody;
       renderComments();
     }
   } catch(e){}

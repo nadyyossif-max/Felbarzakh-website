@@ -1,6 +1,7 @@
 // functions/api/community/comments.js
 // GET    ?post_id=<id>              -> all comments for a post (flat list, client groups by parent_comment_id)
 // POST   { post_id, body, parent_comment_id? } -> create a comment or reply (requires login)
+// PATCH  { comment_id, body }       -> edit own comment (or admin)
 // DELETE { comment_id }             -> delete own comment (requires login)
 import { getSessionUser } from './_lib/crypto.js';
 import { awardPoints, checkAndAwardBadges, notify } from './_lib/gamification.js';
@@ -102,6 +103,38 @@ export async function onRequestPost(context) {
   }
 
   return json({ comment_id: commentId }, 201);
+}
+
+export async function onRequestPatch(context) {
+  const { request, env } = context;
+  const db = env.DB;
+
+  const user = await getSessionUser(request, db);
+  if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'بيانات غير صالحة.' }, 400);
+  }
+
+  const commentId = parseInt(body.comment_id, 10);
+  const content = (body.body || '').trim();
+  if (!commentId) return json({ error: 'comment_id غير صالح.' }, 400);
+  if (content.length < 1 || content.length > 3000) {
+    return json({ error: 'التعليق لازم يكون بين 1 و3000 حرف.' }, 400);
+  }
+
+  const comment = await db.prepare('SELECT user_id FROM comments WHERE id = ?').bind(commentId).first();
+  if (!comment) return json({ error: 'التعليق غير موجود.' }, 404);
+
+  if (comment.user_id !== user.id && !user.is_admin) {
+    return json({ error: 'مش مسموحلك تعدّل التعليق ده.' }, 403);
+  }
+
+  await db.prepare('UPDATE comments SET body = ? WHERE id = ?').bind(content, commentId).run();
+  return json({ ok: true });
 }
 
 export async function onRequestDelete(context) {
