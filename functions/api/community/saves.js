@@ -11,7 +11,8 @@
 //    -> always creates a new row (no toggle concept — use DELETE to remove one).
 //
 // DELETE { save_id } -> removes any of the current user's saved items.
-// GET    -> list current user's saved items (post/comment details joined; title/url as-is for notebook items), newest first.
+// GET    ?username=<name> -> list that user's saved items publicly (no login needed, read-only).
+//        (no username, logged in)          -> list the current user's own saved items.
 import { getSessionUser } from './_lib/crypto.js';
 
 const DB_TARGET_TYPES = ['post', 'comment'];
@@ -107,9 +108,21 @@ export async function onRequestDelete(context) {
 export async function onRequestGet(context) {
   const { request, env } = context;
   const db = env.DB;
+  const url = new URL(request.url);
+  const usernameParam = url.searchParams.get('username');
 
-  const user = await getSessionUser(request, db);
-  if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
+  let userId;
+  if (usernameParam) {
+    const targetUser = await db.prepare(
+      'SELECT id FROM users WHERE username = ? AND is_banned = 0'
+    ).bind(usernameParam).first();
+    if (!targetUser) return json({ error: 'المستخدم غير موجود.' }, 404);
+    userId = targetUser.id;
+  } else {
+    const user = await getSessionUser(request, db);
+    if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
+    userId = user.id;
+  }
 
   const { results } = await db.prepare(
     `SELECT s.id, s.target_type, s.target_id, s.title, s.url, s.note, s.created_at,
@@ -120,7 +133,7 @@ export async function onRequestGet(context) {
      LEFT JOIN comments c ON s.target_type = 'comment' AND c.id = s.target_id
      WHERE s.user_id = ?
      ORDER BY s.id DESC`
-  ).bind(user.id).all();
+  ).bind(userId).all();
 
   return json({ saves: results });
 }

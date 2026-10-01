@@ -143,23 +143,36 @@ function postCardHTML(p){
 }
 
 async function init(){
+  const params = new URLSearchParams(window.location.search);
+  const targetUsername = params.get('u');
+
   let session;
   try {
     const res = await fetch(`${API}/session`, { credentials: 'include' });
     session = await res.json();
   } catch { session = { user: null }; }
 
-  if (!session.user) {
+  const viewingUsername = targetUsername || (session.user ? session.user.username : null);
+
+  if (!viewingUsername) {
     document.getElementById('main-content').innerHTML =
       `<p class="empty-state">لازم تسجل دخول الأول عشان تشوف مساحتك.<br><br><a class="btn btn-ghost" href="/majlis.html">روح لمجلس البرزخ ↗</a></p>`;
     return;
   }
 
+  const isOwn = session.user && session.user.username === viewingUsername;
+
   const [profileRes, savesRes, followsRes] = await Promise.all([
-    fetch(`${API}/users/${encodeURIComponent(session.user.username)}`).then(r => r.json()),
-    fetch(`${API}/saves`, { credentials: 'include' }).then(r => r.json()),
-    fetch(`${API}/follows`, { credentials: 'include' }).then(r => r.json()),
+    fetch(`${API}/users/${encodeURIComponent(viewingUsername)}`).then(r => r.json()),
+    fetch(`${API}/saves?username=${encodeURIComponent(viewingUsername)}`).then(r => r.json()),
+    fetch(`${API}/follows?username=${encodeURIComponent(viewingUsername)}`).then(r => r.json()),
   ]);
+
+  if (!profileRes.user) {
+    document.getElementById('main-content').innerHTML =
+      `<p class="empty-state">المستخدم ده مش موجود.<br><br><a class="btn btn-ghost" href="/majlis.html">روح لمجلس البرزخ ↗</a></p>`;
+    return;
+  }
 
   const user = profileRes.user;
   const stats = profileRes.stats || {};
@@ -183,8 +196,8 @@ async function init(){
       </div>
     </div>
     <p class="profile-bio${user.bio ? '' : ' empty'}">${user.bio ? escapeHTML(user.bio) : 'مفيش نبذة لسه.'}</p>
-    <a class="btn btn-ghost" href="/majlis-profile.html?u=${encodeURIComponent(user.username)}">عدّل البروفايل ↗</a>
-    <a class="btn btn-ghost" href="/majlis-notebook.html">دفتر البرزخ ↗</a>
+    <a class="btn btn-ghost" href="/majlis-profile.html?u=${encodeURIComponent(user.username)}">${isOwn ? 'عدّل البروفايل ↗' : 'البروفايل ↗'}</a>
+    <a class="btn btn-ghost" href="/majlis-notebook.html?u=${encodeURIComponent(user.username)}">دفتر البرزخ ↗</a>
 
     <div class="stats-row">
       <div class="stat-box"><span class="num">${user.reputation ?? 0}</span><span class="label">نقاط السمعة</span></div>
@@ -199,20 +212,20 @@ async function init(){
     }).join('')}</div>` : ''}
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="posts">نقاشاتي (${posts.length})</button>
-      <button class="tab-btn" data-tab="saves">محفوظاتي (${saves.length})</button>
-      <button class="tab-btn" data-tab="follows">بتابعها (${follows.length})</button>
+      <button class="tab-btn active" data-tab="posts">النقاشات (${posts.length})</button>
+      <button class="tab-btn" data-tab="saves">المحفوظات (${saves.length})</button>
+      <button class="tab-btn" data-tab="follows">متابَع (${follows.length})</button>
       <button class="tab-btn" data-tab="activity">آخر نشاط</button>
     </div>
 
     <div class="tab-panel active" id="tab-posts">
-      ${posts.length ? `<div class="post-list">${posts.map(postCardHTML).join('')}</div>` : '<p class="empty-state">لسه معملتش أي نقاش.</p>'}
+      ${posts.length ? `<div class="post-list">${posts.map(postCardHTML).join('')}</div>` : '<p class="empty-state">لسه مفيش نقاشات.</p>'}
     </div>
     <div class="tab-panel" id="tab-saves">
-      ${saves.length ? `<div class="post-list">${saves.filter(s => s.target_type === 'post').map(s => postCardHTML({ id: s.target_id, title: s.post_title, category: s.post_category, created_at: s.created_at, note: s.note })).join('')}</div>` : '<p class="empty-state">لسه معملتش حفظ لحاجة.</p>'}
+      ${saves.length ? `<div class="post-list">${saves.filter(s => s.target_type === 'post').map(s => postCardHTML({ id: s.target_id, title: s.post_title, category: s.post_category, created_at: s.created_at, note: s.note })).join('')}</div>` : '<p class="empty-state">لسه مفيش حاجة محفوظة.</p>'}
     </div>
     <div class="tab-panel" id="tab-follows">
-      ${follows.length ? `<div class="post-list">${follows.map(f => postCardHTML({ id: f.post_id, title: f.title, category: f.category, created_at: f.created_at })).join('')}</div>` : '<p class="empty-state">مش بتابع أي نقاش دلوقتي.</p>'}
+      ${follows.length ? `<div class="post-list">${follows.map(f => postCardHTML({ id: f.post_id, title: f.title, category: f.category, created_at: f.created_at })).join('')}</div>` : '<p class="empty-state">مفيش نقاشات متابَعة دلوقتي.</p>'}
     </div>
     <div class="tab-panel" id="tab-activity">
       <p class="empty-state" id="activity-loading">جاري التحميل...</p>

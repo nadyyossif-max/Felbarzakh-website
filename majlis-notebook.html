@@ -112,6 +112,8 @@ const KIND_META = {
 
 let currentFilter = 'الكل';
 let allSaves = [];
+let isOwnNotebook = false;
+let viewingUsername = null;
 
 function escapeHTML(str){
   const div = document.createElement('div');
@@ -136,7 +138,7 @@ function entryHTML(s){
   const link = entryLink(s);
   const title = escapeHTML(entryTitle(s));
   return `<div class="entry" data-id="${s.id}">
-    <button class="remove-btn" data-id="${s.id}" title="حذف">✕</button>
+    ${isOwnNotebook ? `<button class="remove-btn" data-id="${s.id}" title="حذف">✕</button>` : ''}
     <span class="kind-tag">${meta.icon} ${meta.label}</span>
     <h3>${link ? `<a class="entry-link" href="${link}" target="${s.target_type==='link' ? '_blank' : '_self'}" rel="noopener">${title}</a>` : title}</h3>
     ${s.note ? `<div class="entry-note">${escapeHTML(s.note)}</div>` : ''}
@@ -209,15 +211,15 @@ function setupAddForm(){
       if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ.'; errEl.style.display = 'block'; return; }
       document.getElementById('notebook-form').reset();
       form.classList.add('collapsed');
-      await loadSaves();
+      await loadSaves(viewingUsername);
     } catch(e){
       errEl.textContent = 'حصل خطأ في الاتصال.'; errEl.style.display = 'block';
     }
   });
 }
 
-async function loadSaves(){
-  const res = await fetch(`${API}/saves`, { credentials: 'include' });
+async function loadSaves(username){
+  const res = await fetch(`${API}/saves?username=${encodeURIComponent(username)}`);
   const data = await res.json();
   allSaves = data.saves || [];
   renderFilters();
@@ -225,25 +227,33 @@ async function loadSaves(){
 }
 
 async function init(){
+  const params = new URLSearchParams(window.location.search);
+  const targetUsername = params.get('u');
+
   let session;
   try {
     const res = await fetch(`${API}/session`, { credentials: 'include' });
     session = await res.json();
   } catch { session = { user: null }; }
 
-  if (!session.user) {
+  viewingUsername = targetUsername || (session.user ? session.user.username : null);
+
+  if (!viewingUsername) {
     document.getElementById('main-content').innerHTML =
       `<p class="empty-state">لازم تسجل دخول الأول عشان تشوف دفترك.<br><br><a class="btn btn-primary" href="/majlis.html">روح لمجلس البرزخ ↗</a></p>`;
     return;
   }
 
+  isOwnNotebook = !!(session.user && session.user.username === viewingUsername);
+
   document.getElementById('main-content').innerHTML = `
     <div class="page-head">
       <div class="threshold"><span>مساحة شخصية</span></div>
-      <h1>دفتر البرزخ</h1>
-      <p>مكان هادئ تحتفظ فيه بالأفكار، الأسئلة، الاقتباسات، والروابط اللي عايز ترجعلها — مع ملاحظة بسيطة لو حبيت.</p>
+      <h1>دفتر البرزخ${isOwnNotebook ? '' : ` — ${escapeHTML(viewingUsername)}`}</h1>
+      <p>مكان هادئ يُحتفظ فيه بالأفكار، الأسئلة، الاقتباسات، والروابط اللي تستاهل الرجوع لها${isOwnNotebook ? '' : '.'}${isOwnNotebook ? ' — مع ملاحظة بسيطة لو حبيت.' : ''}</p>
     </div>
 
+    ${isOwnNotebook ? `
     <div class="add-form collapsed" id="add-form">
       <button class="add-toggle" id="add-toggle-btn">+ أضف حاجة جديدة للدفتر</button>
       <div class="fields">
@@ -261,14 +271,14 @@ async function init(){
           <button type="submit" class="btn btn-primary">حفظ في الدفتر</button>
         </form>
       </div>
-    </div>
+    </div>` : ''}
 
     <div class="filters" id="notebook-filters"></div>
     <div id="notebook-entries"><p class="empty-state">جاري التحميل...</p></div>
   `;
 
-  setupAddForm();
-  await loadSaves();
+  if (isOwnNotebook) setupAddForm();
+  await loadSaves(viewingUsername);
 }
 
 init();

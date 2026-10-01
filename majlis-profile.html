@@ -204,6 +204,10 @@ function renderPage(){
       </div>
       ${isOwn ? `<button class="btn btn-ghost" id="edit-btn" style="margin-inline-start:auto;">تعديل البروفايل</button>` : ''}
     </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+      <a class="btn btn-ghost" href="/majlis-space.html?u=${encodeURIComponent(profileUser.username)}">المساحة الشخصية ↗</a>
+      <a class="btn btn-ghost" href="/majlis-notebook.html?u=${encodeURIComponent(profileUser.username)}">دفتر البرزخ ↗</a>
+    </div>
     <p class="profile-bio${profileUser.bio ? '' : ' empty'}">${profileUser.bio ? escapeHTML(profileUser.bio) : 'من غير نبذة لسه.'}</p>
 
     <h2 class="section-title">منشورات ${escapeHTML(profileUser.username)}</h2>

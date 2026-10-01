@@ -42,11 +42,10 @@ export async function onRequestGet(context) {
   const db = env.DB;
   const url = new URL(request.url);
 
-  const user = await getSessionUser(request, db);
-  if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
-
   const postIdParam = url.searchParams.get('post_id');
   if (postIdParam) {
+    const user = await getSessionUser(request, db);
+    if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
     const postId = parseInt(postIdParam, 10);
     const existing = await db.prepare(
       'SELECT id FROM post_follows WHERE user_id = ? AND post_id = ?'
@@ -54,11 +53,25 @@ export async function onRequestGet(context) {
     return json({ following: !!existing });
   }
 
+  const usernameParam = url.searchParams.get('username');
+  let userId;
+  if (usernameParam) {
+    const targetUser = await db.prepare(
+      'SELECT id FROM users WHERE username = ? AND is_banned = 0'
+    ).bind(usernameParam).first();
+    if (!targetUser) return json({ error: 'المستخدم غير موجود.' }, 404);
+    userId = targetUser.id;
+  } else {
+    const user = await getSessionUser(request, db);
+    if (!user) return json({ error: 'لازم تسجل دخول الأول.' }, 401);
+    userId = user.id;
+  }
+
   const { results } = await db.prepare(
     `SELECT f.post_id, f.created_at, p.title, p.category
      FROM post_follows f JOIN posts p ON p.id = f.post_id
      WHERE f.user_id = ? ORDER BY f.id DESC`
-  ).bind(user.id).all();
+  ).bind(userId).all();
   return json({ follows: results });
 }
 
