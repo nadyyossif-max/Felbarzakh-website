@@ -8,10 +8,7 @@
 <link rel="canonical" href="https://felbarzakh-website.pages.dev/majlis.html">
 <meta property="og:title" content="مجلس البرزخ | في البرزخ">
 <meta property="og:description" content="مساحة للنقاش، والاختلاف، والأفكار التي تستحق أن تُسمع.">
-<meta property="og:image" content="https://felbarzakh-website.pages.dev/images/logo.jpg">
-<meta property="og:url" content="https://felbarzakh-website.pages.dev/majlis.html">
 <meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/images/logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -56,7 +53,7 @@
   .notif-wrap{position:relative;}
   .notif-bell{position:relative; padding:9px 14px; font-size:1rem;}
   .notif-badge{position:absolute; top:-4px; left:-4px; background:var(--wine, #6e2635); color:#fff; font-size:.62rem; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px; line-height:1;}
-  .notif-dropdown{position:absolute; top:calc(100% + 10px); right:0; width:320px; max-height:400px; overflow-y:auto; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:4px; z-index:500; box-shadow:0 10px 30px rgba(0,0,0,.5);}
+  .notif-dropdown{position:absolute; top:calc(100% + 10px); left:0; width:320px; max-height:400px; overflow-y:auto; background:var(--panel); border:1px solid rgba(201,168,118,.3); border-radius:4px; z-index:500; box-shadow:0 10px 30px rgba(0,0,0,.5);}
   .notif-item{display:block; padding:14px 16px; text-decoration:none; border-bottom:1px solid rgba(201,168,118,.1); transition:background .2s;}
   .notif-item:hover{background:rgba(201,168,118,.06);}
   .notif-item.unread{background:rgba(201,168,118,.08); border-right:2px solid var(--gold);}
@@ -84,7 +81,6 @@
   .post-top{display:flex; align-items:center; gap:10px; margin-bottom:14px; font-size:.82rem; color:var(--mist2);}
   .post-top .uname{color:var(--gold-bright);}
   a.uname{color:var(--gold-bright); text-decoration:none;}
-  .founder-badge{display:inline-flex; align-items:center; gap:3px; margin-inline-start:6px; padding:1px 9px; border:1px solid var(--gold-dim); border-radius:12px; font-size:.66rem; color:var(--gold-bright); vertical-align:middle;}
   a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
@@ -125,14 +121,12 @@
   footer img{height:20px; vertical-align:middle; margin-left:8px; opacity:.8;}
 
   @media (max-width:760px){
-    nav{padding:14px 5vw; flex-wrap:wrap; row-gap:10px;}
-    .user-chip{flex-wrap:wrap; justify-content:flex-end; row-gap:8px;}
+    nav{padding:16px 5vw;}
     .page-head{padding:0 7vw 40px;}
     .page-hero{min-height:40vh;}
     .majlis-bar{flex-direction:column; align-items:stretch;}
     .post-top{flex-wrap:wrap;}
     .post-cat{margin-inline-start:0;}
-    .notif-dropdown{position:fixed; top:64px; right:4vw; left:4vw; width:auto; max-height:60vh;}
   }
 
   /* real photographic backgrounds — hero band + mid-page image breaks */
@@ -579,14 +573,14 @@ function postCardHTML(p){
       ${p.avatar_url
         ? `<img class="avatar" style="width:24px;height:24px;" src="${escapeHTML(p.avatar_url)}" alt="">`
         : `<span class="avatar-fallback" style="width:24px;height:24px;font-size:.8rem;">${escapeHTML((p.username||'?').charAt(0))}</span>`}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>${p.is_admin ? '<span class="founder-badge">👑 المؤسس</span>' : ''}
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}" onclick="event.stopPropagation()">${escapeHTML(p.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>
     </div>
     <h3>${escapeHTML(p.title)}</h3>
     <p class="excerpt">${escapeHTML(p.body)}</p>
-    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; max-height:220px; object-fit:cover; border-radius:2px; margin-bottom:14px; display:block;" loading="lazy">` : ''}
+    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; aspect-ratio:16/9; max-height:220px; object-fit:cover; border-radius:2px; margin-bottom:14px; display:block; background:var(--panel);" loading="lazy">` : ''}
     <div class="post-meta">
       <span class="stat">${HEART_ICON} ${p.like_count}</span>
       <span class="stat">${COMMENT_ICON} ${p.comment_count}</span>
@@ -640,6 +634,5 @@ fetchSession();
 loadPosts(true);
 </script>
 
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7e315442f8e42949cb13397159288f9"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

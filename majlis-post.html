@@ -6,12 +6,6 @@
 <title>منشور | مجلس البرزخ</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/images/logo.jpg">
-<meta property="og:title" content="منشور | مجلس البرزخ">
-<meta property="og:description" content="في البرزخ — قناة وثائقية وكاتب سيناريو يوسف السليني.">
-<meta property="og:image" content="https://felbarzakh-website.pages.dev/images/logo.jpg">
-<meta property="og:url" content="https://felbarzakh-website.pages.dev/majlis-post.html">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +33,6 @@
   .avatar-sm{width:26px; height:26px; font-size:.85rem;}
   .post-top .uname{color:var(--gold-bright);}
   a.uname{color:var(--gold-bright); text-decoration:none;}
-  .founder-badge{display:inline-flex; align-items:center; gap:3px; margin-inline-start:6px; padding:1px 9px; border:1px solid var(--gold-dim); border-radius:12px; font-size:.66rem; color:var(--gold-bright); vertical-align:middle;}
   a.uname:hover{color:var(--gold);}
   .post-top .dot{opacity:.5;}
   .post-cat{font-size:.7rem; color:var(--gold); letter-spacing:1.5px; border:1px solid rgba(201,168,118,.3); border-radius:14px; padding:3px 12px; margin-inline-start:auto;}
@@ -75,18 +68,6 @@
   .btn-primary{background:var(--gold); color:#111; font-weight:700;}
   .btn-ghost{background:transparent; color:var(--gold-bright); border:1px solid rgba(201,168,118,.35);}
   .btn-ghost:hover{border-color:var(--gold);}
-  .modal{position:fixed; inset:0; z-index:2000; display:none; align-items:center; justify-content:center; padding:20px;}
-  .modal.open{display:flex;}
-  .modal-overlay{position:absolute; inset:0; background:rgba(0,0,0,.75);}
-  .modal-box{position:relative; background:var(--panel); border:1px solid rgba(201,168,118,.4); border-radius:4px; padding:40px; max-width:540px; width:100%; max-height:86vh; overflow-y:auto; z-index:1;}
-  .modal-close{position:absolute; top:16px; left:16px; background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:.9rem;}
-  .modal-close:hover{border-color:var(--gold); color:var(--gold-bright);}
-  .modal-box h2{font-size:1.4rem; color:var(--gold-bright); margin:6px 0 24px; border:none; padding:0;}
-  .field{margin-bottom:18px;}
-  .field label{display:block; font-size:.82rem; color:var(--mist2); margin-bottom:8px;}
-  .field input, .field textarea, .field select{width:100%; padding:13px 16px; font-family:'Cairo'; font-size:.94rem; background:var(--black); border:1px solid rgba(201,168,118,.3); border-radius:2px; color:var(--text);}
-  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--gold);}
-  .field textarea{resize:vertical; min-height:140px; line-height:1.7;}
 
   .comment{padding:20px 0; border-bottom:1px solid rgba(201,168,118,.1);}
   .comment .c-body{color:var(--text); line-height:1.85; font-size:.95rem; margin:10px 0 12px; white-space:pre-wrap;}
@@ -132,30 +113,6 @@
   <p class="empty-state" id="loading-state">بنجيب المنشور...</p>
 </main>
 
-<div id="edit-post-modal" class="modal">
-  <div class="modal-overlay"></div>
-  <div class="modal-box">
-    <button class="modal-close" id="edit-post-modal-close">✕</button>
-    <h2>تعديل المنشور</h2>
-    <p class="form-error" id="edit-post-error"></p>
-    <form id="edit-post-form">
-      <div class="field">
-        <label>التصنيف</label>
-        <select id="edit-post-category" required></select>
-      </div>
-      <div class="field">
-        <label>العنوان</label>
-        <input type="text" id="edit-post-title" required minlength="3" maxlength="200">
-      </div>
-      <div class="field">
-        <label>النص</label>
-        <textarea id="edit-post-body" required minlength="5" maxlength="8000"></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">حفظ التعديلات</button>
-    </form>
-  </div>
-</div>
-
 <footer>
   <img src="/images/logo.jpg" alt="">
   © <span id="year"></span> في البرزخ — جميع الأفكار محفوظة لصاحبها
@@ -170,57 +127,6 @@ const postId = new URLSearchParams(window.location.search).get('id');
 let currentUser = null;
 let postData = null;
 let commentsData = [];
-
-const CATEGORIES = ['نقاش', 'اقتراح حلقة', 'مناقشة حلقة', 'فكرة', 'سؤال', 'كتاب / فيلم / موسيقى', 'أخرى'];
-
-function openEditPostModal(){
-  const sel = document.getElementById('edit-post-category');
-  sel.innerHTML = CATEGORIES.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
-  sel.value = postData.category;
-  document.getElementById('edit-post-title').value = postData.title;
-  document.getElementById('edit-post-body').value = postData.body;
-  document.getElementById('edit-post-error').classList.remove('show');
-  document.getElementById('edit-post-modal').classList.add('open');
-}
-function closeEditPostModal(){
-  document.getElementById('edit-post-modal').classList.remove('open');
-}
-document.getElementById('edit-post-modal-close').addEventListener('click', closeEditPostModal);
-document.querySelector('#edit-post-modal .modal-overlay').addEventListener('click', closeEditPostModal);
-document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeEditPostModal(); });
-
-document.getElementById('edit-post-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const errEl = document.getElementById('edit-post-error');
-  errEl.classList.remove('show');
-  const submitBtn = e.target.querySelector('button[type="submit"]');
-  const payload = {
-    title: document.getElementById('edit-post-title').value.trim(),
-    body: document.getElementById('edit-post-body').value.trim(),
-    category: document.getElementById('edit-post-category').value,
-    related_episode_slug: postData.related_episode_slug || null,
-    related_article_slug: postData.related_article_slug || null
-  };
-  try{
-    submitBtn.disabled = true;
-    const res = await fetch(`${API}/posts/${postId}`, {
-      method: 'PATCH', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-    submitBtn.disabled = false;
-    if(!res.ok){ errEl.textContent = data.error || 'حصل خطأ، حاول تاني.'; errEl.classList.add('show'); return; }
-    postData.title = payload.title;
-    postData.body = payload.body;
-    postData.category = payload.category;
-    closeEditPostModal();
-    renderPage();
-  } catch(err){
-    submitBtn.disabled = false;
-    errEl.textContent = 'حصل خطأ في الاتصال، حاول تاني.'; errEl.classList.add('show');
-  }
-});
 
 const HEART_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20.5s-7.5-4.6-9.7-9C.8 8 2 4.7 5.2 4c2.1-.5 3.9.4 4.9 1.9C11.1 4.4 12.9 3.5 15 4c3.2.7 4.4 4 3 7.5-2.2 4.4-6 9-6 9z"/></svg>';
 const FLAG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 21V4h13l-3 4 3 4H5"/></svg>';
@@ -275,13 +181,13 @@ function renderPage(){
   main.innerHTML = `
     <div class="post-top">
       ${avatarHTML(p.username, p.avatar_url)}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}">${escapeHTML(p.username)}</a>${p.is_admin ? '<span class="founder-badge">👑 المؤسس</span>' : ''}
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(p.username)}">${escapeHTML(p.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(p.created_at)}</span>
       <span class="post-cat">${escapeHTML(p.category)}</span>
     </div>
     <h1 id="post-title">${escapeHTML(p.title)}</h1>
-    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; max-height:480px; object-fit:cover; border-radius:2px; margin-bottom:24px; display:block;" loading="lazy">` : ''}
+    ${p.image_url ? `<img src="${escapeHTML(p.image_url)}" alt="" style="width:100%; aspect-ratio:16/9; max-height:480px; object-fit:cover; border-radius:2px; margin-bottom:24px; display:block; background:var(--panel);" loading="lazy">` : ''}
     <div id="post-body">${escapeHTML(p.body)}</div>
     <div class="post-actions">
       <div class="reaction-bar" data-target-type="post" data-target-id="${p.id}">
@@ -292,8 +198,6 @@ function renderPage(){
         <span class="reaction-total">${p.like_count}</span>
       </div>
       <button class="icon-btn" id="report-post-btn">${FLAG_ICON} إبلاغ</button>
-      ${currentUser && currentUser.is_admin ? `<button class="icon-btn spacer" id="pin-post-btn">${p.is_pinned ? '📌 إلغاء التثبيت' : '📌 تثبيت المنشور'}</button>` : ''}
-      ${canDeletePost ? `<button class="icon-btn spacer" id="edit-post-btn">✏️ تعديل</button>` : ''}
       ${canDeletePost ? `<button class="icon-btn danger spacer" id="delete-post-btn">${TRASH_ICON} حذف</button>` : ''}
     </div>
 
@@ -311,12 +215,6 @@ function renderPage(){
   document.getElementById('report-post-btn').addEventListener('click', () => reportContent('post', p.id));
   if(canDeletePost){
     document.getElementById('delete-post-btn').addEventListener('click', deletePost);
-    document.getElementById('edit-post-btn').addEventListener('click', openEditPostModal);
-  }
-
-  const pinBtn = document.getElementById('pin-post-btn');
-  if(pinBtn){
-    pinBtn.addEventListener('click', togglePin);
   }
 
   renderCommentFormArea();
@@ -347,11 +245,11 @@ function commentHTML(c, isReply){
   return `<div class="comment" data-id="${c.id}">
     <div class="post-top" style="margin-bottom:0;">
       ${avatarHTML(c.username, c.avatar_url, 'avatar-sm')}
-      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(c.username)}">${escapeHTML(c.username)}</a>${c.is_admin ? '<span class="founder-badge">👑 المؤسس</span>' : ''}
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(c.username)}">${escapeHTML(c.username)}</a>
       <span class="dot">·</span>
       <span>${timeAgo(c.created_at)}</span>
     </div>
-    <div class="c-body" id="c-body-${c.id}">${escapeHTML(c.body)}</div>
+    <div class="c-body">${escapeHTML(c.body)}</div>
     <div class="c-actions">
       <div class="reaction-bar compact" data-target-type="comment" data-target-id="${c.id}">
         <button class="reaction-btn${c.my_reaction === 'مفيد' ? ' active' : ''}" data-type="مفيد" title="مفيد">💡</button>
@@ -361,7 +259,6 @@ function commentHTML(c, isReply){
         <span class="reaction-total">${c.like_count}</span>
       </div>
       ${!isReply ? `<button class="icon-btn reply-btn" data-id="${c.id}">${REPLY_ICON} رد</button>` : ''}
-      ${canDelete ? `<button class="icon-btn edit-comment-btn" data-id="${c.id}">✏️</button>` : ''}
       <button class="icon-btn report-comment-btn" data-id="${c.id}">${FLAG_ICON}</button>
       ${canDelete ? `<button class="icon-btn danger delete-comment-btn" data-id="${c.id}">${TRASH_ICON}</button>` : ''}
     </div>
@@ -397,9 +294,6 @@ function renderComments(){
   });
   container.querySelectorAll('.report-comment-btn').forEach(btn => {
     btn.addEventListener('click', () => reportContent('comment', parseInt(btn.dataset.id, 10)));
-  });
-  container.querySelectorAll('.edit-comment-btn').forEach(btn => {
-    btn.addEventListener('click', () => startEditComment(parseInt(btn.dataset.id, 10)));
   });
   container.querySelectorAll('.delete-comment-btn').forEach(btn => {
     btn.addEventListener('click', () => deleteComment(parseInt(btn.dataset.id, 10)));
@@ -461,21 +355,6 @@ async function deletePost(){
   } catch(e){}
 }
 
-async function togglePin(){
-  const willPin = !postData.is_pinned;
-  try{
-    const res = await fetch(`${API}/admin/posts`, {
-      method: 'PATCH', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ post_id: postId, is_pinned: willPin })
-    });
-    if(res.ok){
-      postData.is_pinned = willPin;
-      renderPage();
-    }
-  } catch(e){}
-}
-
 async function deleteComment(commentId){
   if(!confirm('متأكد إنك عايز تحذف التعليق ده؟')) return;
   try{
@@ -486,40 +365,6 @@ async function deleteComment(commentId){
     });
     if(res.ok){
       commentsData = commentsData.filter(c => c.id !== commentId && c.parent_comment_id !== commentId);
-      renderComments();
-    }
-  } catch(e){}
-}
-
-function startEditComment(id){
-  const c = commentsData.find(x => x.id === id);
-  if(!c) return;
-  const bodyEl = document.getElementById(`c-body-${id}`);
-  bodyEl.innerHTML = `<div class="field" style="margin:0 0 8px;">
-    <textarea id="edit-c-textarea-${id}" maxlength="3000"></textarea>
-  </div>
-  <div style="display:flex; gap:8px;">
-    <button class="btn btn-primary" style="padding:8px 18px; font-size:.8rem;" id="save-c-${id}">حفظ</button>
-    <button class="icon-btn" id="cancel-c-${id}">إلغاء</button>
-  </div>`;
-  document.getElementById(`edit-c-textarea-${id}`).value = c.body;
-  document.getElementById(`save-c-${id}`).addEventListener('click', () => saveEditComment(id));
-  document.getElementById(`cancel-c-${id}`).addEventListener('click', () => renderComments());
-}
-
-async function saveEditComment(id){
-  const textarea = document.getElementById(`edit-c-textarea-${id}`);
-  const newBody = textarea.value.trim();
-  if(!newBody) return;
-  try{
-    const res = await fetch(`${API}/comments`, {
-      method: 'PATCH', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ comment_id: id, body: newBody })
-    });
-    if(res.ok){
-      const c = commentsData.find(x => x.id === id);
-      if(c) c.body = newBody;
       renderComments();
     }
   } catch(e){}
@@ -580,6 +425,5 @@ async function init(){
 init();
 </script>
 
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b7e315442f8e42949cb13397159288f9"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
