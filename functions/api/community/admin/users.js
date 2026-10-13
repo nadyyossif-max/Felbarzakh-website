@@ -1,7 +1,25 @@
 // functions/api/community/admin/users.js
+// GET   -> list of all registered users, newest first (admin only)
 // PATCH { user_id, is_banned } -> ban/unban a user (admin only)
 // A banned user's existing sessions are revoked immediately.
 import { getSessionUser } from '../_lib/crypto.js';
+
+export async function onRequestGet(context) {
+  const { request, env } = context;
+  const db = env.DB;
+
+  const admin = await getSessionUser(request, db);
+  if (!admin || !admin.is_admin) return json({ error: 'مش مسموحلك.' }, 403);
+
+  const { results } = await db.prepare(
+    `SELECT u.id, u.username, u.email, u.created_at, u.is_admin, u.is_banned, u.reputation,
+            (SELECT COUNT(*) FROM posts p WHERE p.user_id = u.id) AS posts_count,
+            (SELECT COUNT(*) FROM comments c WHERE c.user_id = u.id) AS comments_count
+     FROM users u ORDER BY u.id DESC LIMIT 500`
+  ).all();
+
+  return json({ users: results });
+}
 
 export async function onRequestPatch(context) {
   const { request, env } = context;
