@@ -135,7 +135,7 @@ function escapeHTML(str){
 function fileCardHTML(f){
   return `<a class="file-card" href="/file.html?slug=${encodeURIComponent(f.slug)}">
     <div class="thumb-wrap">
-      <img class="thumb" src="${escapeHTML(f.cover_image)}" alt="${escapeHTML(f.title)}" loading="lazy">
+      <img class="thumb" src="${escapeHTML(f.cover_image)}" alt="${escapeHTML(f.title)}">
       <span class="file-number">${escapeHTML(f.number)}</span>
     </div>
     <div class="card-body">
