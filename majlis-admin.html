@@ -55,6 +55,16 @@
   .btn-danger:hover{border-color:#d98a8a;}
   .btn[disabled]{opacity:.4; cursor:default; pointer-events:none;}
 
+  .view-switch{display:flex; gap:10px; margin-bottom:26px; flex-wrap:wrap;}
+  .view-btn{background:transparent; border:1px solid rgba(201,168,118,.3); color:var(--mist2); font-family:'Cairo'; font-size:.88rem; padding:8px 22px; border-radius:20px; cursor:pointer; transition:all .25s;}
+  .view-btn.active{background:var(--gold); color:#111; border-color:var(--gold); font-weight:700;}
+  .user-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:var(--panel); border:1px solid rgba(201,168,118,.2); border-radius:2px; padding:16px 22px; margin-bottom:10px;}
+  .user-main{flex:1; min-width:200px;}
+  .user-main .uname{color:var(--gold-bright); text-decoration:none; font-size:1rem;}
+  .user-main .uname:hover{color:var(--gold);}
+  .user-meta{font-size:.78rem; color:var(--mist2); margin-top:6px; display:flex; gap:14px; flex-wrap:wrap;}
+  .user-tag{font-size:.68rem; border-radius:14px; padding:2px 10px; margin-inline-start:8px; border:1px solid rgba(201,168,118,.35); color:var(--gold);}
+  .user-tag.banned{color:#d98a8a; border-color:rgba(217,138,138,.35);}
   .empty-state{text-align:center; padding:50px 20px; color:var(--mist2);}
   .gate{text-align:center; padding:120px 20px; color:var(--mist2);}
 </style>
@@ -100,9 +110,25 @@ async function init(){
   }
   main.innerHTML = `
     <div class="stats-row" id="stats-row"></div>
-    <div class="tabs" id="tabs"></div>
-    <div id="reports-list"></div>
+    <div class="view-switch">
+      <button class="view-btn active" data-view="reports">البلاغات</button>
+      <button class="view-btn" data-view="users">المستخدمين</button>
+    </div>
+    <div id="reports-section">
+      <div class="tabs" id="tabs"></div>
+      <div id="reports-list"></div>
+    </div>
+    <div id="users-section" style="display:none;"></div>
   `;
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b === btn));
+      const view = btn.dataset.view;
+      document.getElementById('reports-section').style.display = view === 'reports' ? '' : 'none';
+      document.getElementById('users-section').style.display = view === 'users' ? '' : 'none';
+      if(view === 'users') loadUsers();
+    });
+  });
   renderTabs();
   loadStats();
   loadReports();
@@ -227,6 +253,54 @@ function wireCardActions(){
       loadReports(); loadStats();
     });
   });
+}
+
+/* ---------- users ---------- */
+
+function userRowHTML(u){
+  const joined = u.created_at
+    ? new Date(u.created_at + 'Z').toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' })
+    : '';
+  return `<div class="user-row">
+    <div class="user-main">
+      <a class="uname" href="/majlis-profile.html?u=${encodeURIComponent(u.username)}">${escapeHTML(u.username)}</a>
+      ${u.is_admin ? '<span class="user-tag">أدمن</span>' : ''}
+      ${u.is_banned ? '<span class="user-tag banned">محظور</span>' : ''}
+      <div class="user-meta">
+        <span dir="ltr">${escapeHTML(u.email)}</span>
+        <span>انضم: ${joined}</span>
+        <span>منشورات: ${u.posts_count}</span>
+        <span>تعليقات: ${u.comments_count}</span>
+        <span>سمعة: ${u.reputation ?? 0}</span>
+      </div>
+    </div>
+    ${u.is_admin ? '' : `<button class="btn ${u.is_banned ? '' : 'btn-danger'} user-ban-btn" data-id="${u.id}" data-ban="${u.is_banned ? '0' : '1'}">${u.is_banned ? 'إلغاء الحظر' : 'حظر'}</button>`}
+  </div>`;
+}
+
+async function loadUsers(){
+  const container = document.getElementById('users-section');
+  container.innerHTML = `<p class="empty-state">بنجيب المستخدمين...</p>`;
+  try{
+    const res = await fetch(`${API}/admin/users`, { credentials: 'include' });
+    const data = await res.json();
+    const users = data.users || [];
+    if(users.length === 0){
+      container.innerHTML = `<p class="empty-state">مفيش مستخدمين لسه.</p>`;
+      return;
+    }
+    container.innerHTML = users.map(userRowHTML).join('');
+    container.querySelectorAll('.user-ban-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const ban = btn.dataset.ban === '1';
+        if(!confirm(ban ? 'حظر المستخدم ده من مجلس البرزخ؟' : 'إلغاء حظر المستخدم ده؟')) return;
+        await setBanned(parseInt(btn.dataset.id, 10), ban);
+        loadUsers(); loadStats();
+      });
+    });
+  } catch(e){
+    container.innerHTML = `<p class="empty-state">مقدرناش نجيب المستخدمين — حاول تحدّث الصفحة.</p>`;
+  }
 }
 
 /* ---------- actions ---------- */
