@@ -61,11 +61,49 @@ export async function onRequestPost(context) {
     'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)'
   ).bind(token, userId, expiresAt).run();
 
+  // Tell the admin(s) about the new account. Never blocks or breaks registration.
+  const alertPromise = alertAdmins(env, db, username);
+  if (context.waitUntil) context.waitUntil(alertPromise); else await alertPromise;
+
   return json(
     { user: { id: userId, username, avatar_url: null, bio: null, is_admin: false } },
     201,
     { 'Set-Cookie': sessionCookie(token, SESSION_DAYS * 86400) }
   );
+}
+
+// In-app bell notification for every admin + optional Telegram message
+// (only sent if TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set in Cloudflare).
+async function alertAdmins(env, db, username) {
+  try {
+    const admins = await db.prepare('SELECT id FROM users WHERE is_admin = 1').all();
+    const message = `مستخدم جديد سجّل في مجلس البرزخ: ${username}`;
+    for (const a of admins.results || []) {
+      // 'new_user' first; falls back to an already-used type in case the table restricts type values.
+      for (const type of ['new_user', 'badge']) {
+        try {
+          await db.prepare(
+            'INSERT INTO notifications (user_id, type, message, link) VALUES (?, ?, ?, ?)'
+          ).bind(a.id, type, message, '/majlis-admin.html').run();
+          break;
+        } catch (e) { /* try the next type */ }
+      }
+    }
+  } catch (e) { console.error('admin in-app alert failed', e); }
+
+  if (env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID) {
+    try {
+      const countRow = await db.prepare('SELECT COUNT(*) AS n FROM users').first();
+      await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: env.TELEGRAM_CHAT_ID,
+          text: `👤 مستخدم جديد في مجلس البرزخ: ${username}\nإجمالي الأعضاء: ${countRow.n}`
+        })
+      });
+    } catch (e) { console.error('telegram alert failed', e); }
+  }
 }
 
 function json(data, status = 200, extraHeaders = {}) {
